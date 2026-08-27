@@ -1,0 +1,51 @@
+//
+//  ProxyModeChangeCommand.swift
+//  Waypoint
+//
+
+import AppKit
+import Foundation
+
+@objc class ProxyModeChangeCommand: NSScriptCommand {
+    override func performDefaultImplementation() -> Any? {
+        guard let directParameter = directParameter as? String,
+              let mode = WaypointProxyMode(rawValue: directParameter)
+        else {
+            scriptErrorNumber = -1
+            scriptErrorString = "please enter a valid parameter. rule, global or direct"
+            return nil
+        }
+        // Script commands are dispatched on the main thread; hop explicitly
+        // because NSScriptCommand is not MainActor-annotated in the SDK.
+        // Error state is written back outside the closure so `self` (non-
+        // Sendable) is never sent across the isolation boundary.
+        var errorCode = 0
+        var errorMessage: String?
+        MainActor.assumeIsolated {
+            guard let delegate = NSApplication.shared.delegate as? AppDelegate else {
+                errorCode = -2
+                errorMessage = "can't get application, try again later"
+                return
+            }
+            let menuItem: NSMenuItem
+            switch mode {
+            case .rule:
+                menuItem = delegate.proxyModeRuleMenuItem
+            case .global:
+                menuItem = delegate.proxyModeGlobalMenuItem
+            case .direct:
+                menuItem = delegate.proxyModeDirectMenuItem
+            #if PRO_VERSION
+                case .script:
+                    menuItem = delegate.proxyModeScriptMenuItem
+            #endif
+            }
+            delegate.actionSwitchProxyMode(menuItem)
+        }
+        if let errorMessage {
+            scriptErrorNumber = errorCode
+            scriptErrorString = errorMessage
+        }
+        return nil
+    }
+}

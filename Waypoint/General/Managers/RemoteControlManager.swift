@@ -1,0 +1,170 @@
+//
+//  RemoteControlManager.swift
+//  Waypoint Pro
+//
+
+import Cocoa
+
+class RemoteControl: Codable {
+    let name: String
+    let url: String
+    let secret: String
+    let uuid: String
+
+    init(name: String, url: String, secret: String) {
+        self.name = name
+        self.url = url
+        self.secret = secret
+        uuid = UUID().uuidString
+    }
+}
+
+class RemoteControlManager {
+    enum Recorder {
+        // A plain computed property: the @UserDefault wrapper's synthesized
+        // backing storage would defeat the nonisolated(unsafe) annotation.
+        nonisolated(unsafe) static var selected: String {
+            get { UserDefaults.standard.string(forKey: "selectedRemoteControlConfigID") ?? "" }
+            set { UserDefaults.standard.set(newValue, forKey: "selectedRemoteControlConfigID") }
+        }
+    }
+
+    // All access happens from main-thread menu code paths; the annotations
+    // only silence strict-concurrency checks, they do not add locking.
+    nonisolated(unsafe) static let shared = RemoteControlManager()
+    nonisolated(unsafe) static var configs: [RemoteControl] = loadConfig() {
+        didSet {
+            if let encoded = try? JSONEncoder().encode(configs) {
+                UserDefaults.standard.set(encoded, forKey: "kRemoteControls")
+            }
+            updateMenuItems()
+        }
+    }
+
+    nonisolated(unsafe) static var selectConfig: RemoteControl? {
+        didSet {
+            Recorder.selected = selectConfig?.uuid ?? ""
+        }
+    }
+
+    private nonisolated(unsafe) static var menuSeparator: NSMenuItem?
+
+    static func loadConfig() -> [RemoteControl] {
+        if let savedConfigs = UserDefaults.standard.object(forKey: "kRemoteControls") as? Data {
+            if let loadedConfig = try? JSONDecoder().decode([RemoteControl].self, from: savedConfigs) {
+                return loadedConfig
+            } else {
+                assertionFailure()
+                return []
+            }
+        }
+        return []
+    }
+
+    static func setupMenuItem(separator: NSMenuItem) {
+        MainActor.assumeIsolated {
+            menuSeparator = separator
+            updateMenuItems()
+            updateDropDownMenuItems()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            RemoteControlManager.recoverSelection()
+        }
+    }
+
+    private static func recoverSelection() {
+        MainActor.assumeIsolated {
+            if !Recorder.selected.isEmpty {
+                if let config = configs.first(where: { $0.uuid == Recorder.selected }) {
+                    selectConfig = config
+                    updateRemoteControl()
+                    updateMenuItems()
+                } else {
+                    Recorder.selected = ""
+                }
+            }
+        }
+    }
+
+    static func updateMenuItems() {
+        MainActor.assumeIsolated {
+            guard let separator = menuSeparator, let menu = separator.menu else { return }
+            let idx = menu.index(of: separator)
+            for _ in 0 ..< idx {
+                menu.removeItem(at: 0)
+            }
+
+            for model in configs.reversed() {
+                let item = ExternalControlMenuItem(model: model)
+                item.state = (selectConfig?.uuid == model.uuid) ? .on : .off
+                item.target = RemoteControlManager.self
+                item.action = #selector(RemoteControlManager.didSelectMenuItem(sender:))
+                menu.insertItem(item, at: 0)
+            }
+
+            let item = ExternalControlMenuItem.createNoneItem()
+            item.target = RemoteControlManager.self
+            item.action = #selector(RemoteControlManager.didSelectMenuItem(sender:))
+            item.state = selectConfig == nil ? .on : .off
+            menu.insertItem(item, at: 0)
+        }
+    }
+
+    @objc static func didSelectMenuItem(sender: ExternalControlMenuItem) {
+        MainActor.assumeIsolated {
+            selectConfig = sender.model
+            updateRemoteControl()
+            updateMenuItems()
+        }
+    }
+
+    static func updateRemoteControl() {
+        MainActor.assumeIsolated {
+            if let config = selectConfig, let url = URL(string: config.url) {
+                ConfigManager.shared.overrideApiURL = url
+                ConfigManager.shared.overrideSecret = config.secret
+            } else {
+                selectConfig = nil
+                ConfigManager.shared.overrideApiURL = nil
+                ConfigManager.shared.overrideSecret = nil
+            }
+            WaypointProxy.cleanCache()
+            AppDelegate.shared.resetStreamApi()
+            AppDelegate.shared.syncConfig()
+            MenuItemFactory.recreateProxyMenuItems()
+            updateDropDownMenuItems()
+        }
+    }
+
+    static func updateDropDownMenuItems() {
+        MainActor.assumeIsolated {
+            let d = AppDelegate.shared
+            let enable = selectConfig == nil
+            d.statusMenu.autoenablesItems = enable
+            [d.copyExportCommandMenuItem, d.copyExportCommandExternalMenuItem, d.proxySettingMenuItem].forEach {
+                $0?.isEnabled = enable
+            }
+        }
+    }
+}
+
+class ExternalControlMenuItem: NSMenuItem, @unchecked Sendable {
+    var model: RemoteControl?
+    init(model: RemoteControl) {
+        super.init(title: model.name, action: nil, keyEquivalent: "")
+        self.model = model
+    }
+
+    private init(title: String) {
+        super.init(title: title, action: nil, keyEquivalent: "")
+    }
+
+    @available(*, unavailable)
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    static func createNoneItem() -> ExternalControlMenuItem {
+        return ExternalControlMenuItem(title: "None")
+    }
+}
