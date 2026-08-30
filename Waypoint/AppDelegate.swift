@@ -11,38 +11,37 @@ import WaypointNetworking
 
 let statusItemLengthWithSpeed: CGFloat = 72
 
-@main
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
     private(set) var statusItem: NSStatusItem!
-    @IBOutlet var checkForUpdateMenuItem: NSMenuItem!
 
-    @IBOutlet var statusMenu: NSMenu!
-    @IBOutlet var proxySettingMenuItem: NSMenuItem!
-    @IBOutlet var autoStartMenuItem: NSMenuItem!
-
-    @IBOutlet var proxyModeGlobalMenuItem: NSMenuItem!
-    @IBOutlet var proxyModeDirectMenuItem: NSMenuItem!
-    @IBOutlet var proxyModeRuleMenuItem: NSMenuItem!
-    @IBOutlet var allowFromLanMenuItem: NSMenuItem!
-    @IBOutlet var enhanceTunModeMenuItem: NSMenuItem!
-
-    @IBOutlet var proxyModeMenuItem: NSMenuItem!
-    @IBOutlet var showNetSpeedIndicatorMenuItem: NSMenuItem!
-    @IBOutlet var dashboardMenuItem: NSMenuItem!
-    @IBOutlet var separatorLineTop: NSMenuItem!
-    @IBOutlet var sepatatorLineEndProxySelect: NSMenuItem!
-    @IBOutlet var configSeparatorLine: NSMenuItem!
-    @IBOutlet var logLevelMenuItem: NSMenuItem!
-    @IBOutlet var httpPortMenuItem: NSMenuItem!
-    @IBOutlet var socksPortMenuItem: NSMenuItem!
-    @IBOutlet var apiPortMenuItem: NSMenuItem!
-    @IBOutlet var ipMenuItem: NSMenuItem!
-    @IBOutlet var remoteConfigAutoupdateMenuItem: NSMenuItem!
-    @IBOutlet var copyExportCommandMenuItem: NSMenuItem!
-    @IBOutlet var copyExportCommandExternalMenuItem: NSMenuItem!
-    @IBOutlet var externalControlSeparator: NSMenuItem!
-    @IBOutlet var connectionsMenuItem: NSMenuItem!
+    // The status menu is built programmatically in setupMenus(); the items
+    // below mirror the menu structure that used to live in Main.storyboard.
+    var statusMenu: NSMenu!
+    var checkForUpdateMenuItem: NSMenuItem!
+    var proxySettingMenuItem: NSMenuItem!
+    var autoStartMenuItem: NSMenuItem!
+    var proxyModeGlobalMenuItem: NSMenuItem!
+    var proxyModeDirectMenuItem: NSMenuItem!
+    var proxyModeRuleMenuItem: NSMenuItem!
+    var allowFromLanMenuItem: NSMenuItem!
+    var enhanceTunModeMenuItem: NSMenuItem!
+    var proxyModeMenuItem: NSMenuItem!
+    var showNetSpeedIndicatorMenuItem: NSMenuItem!
+    var dashboardMenuItem: NSMenuItem!
+    var separatorLineTop: NSMenuItem!
+    var sepatatorLineEndProxySelect: NSMenuItem!
+    var configSeparatorLine: NSMenuItem!
+    var logLevelMenuItem: NSMenuItem!
+    var httpPortMenuItem: NSMenuItem!
+    var socksPortMenuItem: NSMenuItem!
+    var apiPortMenuItem: NSMenuItem!
+    var ipMenuItem: NSMenuItem!
+    var remoteConfigAutoupdateMenuItem: NSMenuItem!
+    var copyExportCommandMenuItem: NSMenuItem!
+    var copyExportCommandExternalMenuItem: NSMenuItem!
+    var externalControlSeparator: NSMenuItem!
+    var connectionsMenuItem: NSMenuItem!
 
     var cancellables = Set<AnyCancellable>()
     private var trafficStreamTask: Task<Void, Never>?
@@ -57,6 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         signal(SIGPIPE, SIG_IGN)
         // crash recorder
         failLaunchProtect()
+        setupMenus()
         NSAppleEventManager.shared()
             .setEventHandler(self,
                              andSelector: #selector(handleURL(event:reply:)),
@@ -72,7 +72,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: statusItemLengthWithSpeed)
         statusItemView = StatusItemView.create(statusItem: statusItem)
         statusItemView.updateSize(width: statusItemLengthWithSpeed)
-        statusMenu.delegate = self
         setupStatusMenuItemData()
         DispatchQueue.main.async {
             self.postFinishLaunching()
@@ -138,6 +137,251 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.set(true, forKey: "kOnboardingCompleted")
         SwiftUIWindowController.create(title: NSLocalizedString("Welcome to Waypoint", comment: ""), content: OnboardingRootView())
             .showWindow(nil)
+    }
+
+    // MARK: Menus (previously Main.storyboard)
+
+    func setupMenus() {
+        NSApp.mainMenu = makeMainMenu()
+        statusMenu = makeStatusMenu()
+        statusMenu.delegate = self
+    }
+
+    private func item(_ title: String,
+                      action: Selector? = nil,
+                      key: String = "",
+                      modifiers: NSEvent.ModifierFlags = .command) -> NSMenuItem {
+        let item = NSMenuItem(title: NSLocalizedString(title, comment: ""),
+                              action: action,
+                              keyEquivalent: key)
+        item.keyEquivalentModifierMask = modifiers
+        if action != nil {
+            item.target = self
+        }
+        return item
+    }
+
+    /// The hidden application menu, required so text fields in the SwiftUI
+    /// windows keep standard Edit shortcuts (copy/paste/undo, ⌘W ...).
+    private func makeMainMenu() -> NSMenu {
+        let mainMenu = NSMenu(title: "Main Menu")
+
+        let appItem = NSMenuItem()
+        mainMenu.addItem(appItem)
+        let appMenu = NSMenu(title: "Waypoint")
+        appMenu.addItem(withTitle: NSLocalizedString("Quit Waypoint", comment: ""),
+                        action: #selector(NSApplication.terminate(_:)),
+                        keyEquivalent: "q")
+        appItem.submenu = appMenu
+
+        let editItem = NSMenuItem()
+        mainMenu.addItem(editItem)
+        let editMenu = NSMenu(title: NSLocalizedString("Edit", comment: ""))
+        editMenu.addItem(withTitle: NSLocalizedString("Undo", comment: ""),
+                         action: Selector(("undo:")), keyEquivalent: "z")
+        editMenu.addItem(withTitle: NSLocalizedString("Redo", comment: ""),
+                         action: Selector(("redo:")), keyEquivalent: "Z")
+        editMenu.addItem(.separator())
+        editMenu.addItem(withTitle: NSLocalizedString("Cut", comment: ""),
+                         action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+        editMenu.addItem(withTitle: NSLocalizedString("Copy", comment: ""),
+                         action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+        editMenu.addItem(withTitle: NSLocalizedString("Paste", comment: ""),
+                         action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+        editMenu.addItem(withTitle: NSLocalizedString("Delete", comment: ""),
+                         action: #selector(NSText.delete(_:)), keyEquivalent: "")
+        editMenu.addItem(withTitle: NSLocalizedString("Select All", comment: ""),
+                         action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+        editMenu.addItem(.separator())
+        let findItem = NSMenuItem()
+        editMenu.addItem(findItem)
+        let findMenu = NSMenu(title: NSLocalizedString("Find", comment: ""))
+        let findSubItems: [(String, Int, String, NSEvent.ModifierFlags)] = [
+            (NSLocalizedString("Find…", comment: ""), 1, "f", .command),
+            (NSLocalizedString("Find and Replace…", comment: ""), 12, "f", [.command, .option]),
+            (NSLocalizedString("Find Next", comment: ""), 2, "g", .command),
+            (NSLocalizedString("Find Previous", comment: ""), 3, "G", .command),
+            (NSLocalizedString("Use Selection for Find", comment: ""), 7, "e", .command),
+            (NSLocalizedString("Jump to Selection", comment: ""), -1, "j", .command),
+        ]
+        for (title, tag, key, modifiers) in findSubItems {
+            let sub = NSMenuItem(title: title,
+                                 action: tag == -1
+                                     ? #selector(NSResponder.centerSelectionInVisibleArea(_:))
+                                     : #selector(NSResponder.performFindPanelAction(_:)),
+                                 keyEquivalent: key)
+            sub.tag = tag
+            sub.keyEquivalentModifierMask = modifiers
+            findMenu.addItem(sub)
+        }
+        findItem.submenu = findMenu
+        editMenu.addItem(withTitle: NSLocalizedString("Close", comment: ""),
+                         action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
+        editItem.submenu = editMenu
+
+        return mainMenu
+    }
+
+    private func makeStatusMenu() -> NSMenu {
+        let menu = NSMenu()
+        // Manual enable/disable control (Dashboard etc.); display-only items
+        // are disabled explicitly below.
+        menu.autoenablesItems = false
+
+        proxyModeMenuItem = item("API Connect Error")
+        let modeMenu = NSMenu()
+        proxyModeGlobalMenuItem = item("Global",
+                                       action: #selector(actionSwitchProxyMode(_:)),
+                                       key: "g",
+                                       modifiers: .option)
+        proxyModeRuleMenuItem = item("Rule",
+                                     action: #selector(actionSwitchProxyMode(_:)),
+                                     key: "r",
+                                     modifiers: .option)
+        proxyModeDirectMenuItem = item("Direct",
+                                       action: #selector(actionSwitchProxyMode(_:)),
+                                       key: "d",
+                                       modifiers: .option)
+        modeMenu.addItem(proxyModeGlobalMenuItem)
+        modeMenu.addItem(proxyModeRuleMenuItem)
+        modeMenu.addItem(proxyModeDirectMenuItem)
+        proxyModeMenuItem.submenu = modeMenu
+        proxyModeMenuItem.isEnabled = false
+        menu.addItem(proxyModeMenuItem)
+
+        separatorLineTop = .separator()
+        menu.addItem(separatorLineTop)
+        sepatatorLineEndProxySelect = .separator()
+        menu.addItem(sepatatorLineEndProxySelect)
+
+        proxySettingMenuItem = item("Set as system proxy",
+                                    action: #selector(actionSetSystemProxy(_:)),
+                                    key: "s")
+        menu.addItem(proxySettingMenuItem)
+
+        enhanceTunModeMenuItem = item("Enhanced Mode",
+                                      action: #selector(actionEnhanceTunMode(_:)),
+                                      key: "e")
+        menu.addItem(enhanceTunModeMenuItem)
+
+        copyExportCommandMenuItem = item("Copy shell command",
+                                         action: #selector(actionCopyExportCommand(_:)),
+                                         key: "c")
+        menu.addItem(copyExportCommandMenuItem)
+
+        copyExportCommandExternalMenuItem = item("Copy shell command (External IP)",
+                                                 action: #selector(actionCopyExportCommand(_:)),
+                                                 key: "c",
+                                                 modifiers: [.command, .option])
+        copyExportCommandExternalMenuItem.isAlternate = true
+        menu.addItem(copyExportCommandExternalMenuItem)
+
+        menu.addItem(.separator())
+
+        autoStartMenuItem = item("Start at login",
+                                 action: #selector(actionStartAtLogin(_:)))
+        menu.addItem(autoStartMenuItem)
+
+        showNetSpeedIndicatorMenuItem = item("Show network indicator",
+                                             action: #selector(actionShowNetSpeedIndicator(_:)))
+        menu.addItem(showNetSpeedIndicatorMenuItem)
+
+        allowFromLanMenuItem = item("Allow connect from Lan",
+                                    action: #selector(actionAllowFromLan(_:)))
+        menu.addItem(allowFromLanMenuItem)
+
+        menu.addItem(.separator())
+
+        menu.addItem(item("Benchmark", action: #selector(actionSpeedTest(_:)), key: "t"))
+
+        dashboardMenuItem = item("Dashboard", action: #selector(actionDashboard(_:)), key: "d")
+        dashboardMenuItem.isEnabled = false
+        menu.addItem(dashboardMenuItem)
+
+        connectionsMenuItem = item("Connection Details",
+                                   action: #selector(actionConnections(_:)),
+                                   key: "d",
+                                   modifiers: [.command, .shift])
+        menu.addItem(connectionsMenuItem)
+
+        menu.addItem(.separator())
+
+        let configsItem = item("Configs")
+        let configsMenu = NSMenu()
+        configSeparatorLine = .separator()
+        configsMenu.addItem(configSeparatorLine)
+        configsMenu.addItem(item("Open config folder",
+                                 action: #selector(openConfigFolder(_:)),
+                                 key: "o"))
+        configsMenu.addItem(item("Reload config",
+                                 action: #selector(actionUpdateConfig(_:)),
+                                 key: "r"))
+        configsMenu.addItem(item("Update external resources",
+                                 action: #selector(actionUpdateExternalResource(_:)),
+                                 key: "u",
+                                 modifiers: [.command, .shift]))
+
+        let remoteConfigItem = item("Remote config")
+        let remoteConfigMenu = NSMenu()
+        remoteConfigMenu.addItem(item("Manage",
+                                      action: #selector(actionShowRemoteConfigManager(_:)),
+                                      key: "m"))
+        remoteConfigMenu.addItem(item("Update",
+                                      action: #selector(actionUpdateRemoteConfig(_:)),
+                                      key: "u"))
+        remoteConfigAutoupdateMenuItem = item("Auto Update",
+                                              action: #selector(actionAutoUpdateRemoteConfig(_:)))
+        remoteConfigMenu.addItem(remoteConfigAutoupdateMenuItem)
+        remoteConfigMenu.addItem(item("Set update interval",
+                                      action: #selector(actionSetUpdateInterval(_:))))
+        remoteConfigItem.submenu = remoteConfigMenu
+        configsMenu.addItem(remoteConfigItem)
+
+        let remoteControlItem = item("Remote controller")
+        let remoteControlMenu = NSMenu()
+        externalControlSeparator = .separator()
+        remoteControlMenu.addItem(externalControlSeparator)
+        remoteControlMenu.addItem(item(" Manage",
+                                       action: #selector(actionShowExternalControlManager(_:))))
+        remoteControlItem.submenu = remoteControlMenu
+        configsMenu.addItem(remoteControlItem)
+
+        configsItem.submenu = configsMenu
+        menu.addItem(configsItem)
+
+        menu.addItem(item("Settings", action: #selector(actionMoreSetting(_:))))
+
+        let helpItem = item("Help")
+        let helpMenu = NSMenu()
+        helpMenu.addItem(item("About", action: #selector(actionShowAbout(_:))))
+        checkForUpdateMenuItem = item("Check Update")
+        helpMenu.addItem(checkForUpdateMenuItem)
+        let logLevelItem = item("Log level")
+        let logLevelMenu = NSMenu()
+        for level in ["ERROR", "WARNING", "INFO", "DEBUG", "SILENT"] {
+            logLevelMenu.addItem(item(level, action: #selector(actionSetLogLevel(_:))))
+        }
+        logLevelItem.submenu = logLevelMenu
+        helpMenu.addItem(logLevelItem)
+        helpMenu.addItem(item("Show Log", action: #selector(actionShowLog(_:)), key: "l"))
+        let portsItem = item("Ports")
+        let portsMenu = NSMenu()
+        httpPortMenuItem = item("http port:")
+        socksPortMenuItem = item("socks port:")
+        apiPortMenuItem = item("api port:")
+        ipMenuItem = item("IP:")
+        for portItem in [httpPortMenuItem, socksPortMenuItem, apiPortMenuItem, ipMenuItem] {
+            portItem.isEnabled = false
+            portsMenu.addItem(portItem)
+        }
+        portsItem.submenu = portsMenu
+        helpMenu.addItem(portsItem)
+        helpItem.submenu = helpMenu
+        menu.addItem(helpItem)
+
+        menu.addItem(item("Quit", action: #selector(actionQuit(_:)), key: "q"))
+
+        return menu
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
@@ -792,6 +1036,33 @@ extension AppDelegate {
 extension AppDelegate {
     @IBAction func actionShowLog(_ sender: Any?) {
         NSWorkspace.shared.open(URL(fileURLWithPath: Logger.shared.logFilePath()))
+    }
+
+    @IBAction func actionShowAbout(_ sender: Any?) {
+        SwiftUIWindowController.create(
+            title: "About",
+            content: AboutView()
+        ).showWindow(sender)
+    }
+}
+
+// MARK: Manager windows
+
+extension AppDelegate {
+    @IBAction func actionShowRemoteConfigManager(_ sender: Any?) {
+        SwiftUIWindowController.create(
+            title: NSLocalizedString("Remote config", comment: ""),
+            minimumSize: CGSize(width: 460, height: 260),
+            content: RemoteConfigRootView()
+        ).showWindow(sender)
+    }
+
+    @IBAction func actionShowExternalControlManager(_ sender: Any?) {
+        SwiftUIWindowController.create(
+            title: NSLocalizedString("Remote controller", comment: ""),
+            minimumSize: CGSize(width: 460, height: 220),
+            content: ExternalControlRootView()
+        ).showWindow(sender)
     }
 }
 
