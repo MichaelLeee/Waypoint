@@ -11,6 +11,9 @@ import ServiceManagement
 class PrivilegedHelperManager: @unchecked Sendable {
     // Thread-safe: sent from XPC reply queues and main alike.
     let isHelperCheckFinished = CurrentValueSubject<Bool, Never>(false)
+    // Written on the main thread from the launch-time install check; read by
+    // the main-thread settings UI.
+    private(set) var lastHelperStatus: HelperStatus?
     private var cancelInstallCheck = false
     private var useLegacyInstall = false
 
@@ -46,6 +49,7 @@ class PrivilegedHelperManager: @unchecked Sendable {
     }
 
     @MainActor private func handleCheckResult(_ status: HelperStatus) {
+        lastHelperStatus = status
         switch status {
         case .noFound:
             if #available(macOS 13, *) {

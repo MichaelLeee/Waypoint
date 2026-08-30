@@ -49,6 +49,7 @@ struct SettingsRootView: View {
     @State private var reloadNote: String?
     @State private var reloadFailed = false
     @State private var showResetDefaultsAlert = false
+    @State private var helperStatusText = ""
 
     var body: some View {
         @Bindable var store = store
@@ -382,6 +383,17 @@ struct SettingsRootView: View {
                 }
             }
             Section(NSLocalizedString("Maintenance", comment: "")) {
+                HStack {
+                    Image("WaypointHelper")
+                        .resizable()
+                        .frame(width: 18, height: 18)
+                    Text(NSLocalizedString("Proxy Helper", comment: ""))
+                    Spacer()
+                    Text(helperStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .onAppear { refreshHelperStatus() }
                 Button(NSLocalizedString("Update GeoIP Database", comment: "")) {
                     WaypointResourceManager.updateGeoIP()
                 }
@@ -410,6 +422,15 @@ struct SettingsRootView: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    private func refreshHelperStatus() {
+        switch PrivilegedHelperManager.shared.lastHelperStatus {
+        case .installed: helperStatusText = NSLocalizedString("Installed", comment: "")
+        case .noFound: helperStatusText = NSLocalizedString("Not installed", comment: "")
+        case .needUpdate: helperStatusText = NSLocalizedString("Needs update", comment: "")
+        case nil: helperStatusText = NSLocalizedString("Unknown", comment: "")
+        }
     }
 
     private func openICloudConfig() {

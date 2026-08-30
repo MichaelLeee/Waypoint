@@ -279,6 +279,10 @@ struct OnboardingRootView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
+            Image("WaypointStatus")
+                .resizable()
+                .frame(width: 44, height: 44)
+                .padding(.bottom, 2)
             Text(NSLocalizedString("Welcome to Waypoint", comment: ""))
                 .font(.largeTitle.bold())
             Text(NSLocalizedString(

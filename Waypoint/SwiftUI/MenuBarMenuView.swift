@@ -145,9 +145,9 @@ struct MenuBarMenuView: View {
 
     private var header: some View {
         HStack(spacing: 6) {
-            Circle()
-                .fill(configManager.isRunning ? Color.green : Color.secondary)
-                .frame(width: 9, height: 9)
+            Image(configManager.isRunning ? "WaypointConnected" : "WaypointDisconnected")
+                .resizable()
+                .frame(width: 14, height: 14)
             Text(configManager.isRunning
                  ? NSLocalizedString("Connected", comment: "")
                  : NSLocalizedString("Disconnected", comment: ""))
