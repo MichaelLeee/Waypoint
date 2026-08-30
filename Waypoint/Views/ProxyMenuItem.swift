@@ -8,9 +8,10 @@ import Cocoa
 class ProxyMenuItem: NSMenuItem, @unchecked Sendable {
     let proxyName: String
     let maxProxyNameLength: CGFloat
+    private var observerTasks: [Task<Void, Never>] = []
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        observerTasks.forEach { $0.cancel() }
     }
 
     var enableShowUsingView: Bool {
@@ -36,11 +37,34 @@ class ProxyMenuItem: NSMenuItem, @unchecked Sendable {
         let selected = group.now == proxy.name
         updateSelected(selected)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(proxyGroupInfoUpdate(note:)), name: .proxyUpdate(for: group.name), object: nil)
+        startObserving(name: group.name)
 
         if !simpleItem {
-            NotificationCenter.default.addObserver(self, selector: #selector(updateDelayNotification(note:)), name: .speedTestFinishForProxy, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(proxyInfoUpdate(note:)), name: .proxyUpdate(for: proxy.name), object: nil)
+            startObserving(name: proxy.name)
+        }
+    }
+
+    @MainActor private func startObserving(name: String) {
+        let hub = ProxyUpdateHub.shared
+        observerTasks.append(Task { [weak self] in
+            for await event in hub.proxyEvents(for: name) {
+                self?.handle(event)
+            }
+        })
+    }
+
+    @MainActor private func handle(_ event: ProxyUpdateHub.Event) {
+        switch event {
+        case .snapshot(let proxy):
+            if WaypointProxyType.isProxyGroup(proxy) {
+                updateSelected(proxy.now == proxyName)
+            } else if proxy.alive == false {
+                updateDelay(NSLocalizedString("fail", comment: ""), rawValue: 0)
+            } else {
+                updateDelay(proxy.history.last?.delayDisplay, rawValue: proxy.history.last?.delay)
+            }
+        case .delay(_, let display, let value):
+            updateDelay(display, rawValue: value)
         }
     }
 
@@ -54,46 +78,6 @@ class ProxyMenuItem: NSMenuItem, @unchecked Sendable {
             _ = target?.perform(action, with: self)
         }
         menu?.cancelTracking()
-    }
-
-    @objc private func updateDelayNotification(note: Notification) {
-        guard let name = note.userInfo?["proxyName"] as? String, name == proxyName,
-              let delay = note.userInfo?["delay"] as? String else {
-            return
-        }
-        let rawValue = note.userInfo?["rawValue"] as? Int
-        // Notification observers are nonisolated but always fire on main.
-        // Extract Sendable values up front; `note` itself is not Sendable.
-        MainActor.assumeIsolated {
-            self.updateDelay(delay, rawValue: rawValue)
-        }
-    }
-
-    @objc private func proxyInfoUpdate(note: Notification) {
-        guard let info = note.object as? WaypointProxy else {
-            assertionFailure()
-            return
-        }
-        // WaypointProxy is not Sendable — read its fields before hopping.
-        let alive = info.alive
-        let delayDisplay = info.history.last?.delayDisplay
-        let delay = info.history.last?.delay
-        MainActor.assumeIsolated {
-            if alive == false {
-                self.updateDelay(NSLocalizedString("fail", comment: ""), rawValue: 0)
-            } else {
-                self.updateDelay(delayDisplay, rawValue: delay)
-            }
-        }
-    }
-
-    @objc private func proxyGroupInfoUpdate(note: Notification) {
-        guard let group = note.object as? WaypointProxy else { return }
-        guard WaypointProxyType.isProxyGroup(group) else { return }
-        let selected = group.now == proxyName
-        MainActor.assumeIsolated {
-            self.updateSelected(selected)
-        }
     }
 
     @MainActor private func updateSelected(_ selected: Bool) {

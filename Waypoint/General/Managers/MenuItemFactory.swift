@@ -23,7 +23,7 @@ final class MenuItemFactory {
             }
 
             for proxy in info?.proxies ?? [] {
-                NotificationCenter.default.post(name: .proxyUpdate(for: proxy.name), object: proxy, userInfo: nil)
+                ProxyUpdateHub.shared.proxyDidUpdate(proxy)
             }
         }
     }

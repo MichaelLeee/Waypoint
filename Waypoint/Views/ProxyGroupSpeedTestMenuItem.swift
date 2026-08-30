@@ -127,9 +127,7 @@ private class ProxyGroupSpeedTestMenuItemView: MenuItemBaseView {
                     taskGroup.addTask {
                         let delay = await ApiRequest.getProxyDelay(proxyName: proxyName)
                         let delayStr = delay == 0 ? NSLocalizedString("fail", comment: "") : "\(delay) ms"
-                        NotificationCenter.default.post(name: .speedTestFinishForProxy,
-                                                        object: nil,
-                                                        userInfo: ["proxyName": proxyName, "delay": delayStr, "rawValue": delay])
+                        await ProxyUpdateHub.shared.delayDidUpdate(name: proxyName, display: delayStr, value: delay)
                     }
                 }
                 for provider in providers {

@@ -45,6 +45,7 @@
 		E1E100000000000000000D18 /* MitmCertificateAuthority.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D17 /* MitmCertificateAuthority.swift */; };
 		E1E100000000000000000D20 /* MitmProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D19 /* MitmProxyServer.swift */; };
 		E1E100000000000000000D22 /* RewriteSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D21 /* RewriteSettingsView.swift */; };
+		E1E100000000000000000D23 /* ProxyUpdateHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D24 /* ProxyUpdateHub.swift */; };
 		49722FEF211F338B00650A41 /* FileEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEA211F338B00650A41 /* FileEvent.swift */; };
 		49722FF0211F338B00650A41 /* EventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEB211F338B00650A41 /* EventStream.swift */; };
 		49722FF1211F338B00650A41 /* Witness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEC211F338B00650A41 /* Witness.swift */; };
@@ -197,6 +198,7 @@
 		E1E100000000000000000D17 /* MitmCertificateAuthority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmCertificateAuthority.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D19 /* MitmProxyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmProxyServer.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D21 /* RewriteSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewriteSettingsView.swift; sourceTree = "<group>"; };
+		E1E100000000000000000D24 /* ProxyUpdateHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyUpdateHub.swift; sourceTree = "<group>"; };
 		49722FEA211F338B00650A41 /* FileEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEvent.swift; sourceTree = "<group>"; };
 		49722FEB211F338B00650A41 /* EventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStream.swift; sourceTree = "<group>"; };
 		49722FEC211F338B00650A41 /* Witness.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Witness.swift; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 				495BFB8721919B9800C8779D /* RemoteConfigManager.swift */,
 				A1B2C3D4E5F6000100000002 /* CoreProcessManager.swift */,
 				E1E100000000000000000D09 /* KillSwitchManager.swift */,
+				E1E100000000000000000D24 /* ProxyUpdateHub.swift */,
 				E1E100000000000000000D17 /* MitmCertificateAuthority.swift */,
 				E1E100000000000000000D19 /* MitmProxyServer.swift */,
 				4952C3BE2115C7CA004A4FA8 /* MenuItemFactory.swift */,
@@ -872,6 +875,7 @@
 				E1E100000000000000000D18 /* MitmCertificateAuthority.swift in Sources */,
 				E1E100000000000000000D20 /* MitmProxyServer.swift in Sources */,
 				E1E100000000000000000D22 /* RewriteSettingsView.swift in Sources */,
+				E1E100000000000000000D23 /* ProxyUpdateHub.swift in Sources */,
 				A1B2C3D4E5F6000200000001 /* TunConfig.swift in Sources */,
 				A1B2C3D4E5F6000200000003 /* DnsConfig.swift in Sources */,
 				8ACD21BB27A04C7800BC4632 /* ProxySettingCommand.swift in Sources */,

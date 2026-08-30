@@ -8,11 +8,21 @@ import FlexibleDiff
 
 class ProxyDelayHistoryMenu: NSMenu {
     var currentHistory: [WaypointProxySpeedHistory]?
+    private var observerTask: Task<Void, Never>?
 
+    @MainActor
     init(proxy: WaypointProxy) {
         super.init(title: "")
         updateHistoryMenu(proxy: proxy)
-        NotificationCenter.default.addObserver(self, selector: #selector(proxyInfoDidUpdate(note:)), name: .proxyUpdate(for: proxy.name), object: nil)
+        let hub = ProxyUpdateHub.shared
+        let name = proxy.name
+        observerTask = Task { [weak self] in
+            for await event in hub.proxyEvents(for: name) {
+                if case .snapshot(let proxy) = event {
+                    self?.updateHistoryMenu(proxy: proxy)
+                }
+            }
+        }
     }
 
     @available(*, unavailable)
@@ -21,12 +31,7 @@ class ProxyDelayHistoryMenu: NSMenu {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    @objc private func proxyInfoDidUpdate(note: Notification) {
-        guard let info = note.object as? WaypointProxy else { return }
-        updateHistoryMenu(proxy: info)
+        observerTask?.cancel()
     }
 
     private func updateHistoryMenu(proxy: WaypointProxy) {

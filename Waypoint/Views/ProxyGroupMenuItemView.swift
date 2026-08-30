@@ -23,6 +23,7 @@ class ProxyGroupMenuItemView: MenuItemBaseView {
 
     private var leftPaddingConstraint: NSLayoutConstraint?
     private let leftPadding: CGFloat = 20
+    private var observerTask: Task<Void, Never>?
 
     override var cells: [NSCell?] {
         return [groupNameLabel.cell, selectProxyLabel.cell, arrowLabel.cell]
@@ -76,7 +77,15 @@ class ProxyGroupMenuItemView: MenuItemBaseView {
         selectProxyLabel.textColor = NSColor.secondaryLabelColor
         // noti
         if observeUpdate {
-            NotificationCenter.default.addObserver(self, selector: #selector(proxyInfoDidUpdate(note:)), name: .proxyUpdate(for: group), object: nil)
+            let hub = ProxyUpdateHub.shared
+            let groupName = group
+            observerTask = Task { [weak self] in
+                for await event in hub.proxyEvents(for: groupName) {
+                    if case .snapshot(let info) = event {
+                        self?.selectProxyLabel.stringValue = info.now ?? ""
+                    }
+                }
+            }
         }
         if #available(macOS 11, *) {
             updateLeftMenuPadding(show: hasLeftPadding)
@@ -98,12 +107,8 @@ class ProxyGroupMenuItemView: MenuItemBaseView {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    @objc private func proxyInfoDidUpdate(note: NSNotification) {
-        guard let info = note.object as? WaypointProxy else { assertionFailure(); return }
-        selectProxyLabel.stringValue = info.now ?? ""
+        observerTask?.cancel()
+        NotificationCenter.default.removeObserver(self, name: .proxyMeneViewShowLeftPadding, object: nil)
     }
 
     @objc private func showLeftPaddingUpdate(note: NSNotification) {
