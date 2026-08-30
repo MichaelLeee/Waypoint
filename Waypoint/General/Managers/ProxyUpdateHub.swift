@@ -55,9 +55,3 @@ final class ProxyUpdateHub {
         }
     }
 }
-
-// Safe: every producer and consumer runs on the main actor, so the payload
-// (a non-Sendable WaypointProxy) never actually crosses isolation — the
-// conformance exists only to satisfy the check on the nonisolated
-// continuation.yield call.
-extension ProxyUpdateHub.Event: @unchecked Sendable {}

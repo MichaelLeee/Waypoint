@@ -128,7 +128,7 @@ class RemoteControlManager {
                 ConfigManager.shared.overrideApiURL = nil
                 ConfigManager.shared.overrideSecret = nil
             }
-            WaypointProxy.cleanCache()
+            ProxyNameMeasurer.cleanCache()
             AppDelegate.shared.resetStreamApi()
             AppDelegate.shared.syncConfig()
             MenuItemFactory.recreateProxyMenuItems()

@@ -3,11 +3,14 @@
 //  Waypoint
 //
 
-import Cocoa
+import Foundation
 
-class WaypointProviderResp: Codable {
+struct WaypointProviderResp: Codable, Sendable {
     let allProviders: [WaypointProxyName: WaypointProvider]
-    lazy var providers: [WaypointProxyName: WaypointProvider] = allProviders.filter { $0.value.vehicleType != .Compatible }
+
+    var providers: [WaypointProxyName: WaypointProvider] {
+        allProviders.filter { $0.value.vehicleType != .Compatible }
+    }
 
     init() {
         allProviders = [:]
@@ -24,7 +27,7 @@ class WaypointProviderResp: Codable {
     }
 }
 
-class WaypointProvider: Codable {
+struct WaypointProvider: Codable, Sendable {
     enum ProviderType: String, Codable {
         case Proxy
         case Rule

@@ -518,7 +518,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let config = configName ?? ConfigManager.selectConfigName
 
-        WaypointProxy.cleanCache()
+        ProxyNameMeasurer.cleanCache()
 
         Task { [weak self] in
             guard let self else { return }
@@ -582,7 +582,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let groups = proxyResp.proxyGroups.filter(\.type.isAutoGroup)
             for group in groups {
                 group.all?.compactMap {
-                    proxyResp.proxiesMap[$0]?.enclosingProvider?.name
+                    proxyResp.providerNamesByProxy[$0]
                 }.forEach {
                     providers.insert($0)
                 }

@@ -119,22 +119,25 @@ final class MenuItemFactory {
             menu.view = ProxyGroupMenuItemView(group: proxyGroup.name, targetProxy: selectedName, hasLeftPadding: leftPadding)
         }
         let submenu = ProxyGroupMenu(title: proxyGroup.name)
+        let speedtestAble = proxyInfo.speedtestAbleItems(for: proxyGroup.name)
 
         for proxy in proxyGroup.all ?? [] {
             guard let proxyModel = proxyMap[proxy] else { continue }
             let proxyItem = ProxyMenuItem(proxy: proxyModel,
                                           group: proxyGroup,
-                                          action: #selector(MenuItemFactory.actionSelectProxy(sender:)))
+                                          action: #selector(MenuItemFactory.actionSelectProxy(sender:)),
+                                          isSpeedTestable: !speedtestAble.isEmpty,
+                                          maxNameLength: ProxyNameMeasurer.maxProxyNameLength(in: proxyGroup.all))
             proxyItem.target = MenuItemFactory.self
             submenu.add(delegate: proxyItem)
             submenu.addItem(proxyItem)
         }
 
-        if proxyGroup.isSpeedTestable && useViewToRenderProxy {
-            submenu.minimumWidth = proxyGroup.maxProxyNameLength + ProxyItemView.fixedPlaceHolderWidth
+        if !speedtestAble.isEmpty && useViewToRenderProxy {
+            submenu.minimumWidth = ProxyNameMeasurer.maxProxyNameLength(in: proxyGroup.all) + ProxyItemView.fixedPlaceHolderWidth
         }
 
-        addSpeedTestMenuItem(submenu, proxyGroup: proxyGroup)
+        addSpeedTestMenuItem(submenu, proxyGroup: proxyGroup, proxyInfo: proxyInfo)
         menu.submenu = submenu
         return menu
     }
@@ -162,14 +165,15 @@ final class MenuItemFactory {
 
             submenu.addItem(proxyMenuItem)
         }
-        addSpeedTestMenuItem(submenu, proxyGroup: proxyGroup)
+        addSpeedTestMenuItem(submenu, proxyGroup: proxyGroup, proxyInfo: proxyInfo)
         menu.submenu = submenu
         return menu
     }
 
-    private static func addSpeedTestMenuItem(_ menu: NSMenu, proxyGroup: WaypointProxy) {
-        guard !proxyGroup.speedtestAble.isEmpty else { return }
-        let speedTestItem = ProxyGroupSpeedTestMenuItem(group: proxyGroup)
+    private static func addSpeedTestMenuItem(_ menu: NSMenu, proxyGroup: WaypointProxy, proxyInfo: WaypointProxyResp) {
+        let testableItems = proxyInfo.speedtestAbleItems(for: proxyGroup.name)
+        guard !testableItems.isEmpty else { return }
+        let speedTestItem = ProxyGroupSpeedTestMenuItem(group: proxyGroup, testableItems: testableItems)
         let separator = NSMenuItem.separator()
         menu.insertItem(separator, at: 0)
         menu.insertItem(speedTestItem, at: 0)
@@ -184,20 +188,23 @@ final class MenuItemFactory {
             menu.view = ProxyGroupMenuItemView(group: proxyGroup.name, targetProxy: NSLocalizedString("Load Balance", comment: ""), hasLeftPadding: leftPadding, observeUpdate: false)
         }
         let submenu = ProxyGroupMenu(title: proxyGroup.name)
+        let speedtestAble = proxyInfo.speedtestAbleItems(for: proxyGroup.name)
 
         for proxy in proxyGroup.all ?? [] {
             guard let proxyModel = proxyMap[proxy] else { continue }
             let proxyItem = ProxyMenuItem(proxy: proxyModel,
                                           group: proxyGroup,
-                                          action: #selector(empty))
+                                          action: #selector(empty),
+                                          isSpeedTestable: !speedtestAble.isEmpty,
+                                          maxNameLength: ProxyNameMeasurer.maxProxyNameLength(in: proxyGroup.all))
             proxyItem.target = MenuItemFactory.self
             submenu.add(delegate: proxyItem)
             submenu.addItem(proxyItem)
         }
-        if proxyGroup.isSpeedTestable && useViewToRenderProxy {
-            submenu.minimumWidth = proxyGroup.maxProxyNameLength + ProxyItemView.fixedPlaceHolderWidth
+        if !speedtestAble.isEmpty && useViewToRenderProxy {
+            submenu.minimumWidth = ProxyNameMeasurer.maxProxyNameLength(in: proxyGroup.all) + ProxyItemView.fixedPlaceHolderWidth
         }
-        addSpeedTestMenuItem(submenu, proxyGroup: proxyGroup)
+        addSpeedTestMenuItem(submenu, proxyGroup: proxyGroup, proxyInfo: proxyInfo)
         menu.submenu = submenu
 
         return menu

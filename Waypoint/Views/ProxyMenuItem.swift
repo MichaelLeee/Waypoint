@@ -22,14 +22,16 @@ class ProxyMenuItem: NSMenuItem, @unchecked Sendable {
     init(proxy: WaypointProxy,
          group: WaypointProxy,
          action selector: Selector?,
-         simpleItem: Bool = false) {
+         simpleItem: Bool = false,
+         isSpeedTestable: Bool = false,
+         maxNameLength: CGFloat = 0) {
         proxyName = proxy.name
 
-        maxProxyNameLength = simpleItem ? 0 : group.maxProxyNameLength
+        maxProxyNameLength = simpleItem ? 0 : maxNameLength
 
         super.init(title: proxyName, action: selector, keyEquivalent: "")
 
-        if !simpleItem && enableShowUsingView && group.isSpeedTestable {
+        if !simpleItem && enableShowUsingView && isSpeedTestable {
             view = ProxyItemView(proxy: proxy)
         } else if !simpleItem {
             attributedTitle = getAttributedTitle(name: proxyName, delay: proxy.history.last?.delayDisplay)

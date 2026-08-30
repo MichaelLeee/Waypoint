@@ -172,10 +172,8 @@ extension ApiRequest {
         return proxyInfo.proxiesMap["GLOBAL"]?.all ?? []
     }
 
-    // Sequential awaits (not async let): the response models are non-Sendable
-    // and must stay on the main actor.
     static func getMergedProxyData() async -> WaypointProxyResp? {
-        guard let proxyInfo = await requestProxyGroupList(),
+        guard var proxyInfo = await requestProxyGroupList(),
               let providerResp = await requestProxyProviderList() else {
             return nil
         }

@@ -9,10 +9,12 @@ import Cocoa
 @MainActor
 final class ProxyGroupSpeedTestMenuItem: NSMenuItem, @unchecked Sendable {
     let proxyGroup: WaypointProxy
+    let testableItems: [WaypointProxy.SpeedtestAbleItem]
     let testType: TestType
 
-    init(group: WaypointProxy) {
+    init(group: WaypointProxy, testableItems: [WaypointProxy.SpeedtestAbleItem]) {
         proxyGroup = group
+        self.testableItems = testableItems
         if group.type.isAutoGroup {
             testType = .reTest
         } else if group.type == .select {
@@ -47,7 +49,7 @@ final class ProxyGroupSpeedTestMenuItem: NSMenuItem, @unchecked Sendable {
             let proxyResp = await ApiRequest.getMergedProxyData()
             var providers = Set<WaypointProxyName>()
             proxyGroup.all?.compactMap {
-                proxyResp?.proxiesMap[$0]?.enclosingProvider?.name
+                proxyResp?.providerNamesByProxy[$0]
             }.forEach {
                 providers.insert($0)
             }
@@ -103,12 +105,11 @@ private class ProxyGroupSpeedTestMenuItemView: MenuItemBaseView {
     }
 
     private func startBenchmark() {
-        guard let group = (enclosingMenuItem as? ProxyGroupSpeedTestMenuItem)?.proxyGroup
-        else { return }
+        guard let item = enclosingMenuItem as? ProxyGroupSpeedTestMenuItem else { return }
 
         var proxies = [WaypointProxyName]()
         var providers = Set<WaypointProviderName>()
-        for testable in group.speedtestAble {
+        for testable in item.testableItems {
             switch testable {
             case let .provider(_, provider):
                 providers.insert(provider)

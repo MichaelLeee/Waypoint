@@ -117,3 +117,31 @@ private extension CGColor {
     static let meduim = CGColor(red: 1, green: 135.0 / 255, blue: 0, alpha: 1)
     static let fail = CGColor(red: 218.0 / 255, green: 0.0, blue: 3.0 / 255, alpha: 1)
 }
+
+/// Menu-bar text measuring for proxy name layout. Lives in the view layer so
+/// the proxy models stay AppKit-free and Sendable.
+@MainActor
+enum ProxyNameMeasurer {
+    private static var nameLengthCachedMap = [WaypointProxyName: CGFloat]()
+
+    static func cleanCache() {
+        nameLengthCachedMap.removeAll()
+    }
+
+    static func maxProxyNameLength(in names: [WaypointProxyName]?) -> CGFloat {
+        guard let names else { return 0 }
+        let rect = CGSize(width: CGFloat.greatestFiniteMagnitude, height: 20)
+        let attr = [NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 14)]
+        return names.compactMap { name -> CGFloat? in
+            if let length = nameLengthCachedMap[name] {
+                return length
+            }
+            let length = (name as NSString)
+                .boundingRect(with: rect,
+                              options: .usesLineFragmentOrigin,
+                              attributes: attr).width
+            nameLengthCachedMap[name] = length
+            return length
+        }.max() ?? 0
+    }
+}
