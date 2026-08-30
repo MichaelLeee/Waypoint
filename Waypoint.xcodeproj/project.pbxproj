@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E1E100000000000000000D43 /* WaypointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D47 /* WaypointApp.swift */; };
+		E1E100000000000000000D4D /* WaypointAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4E /* WaypointAppIntents.swift */; };
 		E1E100000000000000000D44 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D48 /* AboutView.swift */; };
 		E1E100000000000000000D45 /* RemoteConfigRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D49 /* RemoteConfigRootView.swift */; };
 		E1E100000000000000000D46 /* ExternalControlRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4A /* ExternalControlRootView.swift */; };
@@ -159,6 +160,7 @@
 
 /* Begin PBXFileReference section */
 		E1E100000000000000000D47 /* WaypointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointApp.swift; sourceTree = "<group>"; };
+		E1E100000000000000000D4E /* WaypointAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointAppIntents.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D48 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D49 /* RemoteConfigRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigRootView.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D4A /* ExternalControlRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalControlRootView.swift; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 				49CF3B3A20CD783A001EBF94 /* Support Files */,
 				49CF3B2020CD7463001EBF94 /* AppDelegate.swift */,
 				E1E100000000000000000D47 /* WaypointApp.swift */,
+				E1E100000000000000000D4E /* WaypointAppIntents.swift */,
 				49CF3B2920CD7465001EBF94 /* Info.plist */,
 				49CF3B2A20CD7465001EBF94 /* Waypoint.entitlements */,
 				49CF3B3520CD75DF001EBF94 /* Waypoint-Bridging-Header.h */,
@@ -838,6 +841,7 @@
 				493AEAE3221AE3420016FE98 /* AppVersionUtil.swift in Sources */,
 				49CF3B2120CD7463001EBF94 /* AppDelegate.swift in Sources */,
 				E1E100000000000000000D43 /* WaypointApp.swift in Sources */,
+				E1E100000000000000000D4D /* WaypointAppIntents.swift in Sources */,
 				E1E100000000000000000D44 /* AboutView.swift in Sources */,
 				E1E100000000000000000D45 /* RemoteConfigRootView.swift in Sources */,
 				E1E100000000000000000D46 /* ExternalControlRootView.swift in Sources */,
