@@ -11,6 +11,7 @@
 		E1E100000000000000000D44 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D48 /* AboutView.swift */; };
 		E1E100000000000000000D45 /* RemoteConfigRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D49 /* RemoteConfigRootView.swift */; };
 		E1E100000000000000000D46 /* ExternalControlRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4A /* ExternalControlRootView.swift */; };
+		E1E100000000000000000D4B /* MenuBarMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4C /* MenuBarMenuView.swift */; };
 		4905A2C82A2058D400AEDA2E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */; };
 		4905A2CA2A20841B00AEDA2E /* NSView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4905A2C92A20841B00AEDA2E /* NSView+Layout.swift */; };
 		4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4908087A29F8F3FF007A4944 /* libresolv.tbd */; };
@@ -161,6 +162,7 @@
 		E1E100000000000000000D48 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D49 /* RemoteConfigRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigRootView.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D4A /* ExternalControlRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalControlRootView.swift; sourceTree = "<group>"; };
+		E1E100000000000000000D4C /* MenuBarMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarMenuView.swift; sourceTree = "<group>"; };
 		4905A2C92A20841B00AEDA2E /* NSView+Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSView+Layout.swift"; sourceTree = "<group>"; };
 		4908087A29F8F3FF007A4944 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		4913C82221157D0200F6B87C /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
@@ -582,6 +584,7 @@
 				E1E100000000000000000D48 /* AboutView.swift */,
 				E1E100000000000000000D49 /* RemoteConfigRootView.swift */,
 				E1E100000000000000000D4A /* ExternalControlRootView.swift */,
+				E1E100000000000000000D4C /* MenuBarMenuView.swift */,
 				E1E100000000000000000D21 /* RewriteSettingsView.swift */,
 				E1E100000000000000000C01 /* SwiftUIWindowController.swift */,
 				E1E100000000000000000C09 /* DashboardStore.swift */,
@@ -838,6 +841,7 @@
 				E1E100000000000000000D44 /* AboutView.swift in Sources */,
 				E1E100000000000000000D45 /* RemoteConfigRootView.swift in Sources */,
 				E1E100000000000000000D46 /* ExternalControlRootView.swift in Sources */,
+				E1E100000000000000000D4B /* MenuBarMenuView.swift in Sources */,
 				4991D2302A564DDC00978143 /* SpeedUtils.swift in Sources */,
 				496BDEE021196F1E00C5207F /* Logger.swift in Sources */,
 				E1E100000000000000000D02 /* KeyboardShortcuts.swift in Sources */,

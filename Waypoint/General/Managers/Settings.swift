@@ -82,6 +82,13 @@ enum Settings {
         set { write(newValue, forKey: "enableIPV6") }
     }
 
+    /// Comparison flag: render the status menu with a SwiftUI MenuBarExtra
+    /// instead of the legacy NSStatusItem + NSMenu.
+    static var useSwiftUIMenu: Bool {
+        get { read("useSwiftUIMenu", default: false) }
+        set { write(newValue, forKey: "useSwiftUIMenu") }
+    }
+
     static var tunEnabled: Bool {
         get { read("tunEnabled", default: false) }
         set { write(newValue, forKey: "tunEnabled") }

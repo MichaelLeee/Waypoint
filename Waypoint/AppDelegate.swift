@@ -68,10 +68,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Logger.log("applicationDidFinishLaunching")
         Logger.log("Appversion: \(AppVersionUtil.currentVersion) \(AppVersionUtil.currentBuild)")
         ProcessInfo.processInfo.disableSuddenTermination()
-        // setup menu item first
-        statusItem = NSStatusBar.system.statusItem(withLength: statusItemLengthWithSpeed)
-        statusItemView = StatusItemView.create(statusItem: statusItem)
-        statusItemView.updateSize(width: statusItemLengthWithSpeed)
+        // setup menu item first. When the SwiftUI MenuBarExtra comparison
+        // flag is on, no NSStatusItem is created and statusItemView stays a
+        // no-op so speed/status call sites remain safe.
+        statusItemView = NullStatusItemView()
+        if !Settings.useSwiftUIMenu {
+            statusItem = NSStatusBar.system.statusItem(withLength: statusItemLengthWithSpeed)
+            statusItemView = StatusItemView.create(statusItem: statusItem)
+            statusItemView.updateSize(width: statusItemLengthWithSpeed)
+        }
         setupStatusMenuItemData()
         DispatchQueue.main.async {
             self.postFinishLaunching()
@@ -81,9 +86,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func postFinishLaunching() {
         Logger.log("postFinishLaunching")
         defer {
-            statusItem.menu = statusMenu
-            DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
-                self.checkMenuIconVisable()
+            if !Settings.useSwiftUIMenu {
+                statusItem.menu = statusMenu
+                DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
+                    self.checkMenuIconVisable()
+                }
             }
         }
         if #unavailable(macOS 10.15) {
@@ -432,6 +439,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func setupStatusMenuItemData() {
         enhanceTunModeMenuItem.state = Settings.tunEnabled ? .on : .off
+        // The remaining publishers drive the NSStatusItem view only.
+        guard !Settings.useSwiftUIMenu else { return }
         ConfigManager.shared
             .$showNetSpeedIndicator
             .removeDuplicates()

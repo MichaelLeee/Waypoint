@@ -13,8 +13,17 @@ struct WaypointApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        Settings {
-            EmptyView()
+        if Settings.useSwiftUIMenu {
+            MenuBarExtra {
+                MenuBarMenuView()
+            } label: {
+                Image("menu_icon").renderingMode(.template)
+            }
+            .menuBarExtraStyle(.window)
+        } else {
+            Settings {
+                EmptyView()
+            }
         }
     }
 }
