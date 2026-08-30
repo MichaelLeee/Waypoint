@@ -7,6 +7,7 @@
 
 import Cocoa
 import Combine
+import WaypointCore
 
 @MainActor
 final class ConfigManager: ObservableObject {
