@@ -7,7 +7,7 @@ import Charts
 import SwiftUI
 
 struct DashboardRootView: View {
-    @StateObject private var store = DashboardStore()
+    @State private var store = DashboardStore()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {

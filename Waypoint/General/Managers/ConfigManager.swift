@@ -2,15 +2,16 @@
 //  ConfigManager.swift
 //  Waypoint
 //  Core runtime state. RxSwift (`BehaviorRelay`, `UserDefaults.rx.observe`) is
-//  replaced with `@Published` (Combine) on a `@MainActor` singleton.
+//  replaced with `@Observable` on a `@MainActor` singleton.
 //
 
 import Cocoa
-import Combine
+import Observation
 import WaypointCore
 
 @MainActor
-final class ConfigManager: ObservableObject {
+@Observable
+final class ConfigManager {
     static let shared = ConfigManager()
 
     var apiPort = "9090"
@@ -19,16 +20,16 @@ final class ConfigManager: ObservableObject {
     var overrideApiURL: URL?
     var overrideSecret: String?
 
-    @Published var currentConfig: WaypointConfig?
-    @Published var isRunning = false
-    @Published var isProxySetByOther = false
-    @Published var proxyShouldPaused = false
+    var currentConfig: WaypointConfig?
+    var isRunning = false
+    var isProxySetByOther = false
+    var proxyShouldPaused = false
 
-    @Published var proxyPortAutoSet: Bool = UserDefaults.standard.bool(forKey: "proxyPortAutoSet") {
+    var proxyPortAutoSet: Bool = UserDefaults.standard.bool(forKey: "proxyPortAutoSet") {
         didSet { UserDefaults.standard.set(proxyPortAutoSet, forKey: "proxyPortAutoSet") }
     }
 
-    @Published var showNetSpeedIndicator: Bool = UserDefaults.standard.bool(forKey: "showNetSpeedIndicator") {
+    var showNetSpeedIndicator: Bool = UserDefaults.standard.bool(forKey: "showNetSpeedIndicator") {
         didSet { UserDefaults.standard.set(showNetSpeedIndicator, forKey: "showNetSpeedIndicator") }
     }
 

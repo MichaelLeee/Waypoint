@@ -7,12 +7,13 @@
 import SwiftUI
 
 @MainActor
-final class ExternalControlStore: ObservableObject {
-    @Published var rows: [ExternalControlRow] = []
-    @Published var selectionID: ObjectIdentifier?
-    @Published var isAdding = false
-    @Published var showAlert = false
-    @Published var alertMessage = ""
+@Observable
+final class ExternalControlStore {
+    var rows: [ExternalControlRow] = []
+    var selectionID: ObjectIdentifier?
+    var isAdding = false
+    var showAlert = false
+    var alertMessage = ""
 
     var selectedRow: ExternalControlRow? {
         rows.first { $0.id == selectionID }
@@ -65,9 +66,10 @@ struct ExternalControlRow: Identifiable {
 }
 
 struct ExternalControlRootView: View {
-    @StateObject private var store = ExternalControlStore()
+    @State private var store = ExternalControlStore()
 
     var body: some View {
+        @Bindable var store = store
         VStack(spacing: 0) {
             HStack {
                 Text("Name").frame(width: 110, alignment: .leading)
@@ -124,7 +126,7 @@ struct ExternalControlRootView: View {
 }
 
 struct ExternalControlAddSheet: View {
-    @ObservedObject var store: ExternalControlStore
+    @Bindable var store: ExternalControlStore
     @Environment(\.dismiss) private var dismiss
 
     @State private var urlText = ""

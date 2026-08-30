@@ -7,12 +7,13 @@
 import SwiftUI
 
 @MainActor
-final class RemoteConfigStore: ObservableObject {
-    @Published var rows: [RemoteConfigRow] = []
-    @Published var selectionID: ObjectIdentifier?
-    @Published var addContext: RemoteConfigAddContext?
-    @Published var showAlert = false
-    @Published var alertMessage = ""
+@Observable
+final class RemoteConfigStore {
+    var rows: [RemoteConfigRow] = []
+    var selectionID: ObjectIdentifier?
+    var addContext: RemoteConfigAddContext?
+    var showAlert = false
+    var alertMessage = ""
 
     private var latestAdded: RemoteConfigModel?
 
@@ -155,9 +156,10 @@ struct RemoteConfigAddContext: Identifiable {
 }
 
 struct RemoteConfigRootView: View {
-    @StateObject private var store = RemoteConfigStore()
+    @State private var store = RemoteConfigStore()
 
     var body: some View {
+        @Bindable var store = store
         VStack(spacing: 0) {
             HStack {
                 Text("Name").frame(width: 110, alignment: .leading)
@@ -220,7 +222,7 @@ struct RemoteConfigRootView: View {
 }
 
 struct RemoteConfigAddSheet: View {
-    @ObservedObject var store: RemoteConfigStore
+    @Bindable var store: RemoteConfigStore
     let context: RemoteConfigAddContext
 
     @State private var urlText: String

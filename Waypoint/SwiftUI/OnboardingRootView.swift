@@ -9,15 +9,16 @@ import SwiftUI
 import Vision
 
 @MainActor
-final class OnboardingStore: ObservableObject {
-    @Published var urlText = ""
-    @Published var nameText = ""
-    @Published var importing = false
-    @Published var scanning = false
-    @Published var message: String?
-    @Published var messageIsError = false
-    @Published var configImported = false
-    @Published var systemProxyEnabled = ConfigManager.shared.proxyPortAutoSet
+@Observable
+final class OnboardingStore {
+    var urlText = ""
+    var nameText = ""
+    var importing = false
+    var scanning = false
+    var message: String?
+    var messageIsError = false
+    var configImported = false
+    var systemProxyEnabled = ConfigManager.shared.proxyPortAutoSet
 
     func pasteFromClipboard() {
         guard let text = NSPasteboard.general.string(forType: .string)?
@@ -155,9 +156,10 @@ enum QRCodeReader {
 }
 
 struct OnboardingRootView: View {
-    @StateObject private var store = OnboardingStore()
+    @State private var store = OnboardingStore()
 
     var body: some View {
+        @Bindable var store = store
         VStack(alignment: .leading, spacing: 20) {
             header
 

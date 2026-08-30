@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct RewriteSettingsView: View {
-    @ObservedObject var store: SettingsStore
+    @Bindable var store: SettingsStore
 
     var body: some View {
         Form {

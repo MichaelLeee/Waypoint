@@ -19,13 +19,14 @@ final class NullStatusItemView: StatusItemViewProtocol {
 }
 
 @MainActor
-final class MenuBarMenuStore: ObservableObject {
-    @Published var proxyGroups: [WaypointProxy] = []
-    @Published var configNames: [String] = []
-    @Published var launchAtLogin = LaunchAtLogin.shared.isEnabled {
+@Observable
+final class MenuBarMenuStore {
+    var proxyGroups: [WaypointProxy] = []
+    var configNames: [String] = []
+    var launchAtLogin = LaunchAtLogin.shared.isEnabled {
         didSet { LaunchAtLogin.shared.isEnabled = launchAtLogin }
     }
-    @Published var isSpeedTesting = false
+    var isSpeedTesting = false
 
     init() {
         refresh()
@@ -108,10 +109,11 @@ final class MenuBarMenuStore: ObservableObject {
     }
 }
 struct MenuBarMenuView: View {
-    @StateObject private var store = MenuBarMenuStore()
-    @ObservedObject private var configManager = ConfigManager.shared
+    @State private var store = MenuBarMenuStore()
+    private var configManager = ConfigManager.shared
 
     var body: some View {
+        @Bindable var store = store
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 header

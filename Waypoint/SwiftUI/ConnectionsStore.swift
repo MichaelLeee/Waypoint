@@ -3,6 +3,7 @@
 //  Waypoint
 //
 
+import Observation
 import Foundation
 import WaypointNetworking
 
@@ -42,12 +43,13 @@ struct ConnectionRow: Identifiable {
 }
 
 @MainActor
-final class ConnectionsStore: ObservableObject {
-    @Published private(set) var rows = [ConnectionRow]()
-    @Published private(set) var uploadTotal = 0
-    @Published private(set) var downloadTotal = 0
-    @Published var activeOnly = false
-    @Published var searchText = ""
+@Observable
+final class ConnectionsStore {
+    private(set) var rows = [ConnectionRow]()
+    private(set) var uploadTotal = 0
+    private(set) var downloadTotal = 0
+    var activeOnly = false
+    var searchText = ""
 
     private var activeIDs = Set<String>()
     private var rowsByID = [String: ConnectionRow]()

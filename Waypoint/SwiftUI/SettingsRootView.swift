@@ -44,13 +44,14 @@ private enum SettingsPane: String, CaseIterable, Identifiable {
 }
 
 struct SettingsRootView: View {
-    @StateObject private var store = SettingsStore()
+    @State private var store = SettingsStore()
     @State private var pane: SettingsPane = .general
     @State private var reloadNote: String?
     @State private var reloadFailed = false
     @State private var showResetDefaultsAlert = false
 
     var body: some View {
+        @Bindable var store = store
         HStack(spacing: 0) {
             sidebar
                 .frame(width: 180)
@@ -91,6 +92,7 @@ struct SettingsRootView: View {
     // MARK: - General
 
     private var generalPane: some View {
+        @Bindable var store = store
         Form {
             Section(NSLocalizedString("Startup", comment: "")) {
                 Toggle(NSLocalizedString("Launch at Login", comment: ""), isOn: $store.launchAtLogin)
@@ -121,6 +123,7 @@ struct SettingsRootView: View {
     // MARK: - Network & API
 
     private var networkPane: some View {
+        @Bindable var store = store
         Form {
             Section(NSLocalizedString("Proxy Port (mixed)", comment: "")) {
                 TextField("", text: $store.proxyPortText)
@@ -159,6 +162,7 @@ struct SettingsRootView: View {
     // MARK: - TUN & DNS
 
     private var tunPane: some View {
+        @Bindable var store = store
         Form {
             Section(NSLocalizedString("Enhanced mode", comment: "")) {
                 Toggle(isOn: $store.tunEnabled) {
@@ -263,6 +267,7 @@ struct SettingsRootView: View {
     // MARK: - Ignore lists
 
     private var ignoreListsPane: some View {
+        @Bindable var store = store
         Form {
             Section {
                 listEditor(text: $store.proxyIgnoreListText)
@@ -341,6 +346,7 @@ struct SettingsRootView: View {
     // MARK: - Debug
 
     private var debugPane: some View {
+        @Bindable var store = store
         Form {
             Section(NSLocalizedString("Update Channel", comment: "")) {
                 Picker("", selection: $store.updateChannel) {

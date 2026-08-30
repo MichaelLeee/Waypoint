@@ -6,10 +6,11 @@
 import SwiftUI
 
 struct ConnectionsRootView: View {
-    @StateObject private var store = ConnectionsStore()
+    @State private var store = ConnectionsStore()
     @State private var selection = Set<String>()
 
     var body: some View {
+        @Bindable var store = store
         VStack(spacing: 0) {
             toolbar
             Divider()
@@ -62,6 +63,7 @@ struct ConnectionsRootView: View {
     }
 
     private var toolbar: some View {
+        @Bindable var store = store
         HStack(spacing: 12) {
             Toggle(
                 NSLocalizedString("Active only", comment: ""),

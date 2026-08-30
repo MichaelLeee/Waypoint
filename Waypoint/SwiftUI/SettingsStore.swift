@@ -4,56 +4,57 @@
 //
 
 import AppKit
-import Combine
+import Observation
 import Foundation
 
 @MainActor
-final class SettingsStore: ObservableObject {
+@Observable
+final class SettingsStore {
     // General
-    @Published var launchAtLogin = LaunchAtLogin.shared.isEnabled {
+    var launchAtLogin = LaunchAtLogin.shared.isEnabled {
         didSet { LaunchAtLogin.shared.isEnabled = launchAtLogin }
     }
-    @Published var useICloud = ICloudManager.shared.userEnableiCloud {
+    var useICloud = ICloudManager.shared.userEnableiCloud {
         didSet { ICloudManager.shared.userEnableiCloud = useICloud }
     }
-    @Published var reduceNotifications = Settings.disableNoti {
+    var reduceNotifications = Settings.disableNoti {
         didSet { Settings.disableNoti = reduceNotifications }
     }
-    @Published var benchmarkUrl = Settings.benchMarkUrl {
+    var benchmarkUrl = Settings.benchMarkUrl {
         didSet { if benchmarkUrl.isUrlVaild() || benchmarkUrl.isEmpty { Settings.benchMarkUrl = benchmarkUrl } }
     }
 
-    @Published var proxyIgnoreListText = Settings.proxyIgnoreList.joined(separator: ",") {
+    var proxyIgnoreListText = Settings.proxyIgnoreList.joined(separator: ",") {
         didSet { commitList(proxyIgnoreListText) { Settings.proxyIgnoreList = $0 } }
     }
-    @Published var ssidSuspendListText = Settings.disableSSIDList.joined(separator: ",") {
+    var ssidSuspendListText = Settings.disableSSIDList.joined(separator: ",") {
         didSet { commitList(ssidSuspendListText) { Settings.disableSSIDList = $0 } }
     }
 
     // Network & API
-    @Published var proxyPortText = Settings.proxyPort > 0 ? "\(Settings.proxyPort)" : "" {
+    var proxyPortText = Settings.proxyPort > 0 ? "\(Settings.proxyPort)" : "" {
         didSet {
             guard let port = Int(proxyPortText), port != Settings.proxyPort else { return }
             Settings.proxyPort = port
             Task { await ApiRequest.updateProxyPort(port) }
         }
     }
-    @Published var apiPortText = Settings.apiPort > 0 ? "\(Settings.apiPort)" : "" {
+    var apiPortText = Settings.apiPort > 0 ? "\(Settings.apiPort)" : "" {
         didSet {
             guard let port = Int(apiPortText) else { return }
             Settings.apiPort = port
         }
     }
-    @Published var apiPortAllowLan = Settings.apiPortAllowLan {
+    var apiPortAllowLan = Settings.apiPortAllowLan {
         didSet { Settings.apiPortAllowLan = apiPortAllowLan }
     }
-    @Published var apiSecret = Settings.apiSecret {
+    var apiSecret = Settings.apiSecret {
         didSet { Settings.apiSecret = apiSecret }
     }
-    @Published var overrideConfigSecret = Settings.overrideConfigSecret {
+    var overrideConfigSecret = Settings.overrideConfigSecret {
         didSet { Settings.overrideConfigSecret = overrideConfigSecret }
     }
-    @Published var enableIPv6 = Settings.enableIPV6 {
+    var enableIPv6 = Settings.enableIPV6 {
         didSet {
             Settings.enableIPV6 = enableIPv6
             Task { await ApiRequest.updateIPv6(enableIPv6) }
@@ -61,20 +62,20 @@ final class SettingsStore: ObservableObject {
     }
 
     // TUN & DNS
-    @Published var tunEnabled = Settings.tunEnabled {
+    var tunEnabled = Settings.tunEnabled {
         didSet {
             Settings.tunEnabled = tunEnabled
             // Keep the status-bar menu checkmark in sync.
             AppDelegate.shared.enhanceTunModeMenuItem?.state = tunEnabled ? .on : .off
         }
     }
-    @Published var fakeIPEnabled = Settings.fakeIPEnabled {
+    var fakeIPEnabled = Settings.fakeIPEnabled {
         didSet { Settings.fakeIPEnabled = fakeIPEnabled }
     }
-    @Published var adBlockEnabled = Settings.adBlockEnabled {
+    var adBlockEnabled = Settings.adBlockEnabled {
         didSet { Settings.adBlockEnabled = adBlockEnabled }
     }
-    @Published var killSwitchEnabled = Settings.killSwitchEnabled {
+    var killSwitchEnabled = Settings.killSwitchEnabled {
         didSet {
             guard killSwitchEnabled != Settings.killSwitchEnabled else { return }
             Settings.killSwitchEnabled = killSwitchEnabled
@@ -91,12 +92,12 @@ final class SettingsStore: ObservableObject {
     }
 
     // Update channel (mirrors AutoUpgardeManager.current)
-    @Published var updateChannel = AutoUpgardeManager.shared.selectedChannel {
+    var updateChannel = AutoUpgardeManager.shared.selectedChannel {
         didSet { AutoUpgardeManager.shared.selectedChannel = updateChannel }
     }
 
     // MITM & rewrite
-    @Published var mitmEnabled = Settings.mitmEnabled {
+    var mitmEnabled = Settings.mitmEnabled {
         didSet {
             guard mitmEnabled != Settings.mitmEnabled else { return }
             Settings.mitmEnabled = mitmEnabled
@@ -110,8 +111,8 @@ final class SettingsStore: ObservableObject {
             }
         }
     }
-    @Published private(set) var rewriteRules = RewriteRuleStore.load()
-    @Published var mitmCertificateNote: String?
+    private(set) var rewriteRules = RewriteRuleStore.load()
+    var mitmCertificateNote: String?
 
     private var rewriteReloadWorkItem: DispatchWorkItem?
 

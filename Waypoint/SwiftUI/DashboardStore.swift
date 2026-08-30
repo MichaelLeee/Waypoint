@@ -3,6 +3,7 @@
 //  Waypoint
 //
 
+import Observation
 import Foundation
 import WaypointNetworking
 
@@ -14,15 +15,16 @@ struct SpeedSample: Identifiable {
 }
 
 @MainActor
-final class DashboardStore: ObservableObject {
-    @Published private(set) var upSpeed = 0
-    @Published private(set) var downSpeed = 0
-    @Published private(set) var memoryUsed = 0
-    @Published private(set) var memoryLimit = 0
-    @Published private(set) var activeConnections = 0
-    @Published private(set) var uploadTotal = 0
-    @Published private(set) var downloadTotal = 0
-    @Published private(set) var samples = [SpeedSample]()
+@Observable
+final class DashboardStore {
+    private(set) var upSpeed = 0
+    private(set) var downSpeed = 0
+    private(set) var memoryUsed = 0
+    private(set) var memoryLimit = 0
+    private(set) var activeConnections = 0
+    private(set) var uploadTotal = 0
+    private(set) var downloadTotal = 0
+    private(set) var samples = [SpeedSample]()
 
     static let sampleLimit = 120
 
