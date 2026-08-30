@@ -31,22 +31,18 @@
 		A1B2C3D4E5F6000100000001 /* CoreProcessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000100000002 /* CoreProcessManager.swift */; };
 		E1E100000000000000000D10 /* KillSwitchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D09 /* KillSwitchManager.swift */; };
 		A1B2C3D4E5F6000200000001 /* TunConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000200000002 /* TunConfig.swift */; };
-		A1B2C3D4E5F6000200000003 /* DnsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000200000004 /* DnsConfig.swift */; };
 		496322222AA5D89E00854231 /* UpdateExternalResourceAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496322212AA5D89E00854231 /* UpdateExternalResourceAction.swift */; };
 		4966E9E32118153A00A391FB /* WaypointNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4966E9E22118153A00A391FB /* WaypointNotifier.swift */; };
 		496BDEE021196F1E00C5207F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496BDEDF21196F1E00C5207F /* Logger.swift */; };
 		E1E100000000000000000D02 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D01 /* KeyboardShortcuts.swift */; };
 		E1E100000000000000000D04 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D03 /* SettingsStore.swift */; };
 		E1E100000000000000000D06 /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D05 /* OnboardingRootView.swift */; };
-		E1E100000000000000000D08 /* AdBlockConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D07 /* AdBlockConfig.swift */; };
 		E1E100000000000000000D12 /* RewriteRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D11 /* RewriteRule.swift */; };
-		E1E100000000000000000D14 /* MitmConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D13 /* MitmConfig.swift */; };
 		E1E100000000000000000D16 /* X509.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D15 /* X509.swift */; };
 		E1E100000000000000000D18 /* MitmCertificateAuthority.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D17 /* MitmCertificateAuthority.swift */; };
 		E1E100000000000000000D20 /* MitmProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D19 /* MitmProxyServer.swift */; };
 		E1E100000000000000000D22 /* RewriteSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D21 /* RewriteSettingsView.swift */; };
 		E1E100000000000000000D23 /* ProxyUpdateHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D24 /* ProxyUpdateHub.swift */; };
-		E1E100000000000000000D25 /* WaypointConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D26 /* WaypointConfigTests.swift */; };
 		49722FEF211F338B00650A41 /* FileEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEA211F338B00650A41 /* FileEvent.swift */; };
 		49722FF0211F338B00650A41 /* EventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEB211F338B00650A41 /* EventStream.swift */; };
 		49722FF1211F338B00650A41 /* Witness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEC211F338B00650A41 /* Witness.swift */; };
@@ -102,6 +98,7 @@
 		D2D20000000000000000AA03 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB03 /* CocoaLumberjackSwift */; };
 		D2D20000000000000000AA04 /* FlexibleDiff in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB04 /* FlexibleDiff */; };
 		D2D20000000000000000AA05 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB05 /* Gzip */; };
+		E1E100000000000000000D39 /* WaypointCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D38 /* WaypointCore */; };
 		E1E100000000000000000A03 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000A02 /* PFMoveApplication.m */; };
 		F910AA24240134AF00116E95 /* ProxyGroupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */; };
 		F915A4622366ADEF004840BE /* WaypointConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915A4612366ADEF004840BE /* WaypointConnection.swift */; };
@@ -133,13 +130,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = F9A7C0682306E874007163C7;
 			remoteInfo = ProxyConfigHelper;
-		};
-		E1E100000000000000000D35 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 49CF3B1520CD7463001EBF94 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 49CF3B1C20CD7463001EBF94;
-			remoteInfo = Waypoint;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -192,23 +182,18 @@
 		A1B2C3D4E5F6000100000002 /* CoreProcessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreProcessManager.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D09 /* KillSwitchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KillSwitchManager.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000200000002 /* TunConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunConfig.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F6000200000004 /* DnsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DnsConfig.swift; sourceTree = "<group>"; };
 		496322212AA5D89E00854231 /* UpdateExternalResourceAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateExternalResourceAction.swift; sourceTree = "<group>"; };
 		4966E9E22118153A00A391FB /* WaypointNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WaypointNotifier.swift"; sourceTree = "<group>"; };
 		496BDEDF21196F1E00C5207F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D01 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D03 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D05 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D07 /* AdBlockConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBlockConfig.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D11 /* RewriteRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewriteRule.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D13 /* MitmConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmConfig.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D15 /* X509.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = X509.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D17 /* MitmCertificateAuthority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmCertificateAuthority.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D19 /* MitmProxyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmProxyServer.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D21 /* RewriteSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewriteSettingsView.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D24 /* ProxyUpdateHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyUpdateHub.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D26 /* WaypointConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointConfigTests.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D27 /* WaypointTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaypointTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49722FEA211F338B00650A41 /* FileEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEvent.swift; sourceTree = "<group>"; };
 		49722FEB211F338B00650A41 /* EventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStream.swift; sourceTree = "<group>"; };
 		49722FEC211F338B00650A41 /* Witness.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Witness.swift; sourceTree = "<group>"; };
@@ -308,17 +293,11 @@
 				D2D20000000000000000AA04 /* FlexibleDiff in Frameworks */,
 				D2D20000000000000000AA05 /* Gzip in Frameworks */,
 				4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */,
+				E1E100000000000000000D39 /* WaypointCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F9A7C0662306E874007163C7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1E100000000000000000D30 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -413,10 +392,7 @@
 				F92D0B23236BC12000575E15 /* SavedProxyModel.swift */,
 				F939724B23A4B33500FE5A3F /* WaypointProvider.swift */,
 				A1B2C3D4E5F6000200000002 /* TunConfig.swift */,
-				A1B2C3D4E5F6000200000004 /* DnsConfig.swift */,
-				E1E100000000000000000D07 /* AdBlockConfig.swift */,
 				E1E100000000000000000D11 /* RewriteRule.swift */,
-				E1E100000000000000000D13 /* MitmConfig.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -565,7 +541,6 @@
 			children = (
 				49CF3B1F20CD7463001EBF94 /* Waypoint */,
 				F9A7C06A2306E874007163C7 /* ProxyConfigHelper */,
-				E1E100000000000000000D28 /* WaypointTests */,
 				49CF3B1E20CD7463001EBF94 /* Products */,
 				CF1AC9FACC36FCE7663C5583 /* Frameworks */,
 			);
@@ -576,7 +551,6 @@
 			children = (
 				49CF3B1D20CD7463001EBF94 /* Waypoint.app */,
 				F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */,
-				E1E100000000000000000D27 /* WaypointTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -691,14 +665,6 @@
 			path = ProxyConfigHelper;
 			sourceTree = "<group>";
 		};
-		E1E100000000000000000D28 /* WaypointTests */ = {
-			isa = PBXGroup;
-			children = (
-				E1E100000000000000000D26 /* WaypointConfigTests.swift */,
-			);
-			path = WaypointTests;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -725,6 +691,7 @@
 				D2D20000000000000000BB03 /* CocoaLumberjackSwift */,
 				D2D20000000000000000BB04 /* FlexibleDiff */,
 				D2D20000000000000000BB05 /* Gzip */,
+				E1E100000000000000000D38 /* WaypointCore */,
 			);
 			productName = Waypoint;
 			productReference = 49CF3B1D20CD7463001EBF94 /* Waypoint.app */;
@@ -746,22 +713,6 @@
 			productName = ProxyConfigHelper;
 			productReference = F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */;
 			productType = "com.apple.product-type.tool";
-		};
-		E1E100000000000000000D34 /* WaypointTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E1E100000000000000000D33 /* Build configuration list for PBXNativeTarget "WaypointTests" */;
-			buildPhases = (
-				E1E100000000000000000D29 /* Sources */,
-				E1E100000000000000000D30 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E1E100000000000000000D36 /* PBXTargetDependency */,
-			);
-			name = WaypointTests;
-			productReference = E1E100000000000000000D27 /* WaypointTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -806,6 +757,7 @@
 				D1D10000000000000000CC02 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				D1D10000000000000000CC03 /* XCRemoteSwiftPackageReference "FlexibleDiff" */,
 				D1D10000000000000000CC04 /* XCRemoteSwiftPackageReference "GzipSwift" */,
+				E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */,
 			);
 			productRefGroup = 49CF3B1E20CD7463001EBF94 /* Products */;
 			projectDirPath = "";
@@ -813,7 +765,6 @@
 			targets = (
 				49CF3B1C20CD7463001EBF94 /* Waypoint */,
 				F9A7C0682306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */,
-				E1E100000000000000000D34 /* WaypointTests */,
 			);
 		};
 /* End PBXProject section */
@@ -895,7 +846,6 @@
 				E1E100000000000000000D02 /* KeyboardShortcuts.swift in Sources */,
 				E1E100000000000000000D04 /* SettingsStore.swift in Sources */,
 				E1E100000000000000000D06 /* OnboardingRootView.swift in Sources */,
-				E1E100000000000000000D08 /* AdBlockConfig.swift in Sources */,
 				4905A2CA2A20841B00AEDA2E /* NSView+Layout.swift in Sources */,
 				49722FEF211F338B00650A41 /* FileEvent.swift in Sources */,
 				49D176A72355FE680093DD7B /* NetworkChangeNotifier.swift in Sources */,
@@ -914,14 +864,12 @@
 				A1B2C3D4E5F6000100000001 /* CoreProcessManager.swift in Sources */,
 				E1E100000000000000000D10 /* KillSwitchManager.swift in Sources */,
 				E1E100000000000000000D12 /* RewriteRule.swift in Sources */,
-				E1E100000000000000000D14 /* MitmConfig.swift in Sources */,
 				E1E100000000000000000D16 /* X509.swift in Sources */,
 				E1E100000000000000000D18 /* MitmCertificateAuthority.swift in Sources */,
 				E1E100000000000000000D20 /* MitmProxyServer.swift in Sources */,
 				E1E100000000000000000D22 /* RewriteSettingsView.swift in Sources */,
 				E1E100000000000000000D23 /* ProxyUpdateHub.swift in Sources */,
 				A1B2C3D4E5F6000200000001 /* TunConfig.swift in Sources */,
-				A1B2C3D4E5F6000200000003 /* DnsConfig.swift in Sources */,
 				8ACD21BB27A04C7800BC4632 /* ProxySettingCommand.swift in Sources */,
 				49722FF1211F338B00650A41 /* Witness.swift in Sources */,
 				49722FF0211F338B00650A41 /* EventStream.swift in Sources */,
@@ -973,14 +921,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E1E100000000000000000D29 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E1E100000000000000000D25 /* WaypointConfigTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -988,11 +928,6 @@
 			isa = PBXTargetDependency;
 			target = F9A7C0682306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */;
 			targetProxy = F935B2EB2307B7CD009E4D33 /* PBXContainerItemProxy */;
-		};
-		E1E100000000000000000D36 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 49CF3B1C20CD7463001EBF94 /* Waypoint */;
-			targetProxy = E1E100000000000000000D35 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1283,51 +1218,6 @@
 			};
 			name = Release;
 		};
-		E1E100000000000000000D31 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.waypnt.waypointTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 6.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Waypoint.app/Contents/MacOS/Waypoint";
-			};
-			name = Debug;
-		};
-		E1E100000000000000000D32 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.waypnt.waypointTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 6.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Waypoint.app/Contents/MacOS/Waypoint";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1354,15 +1244,6 @@
 			buildConfigurations = (
 				F9A7C06E2306E874007163C7 /* Debug */,
 				F9A7C06F2306E874007163C7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E1E100000000000000000D33 /* Build configuration list for PBXNativeTarget "WaypointTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E1E100000000000000000D31 /* Debug */,
-				E1E100000000000000000D32 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1412,7 +1293,12 @@
 		};
 /* End XCRemoteSwiftPackageReference section */
 
-/* Begin XCSwiftPackageProductDependency section */
+/* Begin XCLocalSwiftPackageReference section */
+		E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = WaypointCore;
+		};
+/* End XCLocalSwiftPackageReference section */
 		4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4905A2C62A2058D400AEDA2E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
@@ -1442,6 +1328,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D1D10000000000000000CC04 /* XCRemoteSwiftPackageReference "GzipSwift" */;
 			productName = Gzip;
+		};
+		E1E100000000000000000D38 /* WaypointCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WaypointCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

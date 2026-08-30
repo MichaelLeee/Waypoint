@@ -1,73 +1,15 @@
 //
 //  TunConfig.swift
 //  Waypoint
-//  The `tun:` section of the mihomo config. Verified against mihomo v1.19.30:
-//  `enable` + `stack` is enough to bring the device up (log line
-//  "[TUN] Tun adapter listening at: ... ip stack: gVisor"); `auto-route`
-//  defaults to true even when omitted, so we set it explicitly.
+//  App-side derivation of the effective config. The pure config model lives
+//  in the WaypointCore package; this extension reads app settings and writes
+//  the derived file under the config home.
 //
 
 import Foundation
-
-struct TunConfig {
-    var enable: Bool = true
-    /// `mixed` = system stack for TCP + gVisor for UDP (recommended on macOS).
-    var stack: Stack = .mixed
-    /// macOS device names must start with "utun"; mihomo picks the free index.
-    var device: String = "utun"
-    var autoRoute: Bool = true
-    var autoDetectInterface: Bool = true
-    var strictRoute: Bool = true
-    var dnsHijack: [String] = ["any:53"]
-    /// mihomo defaults to 9000 when unset.
-    var mtu: Int?
-
-    enum Stack: String {
-        case system
-        case gvisor
-        case mixed
-    }
-
-    /// The `tun:` block, ready to append to a mihomo YAML config.
-    var yamlString: String {
-        var lines = [
-            "tun:",
-            "  enable: \(enable)",
-            "  stack: \(stack.rawValue)",
-            "  device: \(device)",
-            "  auto-route: \(autoRoute)",
-            "  auto-detect-interface: \(autoDetectInterface)",
-            "  strict-route: \(strictRoute)",
-        ]
-        if !dnsHijack.isEmpty {
-            lines.append("  dns-hijack:")
-            for entry in dnsHijack {
-                lines.append("    - \(entry)")
-            }
-        }
-        if let mtu {
-            lines.append("  mtu: \(mtu)")
-        }
-        return lines.joined(separator: "\n")
-    }
-}
+import WaypointCore
 
 extension TunConfig {
-    /// Returns `config` with `tun`'s block appended, unless the config already
-    /// declares a top-level `tun:` key (in which case the user's own TUN
-    /// settings win). Never emits a duplicate key, which mihomo would reject.
-    static func apply(_ tun: TunConfig?, to config: String) -> String {
-        guard let tun else { return config }
-        if config.hasTopLevelSection(named: "tun:") {
-            return config
-        }
-        var out = config
-        if !out.hasSuffix("\n") {
-            out += "\n"
-        }
-        return out + "\n" + tun.yamlString + "\n"
-    }
-
     /// Reads `sourcePath`, injects every enabled enhancement (TUN stack,
     /// Fake-IP DNS, ad blocking) and a default `mixed-port` when the config
     /// declares none, then writes an effective config under
@@ -119,36 +61,5 @@ extension TunConfig {
         } catch {
             return sourcePath
         }
-    }
-}
-
-extension String {
-    /// True if the YAML declares a top-level key whose name begins with `key`
-    /// (e.g. `"tun:"` or `"dns:"`). Indented lines are skipped so a nested key
-    /// (like a `dns:` provider under another section) doesn't false-positive.
-    func hasTopLevelSection(named key: String) -> Bool {
-        for line in split(separator: "\n", omittingEmptySubsequences: false) {
-            if line.first?.isWhitespace == true { continue }
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            if trimmed.hasPrefix(key) {
-                return true
-            }
-        }
-        return false
-    }
-
-    /// True if the YAML declares any of `port:`, `socks-port:`, `mixed-port:`
-    /// at the top level.
-    func hasTopLevelPortKey() -> Bool {
-        for line in split(separator: "\n", omittingEmptySubsequences: false) {
-            if line.first?.isWhitespace == true { continue }
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            if trimmed.hasPrefix("port:")
-                || trimmed.hasPrefix("socks-port:")
-                || trimmed.hasPrefix("mixed-port:") {
-                return true
-            }
-        }
-        return false
     }
 }

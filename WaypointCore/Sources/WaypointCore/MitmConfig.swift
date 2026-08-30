@@ -1,6 +1,6 @@
 //
 //  MitmConfig.swift
-//  Waypoint
+//  WaypointCore
 //  Injects the local MITM engine into the mihomo config: an http-type proxy
 //  entry pointing at the intercept listener plus DOMAIN/DOMAIN-SUFFIX rules
 //  routing rewrite targets through it. Placed directly under the injected
@@ -9,8 +9,8 @@
 
 import Foundation
 
-enum MitmConfig {
-    static let proxyName = "waypoint-mitm"
+public enum MitmConfig {
+    public static let proxyName = "waypoint-mitm"
     /// Marker searched in `rules:` to anchor injection below the ad block.
     private static let adBlockRuleMarkers = [
         "GEOSITE,category-ads-all,REJECT",
@@ -18,7 +18,7 @@ enum MitmConfig {
     ]
 
     /// mihomo rule lines derived from the user's rewrite rules.
-    static func domainRules(fromHostPatterns hosts: [String]) -> [String] {
+    public static func domainRules(fromHostPatterns hosts: [String]) -> [String] {
         var seen = Set<String>()
         var lines: [String] = []
         for raw in hosts {
@@ -40,7 +40,7 @@ enum MitmConfig {
     /// Returns `config` with the MITM proxy entry and routing rules injected.
     /// Idempotent: if any `waypoint-mitm` rule is present the config is left
     /// untouched (rule edits take effect through regeneration on toggle).
-    static func apply(to config: String, port: Int, hosts: [String]) -> String {
+    public static func apply(to config: String, port: Int, hosts: [String]) -> String {
         let ruleLines = domainRules(fromHostPatterns: hosts)
         guard !ruleLines.isEmpty else { return config }
 

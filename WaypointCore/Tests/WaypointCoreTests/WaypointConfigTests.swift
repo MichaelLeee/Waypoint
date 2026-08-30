@@ -1,10 +1,10 @@
 //
 //  WaypointConfigTests.swift
-//  WaypointTests
+//  WaypointCoreTests
 //
 
 import Testing
-@testable import Waypoint
+import WaypointCore
 
 @Suite("Config generation")
 struct WaypointConfigTests {

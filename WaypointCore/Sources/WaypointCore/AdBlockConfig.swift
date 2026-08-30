@@ -1,6 +1,6 @@
 //
 //  AdBlockConfig.swift
-//  Waypoint
+//  WaypointCore
 //  DNS-level ad/tracker blocking via mihomo REJECT rules. mihomo downloads
 //  geosite.dat automatically when a GEOSITE rule first appears, so no bundled
 //  database or remote rule-provider URL is needed.
@@ -8,13 +8,13 @@
 
 import Foundation
 
-enum AdBlockConfig {
+public enum AdBlockConfig {
     /// Inserted as REJECT rules at the very top of `rules:` so they win over
     /// any user rule (mihomo applies first match).
-    static let adRules = ["GEOSITE,category-ads-all"]
-    static let trackerRules = ["GEOSITE,category-public-tracker"]
+    public static let adRules = ["GEOSITE,category-ads-all"]
+    public static let trackerRules = ["GEOSITE,category-public-tracker"]
 
-    static func apply(to config: String) -> String {
+    public static func apply(to config: String) -> String {
         let pending = (adRules + trackerRules).filter { !config.contains($0) }
         guard !pending.isEmpty else { return config }
         let injected = pending.map { "  - \($0),REJECT" }
