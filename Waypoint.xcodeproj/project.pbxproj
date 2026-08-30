@@ -46,6 +46,7 @@
 		E1E100000000000000000D20 /* MitmProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D19 /* MitmProxyServer.swift */; };
 		E1E100000000000000000D22 /* RewriteSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D21 /* RewriteSettingsView.swift */; };
 		E1E100000000000000000D23 /* ProxyUpdateHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D24 /* ProxyUpdateHub.swift */; };
+		E1E100000000000000000D25 /* WaypointConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D26 /* WaypointConfigTests.swift */; };
 		49722FEF211F338B00650A41 /* FileEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEA211F338B00650A41 /* FileEvent.swift */; };
 		49722FF0211F338B00650A41 /* EventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEB211F338B00650A41 /* EventStream.swift */; };
 		49722FF1211F338B00650A41 /* Witness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEC211F338B00650A41 /* Witness.swift */; };
@@ -133,6 +134,13 @@
 			remoteGlobalIDString = F9A7C0682306E874007163C7;
 			remoteInfo = ProxyConfigHelper;
 		};
+		E1E100000000000000000D35 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49CF3B1520CD7463001EBF94 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 49CF3B1C20CD7463001EBF94;
+			remoteInfo = Waypoint;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -199,6 +207,8 @@
 		E1E100000000000000000D19 /* MitmProxyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmProxyServer.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D21 /* RewriteSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewriteSettingsView.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D24 /* ProxyUpdateHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyUpdateHub.swift; sourceTree = "<group>"; };
+		E1E100000000000000000D26 /* WaypointConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointConfigTests.swift; sourceTree = "<group>"; };
+		E1E100000000000000000D27 /* WaypointTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaypointTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49722FEA211F338B00650A41 /* FileEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEvent.swift; sourceTree = "<group>"; };
 		49722FEB211F338B00650A41 /* EventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStream.swift; sourceTree = "<group>"; };
 		49722FEC211F338B00650A41 /* Witness.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Witness.swift; sourceTree = "<group>"; };
@@ -302,6 +312,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F9A7C0662306E874007163C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1E100000000000000000D30 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -548,6 +565,7 @@
 			children = (
 				49CF3B1F20CD7463001EBF94 /* Waypoint */,
 				F9A7C06A2306E874007163C7 /* ProxyConfigHelper */,
+				E1E100000000000000000D28 /* WaypointTests */,
 				49CF3B1E20CD7463001EBF94 /* Products */,
 				CF1AC9FACC36FCE7663C5583 /* Frameworks */,
 			);
@@ -558,6 +576,7 @@
 			children = (
 				49CF3B1D20CD7463001EBF94 /* Waypoint.app */,
 				F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */,
+				E1E100000000000000000D27 /* WaypointTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -672,6 +691,14 @@
 			path = ProxyConfigHelper;
 			sourceTree = "<group>";
 		};
+		E1E100000000000000000D28 /* WaypointTests */ = {
+			isa = PBXGroup;
+			children = (
+				E1E100000000000000000D26 /* WaypointConfigTests.swift */,
+			);
+			path = WaypointTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -719,6 +746,22 @@
 			productName = ProxyConfigHelper;
 			productReference = F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */;
 			productType = "com.apple.product-type.tool";
+		};
+		E1E100000000000000000D34 /* WaypointTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1E100000000000000000D33 /* Build configuration list for PBXNativeTarget "WaypointTests" */;
+			buildPhases = (
+				E1E100000000000000000D29 /* Sources */,
+				E1E100000000000000000D30 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E1E100000000000000000D36 /* PBXTargetDependency */,
+			);
+			name = WaypointTests;
+			productReference = E1E100000000000000000D27 /* WaypointTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -770,6 +813,7 @@
 			targets = (
 				49CF3B1C20CD7463001EBF94 /* Waypoint */,
 				F9A7C0682306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */,
+				E1E100000000000000000D34 /* WaypointTests */,
 			);
 		};
 /* End PBXProject section */
@@ -929,6 +973,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E1E100000000000000000D29 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1E100000000000000000D25 /* WaypointConfigTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -936,6 +988,11 @@
 			isa = PBXTargetDependency;
 			target = F9A7C0682306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */;
 			targetProxy = F935B2EB2307B7CD009E4D33 /* PBXContainerItemProxy */;
+		};
+		E1E100000000000000000D36 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 49CF3B1C20CD7463001EBF94 /* Waypoint */;
+			targetProxy = E1E100000000000000000D35 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1226,6 +1283,51 @@
 			};
 			name = Release;
 		};
+		E1E100000000000000000D31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.waypnt.waypointTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Waypoint.app/Contents/MacOS/Waypoint";
+			};
+			name = Debug;
+		};
+		E1E100000000000000000D32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.waypnt.waypointTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Waypoint.app/Contents/MacOS/Waypoint";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1252,6 +1354,15 @@
 			buildConfigurations = (
 				F9A7C06E2306E874007163C7 /* Debug */,
 				F9A7C06F2306E874007163C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1E100000000000000000D33 /* Build configuration list for PBXNativeTarget "WaypointTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1E100000000000000000D31 /* Debug */,
+				E1E100000000000000000D32 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
