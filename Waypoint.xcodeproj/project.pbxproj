@@ -99,6 +99,7 @@
 		D2D20000000000000000AA04 /* FlexibleDiff in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB04 /* FlexibleDiff */; };
 		D2D20000000000000000AA05 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB05 /* Gzip */; };
 		E1E100000000000000000D39 /* WaypointCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D38 /* WaypointCore */; };
+		E1E100000000000000000D42 /* WaypointNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D41 /* WaypointNetworking */; };
 		E1E100000000000000000A03 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000A02 /* PFMoveApplication.m */; };
 		F910AA24240134AF00116E95 /* ProxyGroupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */; };
 		F915A4622366ADEF004840BE /* WaypointConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915A4612366ADEF004840BE /* WaypointConnection.swift */; };
@@ -294,6 +295,7 @@
 				D2D20000000000000000AA05 /* Gzip in Frameworks */,
 				4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */,
 				E1E100000000000000000D39 /* WaypointCore in Frameworks */,
+				E1E100000000000000000D42 /* WaypointNetworking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,6 +694,7 @@
 				D2D20000000000000000BB04 /* FlexibleDiff */,
 				D2D20000000000000000BB05 /* Gzip */,
 				E1E100000000000000000D38 /* WaypointCore */,
+				E1E100000000000000000D41 /* WaypointNetworking */,
 			);
 			productName = Waypoint;
 			productReference = 49CF3B1D20CD7463001EBF94 /* Waypoint.app */;
@@ -758,6 +761,7 @@
 				D1D10000000000000000CC03 /* XCRemoteSwiftPackageReference "FlexibleDiff" */,
 				D1D10000000000000000CC04 /* XCRemoteSwiftPackageReference "GzipSwift" */,
 				E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */,
+				E1E100000000000000000D40 /* XCLocalSwiftPackageReference "WaypointNetworking" */,
 			);
 			productRefGroup = 49CF3B1E20CD7463001EBF94 /* Products */;
 			projectDirPath = "";
@@ -1298,6 +1302,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = WaypointCore;
 		};
+		E1E100000000000000000D40 /* XCLocalSwiftPackageReference "WaypointNetworking" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = WaypointNetworking;
+		};
 /* End XCLocalSwiftPackageReference section */
 		4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1332,6 +1340,10 @@
 		E1E100000000000000000D38 /* WaypointCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WaypointCore;
+		};
+		E1E100000000000000000D41 /* WaypointNetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WaypointNetworking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

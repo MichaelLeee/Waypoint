@@ -7,6 +7,7 @@ import Cocoa
 import CocoaLumberjack
 import CocoaLumberjackSwift
 import Combine
+import WaypointNetworking
 
 let statusItemLengthWithSpeed: CGFloat = 72
 
@@ -499,14 +500,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func resetStreamApi() {
         trafficStreamTask?.cancel()
         logStreamTask?.cancel()
-        let apiRequest = ApiRequest.shared
+        let apiRequest = ApiRequest.client
         trafficStreamTask = Task { [weak self] in
             for await traffic in apiRequest.trafficStream() {
                 self?.statusItemView.updateSpeedLabel(up: traffic.up, down: traffic.down)
             }
         }
         logStreamTask = Task {
-            for await entry in apiRequest.logStream() {
+            for await entry in apiRequest.logStream(level: ConfigManager.selectLoggingApiLevel.rawValue) {
                 Logger.log(entry.log, level: WaypointLogLevel(rawValue: entry.level) ?? .unknow)
             }
         }

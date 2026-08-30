@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import WaypointNetworking
 
 struct SpeedSample: Identifiable {
     let id: Int
@@ -28,7 +29,7 @@ final class DashboardStore: ObservableObject {
     private var tasks = [Task<Void, Never>]()
 
     init() {
-        let api = ApiRequest.shared
+        let api = ApiRequest.client
         tasks.append(Task { [weak self] in
             for await traffic in api.trafficStream() {
                 self?.apply(traffic: traffic)

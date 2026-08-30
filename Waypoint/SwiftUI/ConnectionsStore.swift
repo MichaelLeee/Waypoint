@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import WaypointNetworking
 
 struct ConnectionRow: Identifiable {
     let id: String
@@ -53,7 +54,7 @@ final class ConnectionsStore: ObservableObject {
 
     init() {
         Task { [weak self] in
-            for await snapshot in ApiRequest.shared.connectionsStream() {
+            for await snapshot in ApiRequest.client.connectionsStream() {
                 self?.apply(snapshot: snapshot)
             }
         }
