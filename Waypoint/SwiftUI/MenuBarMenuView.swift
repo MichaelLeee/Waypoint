@@ -87,7 +87,7 @@ final class MenuBarMenuStore {
         let socksPort = ConfigManager.shared.currentConfig?.usedSocksPort ?? 0
         let localhost = "127.0.0.1"
         let ip = external ? NetworkChangeNotifier.getPrimaryIPAddress() ?? localhost : localhost
-        pasteboard.setString("export https_proxy=http://\(ip):\(port) http_proxy=http://\(ip):\(port) all_proxy=socks5://\(ip):\(socksport)", forType: .string)
+        pasteboard.setString("export https_proxy=http://\(ip):\(port) http_proxy=http://\(ip):\(port) all_proxy=socks5://\(ip):\(socksPort)", forType: .string)
     }
 
     func speedTest() {
