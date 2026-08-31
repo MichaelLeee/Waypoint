@@ -142,11 +142,14 @@ final class ConfigManager {
     static func getConfigPath(configName: String, complete: ((String) -> Void)? = nil) {
         if ICloudManager.shared.useiCloud.value {
             ICloudManager.shared.getUrl { url in
-                guard let url = url else {
-                    return
+                if let url = url {
+                    let configPath = url.appendingPathComponent(Paths.configFileName(for: configName)).path
+                    complete?(configPath)
+                } else {
+                    // iCloud unavailable (or the URL request failed); without
+                    // this fallback the caller's continuation would hang.
+                    complete?(Paths.localConfigPath(for: configName))
                 }
-                let configPath = url.appendingPathComponent(Paths.configFileName(for: configName)).path
-                complete?(configPath)
             }
         } else {
             let filePath = Paths.localConfigPath(for: configName)

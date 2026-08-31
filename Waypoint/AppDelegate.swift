@@ -778,7 +778,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func updateConfig(configName: String? = nil, showNotification: Bool = true, completeHandler: ((ErrorString?) -> Void)? = nil) {
         startProxy()
-        guard ConfigManager.shared.isRunning else { return }
+        guard ConfigManager.shared.isRunning else {
+            // The core failed to start; without this the caller would wait
+            // forever and no error would be surfaced anywhere.
+            let err: ErrorString = NSLocalizedString("Proxy core is not running. Check the log for details.", comment: "")
+            UpdateConfigAction.showError(text: err, configName: configName ?? ConfigManager.selectConfigName)
+            completeHandler?(err)
+            return
+        }
 
         let config = configName ?? ConfigManager.selectConfigName
 
