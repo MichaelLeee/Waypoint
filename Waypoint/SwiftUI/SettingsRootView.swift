@@ -92,7 +92,7 @@ struct SettingsRootView: View {
 
     // MARK: - General
 
-    private var generalPane: some View {
+    @ViewBuilder private var generalPane: some View {
         @Bindable var store = store
         Form {
             Section(NSLocalizedString("Startup", comment: "")) {
@@ -123,7 +123,7 @@ struct SettingsRootView: View {
 
     // MARK: - Network & API
 
-    private var networkPane: some View {
+    @ViewBuilder private var networkPane: some View {
         @Bindable var store = store
         Form {
             Section(NSLocalizedString("Proxy Port (mixed)", comment: "")) {
@@ -162,7 +162,7 @@ struct SettingsRootView: View {
 
     // MARK: - TUN & DNS
 
-    private var tunPane: some View {
+    @ViewBuilder private var tunPane: some View {
         @Bindable var store = store
         Form {
             Section(NSLocalizedString("Enhanced mode", comment: "")) {
@@ -267,7 +267,7 @@ struct SettingsRootView: View {
 
     // MARK: - Ignore lists
 
-    private var ignoreListsPane: some View {
+    @ViewBuilder private var ignoreListsPane: some View {
         @Bindable var store = store
         Form {
             Section {
@@ -346,7 +346,7 @@ struct SettingsRootView: View {
 
     // MARK: - Debug
 
-    private var debugPane: some View {
+    @ViewBuilder private var debugPane: some View {
         @Bindable var store = store
         Form {
             Section(NSLocalizedString("Update Channel", comment: "")) {

@@ -755,12 +755,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         logStreamTask?.cancel()
         let apiRequest = ApiRequest.client
         trafficStreamTask = Task { [weak self] in
-            for await traffic in apiRequest.trafficStream() {
+            for await traffic in await apiRequest.trafficStream() {
                 self?.statusItemView.updateSpeedLabel(up: traffic.up, down: traffic.down)
             }
         }
         logStreamTask = Task {
-            for await entry in apiRequest.logStream(level: ConfigManager.selectLoggingApiLevel.rawValue) {
+            for await entry in await apiRequest.logStream(level: ConfigManager.selectLoggingApiLevel.rawValue) {
                 Logger.log(entry.log, level: WaypointLogLevel(rawValue: entry.level) ?? .unknow)
             }
         }

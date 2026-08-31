@@ -28,23 +28,25 @@ final class DashboardStore {
 
     static let sampleLimit = 120
 
-    private var tasks = [Task<Void, Never>]()
+    // nonisolated(unsafe) so deinit can cancel the tasks: deinit has
+    // exclusive access to the instance, so no concurrent mutation is possible.
+    private nonisolated(unsafe) var tasks = [Task<Void, Never>]()
 
     init() {
         let api = ApiRequest.client
         tasks.append(Task { [weak self] in
-            for await traffic in api.trafficStream() {
+            for await traffic in await api.trafficStream() {
                 self?.apply(traffic: traffic)
             }
         })
         tasks.append(Task { [weak self] in
-            for await memory in api.memoryStream() {
+            for await memory in await api.memoryStream() {
                 self?.memoryUsed = memory.inuse
                 self?.memoryLimit = memory.osLimit ?? 0
             }
         })
         tasks.append(Task { [weak self] in
-            for await snapshot in api.connectionsStream() {
+            for await snapshot in await api.connectionsStream() {
                 self?.apply(connections: snapshot)
             }
         })

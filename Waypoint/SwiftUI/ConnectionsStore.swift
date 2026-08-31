@@ -56,7 +56,7 @@ final class ConnectionsStore {
 
     init() {
         Task { [weak self] in
-            for await snapshot in ApiRequest.client.connectionsStream() {
+            for await snapshot in await ApiRequest.client.connectionsStream() {
                 self?.apply(snapshot: snapshot)
             }
         }

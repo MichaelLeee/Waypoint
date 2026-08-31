@@ -62,7 +62,7 @@ struct ConnectionsRootView: View {
         .frame(minWidth: 720, minHeight: 480)
     }
 
-    private var toolbar: some View {
+    @ViewBuilder private var toolbar: some View {
         @Bindable var store = store
         HStack(spacing: 12) {
             Toggle(
