@@ -364,13 +364,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         helpMenu.addItem(item("About", action: #selector(actionShowAbout(_:))))
         checkForUpdateMenuItem = item("Check Update")
         helpMenu.addItem(checkForUpdateMenuItem)
-        let logLevelItem = item("Log level")
+        logLevelMenuItem = item("Log level")
         let logLevelMenu = NSMenu()
         for level in ["ERROR", "WARNING", "INFO", "DEBUG", "SILENT"] {
             logLevelMenu.addItem(item(level, action: #selector(actionSetLogLevel(_:))))
         }
-        logLevelItem.submenu = logLevelMenu
-        helpMenu.addItem(logLevelItem)
+        logLevelMenuItem.submenu = logLevelMenu
+        helpMenu.addItem(logLevelMenuItem)
         helpMenu.addItem(item("Show Log", action: #selector(actionShowLog(_:)), key: "l"))
         let portsItem = item("Ports")
         let portsMenu = NSMenu()
