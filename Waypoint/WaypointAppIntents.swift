@@ -44,6 +44,14 @@ struct ConfigFileQuery: EntityStringQuery {
         identifiers.map(ConfigFileEntity.init)
     }
 
+    func entities(matching string: String) async throws -> [ConfigFileEntity] {
+        await MainActor.run {
+            ConfigManager.getConfigFilesList()
+                .filter { $0.localizedCaseInsensitiveContains(string) }
+                .map(ConfigFileEntity.init)
+        }
+    }
+
     func suggestedEntities() async throws -> [ConfigFileEntity] {
         await MainActor.run {
             ConfigManager.getConfigFilesList().map(ConfigFileEntity.init)
