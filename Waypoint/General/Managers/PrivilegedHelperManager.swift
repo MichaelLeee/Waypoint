@@ -47,19 +47,8 @@ class PrivilegedHelperManager: @unchecked Sendable {
         case .noFound:
             if #available(macOS 13, *) {
                 let url = URL(string: "/Library/LaunchDaemons/\(PrivilegedHelperManager.machServiceName).plist")!
-                let status = SMAppService.statusForLegacyPlist(at: url)
-                if status == .requiresApproval {
-                    let alert = NSAlert()
-                    let notice = NSLocalizedString("Waypoint use a daemon helper to setup your system proxy. Please enable Waypoint in the Login Items under the Allow in the Background section and relaunch the app", comment: "")
-                    let addition = NSLocalizedString("If you can not find Waypoint in the settings, you can try reset daemon", comment: "")
-                    alert.messageText = notice + "\n" + addition
-                    alert.addButton(withTitle: NSLocalizedString("Open System Login Item Setting", comment: ""))
-                    alert.addButton(withTitle: NSLocalizedString("Reset Daemon", comment: ""))
-                    if alert.runModal() == .alertFirstButtonReturn {
-                        SMAppService.openSystemSettingsLoginItems()
-                    } else {
-                        self.removeInstallHelper()
-                    }
+                if SMAppService.statusForLegacyPlist(at: url) == .requiresApproval {
+                    promptLoginItemsApproval()
                 }
             }
             handleCheckResult(.needUpdate)
@@ -214,6 +203,7 @@ extension PrivilegedHelperManager {
 
         let result = installHelperDaemon()
         if case .success = result {
+            handleFreshInstallApproval()
             return
         }
         result.alertAction()
@@ -221,6 +211,35 @@ extension PrivilegedHelperManager {
         NSAlert.alert(with: result.alertContent)
         if !cancelInstallCheck {
             checkInstall()
+        }
+    }
+
+    /// A freshly blessed daemon is registered but stays disabled until the user
+    /// approves it in Login Items (macOS 13+); XPC connections fail until then,
+    /// which used to surface only as "proxy helper unavailable" on next feature
+    /// use. Check and prompt right after install instead of waiting for relaunch.
+    @MainActor private func handleFreshInstallApproval() {
+        if #available(macOS 13, *) {
+            let plistURL = URL(fileURLWithPath: "/Library/LaunchDaemons/\(PrivilegedHelperManager.machServiceName).plist")
+            if SMAppService.statusForLegacyPlist(at: plistURL) == .requiresApproval {
+                promptLoginItemsApproval()
+                return
+            }
+        }
+        checkInstall()
+    }
+
+    @MainActor private func promptLoginItemsApproval() {
+        let alert = NSAlert()
+        let notice = NSLocalizedString("Waypoint use a daemon helper to setup your system proxy. Please enable Waypoint in the Login Items under the Allow in the Background section and relaunch the app", comment: "")
+        let addition = NSLocalizedString("If you can not find Waypoint in the settings, you can try reset daemon", comment: "")
+        alert.messageText = notice + "\n" + addition
+        alert.addButton(withTitle: NSLocalizedString("Open System Login Item Setting", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Reset Daemon", comment: ""))
+        if alert.runModal() == .alertFirstButtonReturn {
+            SMAppService.openSystemSettingsLoginItems()
+        } else {
+            removeInstallHelper()
         }
     }
 
