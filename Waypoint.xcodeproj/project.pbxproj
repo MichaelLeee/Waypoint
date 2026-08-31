@@ -730,7 +730,9 @@
 				TargetAttributes = {
 					49CF3B1C20CD7463001EBF94 = {
 						CreatedOnToolsVersion = 9.4;
+						DevelopmentTeam = N48L43Q7F9;
 						LastSwiftMigration = 1020;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.HardenedRuntime = {
 								enabled = 1;
@@ -742,6 +744,8 @@
 					};
 					F9A7C0682306E874007163C7 = {
 						CreatedOnToolsVersion = 10.3;
+						DevelopmentTeam = N48L43Q7F9;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
