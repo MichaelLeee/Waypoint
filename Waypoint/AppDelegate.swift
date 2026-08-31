@@ -51,6 +51,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var runAfterConfigReload: (() -> Void)?
 
+    // The SwiftUI adaptor instantiates us on the main thread; the shared
+    // reference is captured here because NSApp.delegate is SwiftUI's wrapper.
+    override init() {
+        super.init()
+        Self.sharedRef = self
+    }
+
     func applicationWillFinishLaunching(_ notification: Notification) {
         Logger.log("applicationWillFinishLaunching")
         signal(SIGPIPE, SIG_IGN)
