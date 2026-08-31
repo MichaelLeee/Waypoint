@@ -778,14 +778,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func updateConfig(configName: String? = nil, showNotification: Bool = true, completeHandler: ((ErrorString?) -> Void)? = nil) {
         startProxy()
-        guard ConfigManager.shared.isRunning else {
-            // The core failed to start; without this the caller would wait
-            // forever and no error would be surfaced anywhere.
-            let err: ErrorString = NSLocalizedString("Proxy core is not running. Check the log for details.", comment: "")
-            UpdateConfigAction.showError(text: err, configName: configName ?? ConfigManager.selectConfigName)
-            completeHandler?(err)
-            return
-        }
 
         let config = configName ?? ConfigManager.selectConfigName
 
@@ -793,6 +785,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         Task { [weak self] in
             guard let self else { return }
+            // startProxy() launches the core asynchronously (readiness alone
+            // can take up to 10s), so wait for it here instead of failing on
+            // a synchronous isRunning check that would always be false.
+            var waitedNanos = 0
+            while !ConfigManager.shared.isRunning, waitedNanos < 11_000_000_000 {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+                waitedNanos += 200_000_000
+            }
+            guard ConfigManager.shared.isRunning else {
+                // The start attempt failed (its real error is posted by
+                // startProxy's catch); surface the failure to this caller too.
+                let err: ErrorString = NSLocalizedString("Proxy core is not running. Check the log for details.", comment: "")
+                UpdateConfigAction.showError(text: err, configName: config)
+                completeHandler?(err)
+                return
+            }
             var err: ErrorString?
             do {
                 try await ApiRequest.requestConfigUpdate(configName: config)
