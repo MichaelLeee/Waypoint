@@ -30,12 +30,6 @@ class PrivilegedHelperManager: @unchecked Sendable {
 
     func checkInstall() {
         Logger.log("checkInstall", level: .debug)
-        #if DEBUG
-        // SMJobBless refuses unsigned/ad-hoc debug builds, so the install
-        // flow can never succeed here; skip the prompt loop instead.
-        Logger.log("debug build: skipping helper install (helper features — system proxy, kill switch — are unavailable)", level: .info)
-        isHelperCheckFinished.send(true)
-        #else
         getHelperStatus { [weak self] status in
             Logger.log("check result: \(status)", level: .debug)
             guard let self = self else { return }
@@ -45,7 +39,6 @@ class PrivilegedHelperManager: @unchecked Sendable {
                 }
             }
         }
-        #endif
     }
 
     @MainActor private func handleCheckResult(_ status: HelperStatus) {
