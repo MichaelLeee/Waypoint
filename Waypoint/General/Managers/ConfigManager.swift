@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import Combine
 import Observation
 import WaypointCore
 
@@ -20,20 +21,45 @@ final class ConfigManager {
     var overrideApiURL: URL?
     var overrideSecret: String?
 
-    var currentConfig: WaypointConfig?
+    // Combine bridge for the AppKit-side observers (AppDelegate,
+    // SSIDSuspendTool) that predate the @Observable migration; SwiftUI reads
+    // the properties directly. Kept in sync via didSet, seeded in init with
+    // the same replay-current-value behavior @Published had.
+    let currentConfigPublisher = CurrentValueSubject<WaypointConfig?, Never>(nil)
+    let isProxySetByOtherPublisher = CurrentValueSubject<Bool, Never>(false)
+    let proxyShouldPausedPublisher = CurrentValueSubject<Bool, Never>(false)
+    let proxyPortAutoSetPublisher = CurrentValueSubject<Bool, Never>(false)
+    let showNetSpeedIndicatorPublisher = CurrentValueSubject<Bool, Never>(false)
+
+    var currentConfig: WaypointConfig? {
+        didSet { currentConfigPublisher.send(currentConfig) }
+    }
     var isRunning = false
-    var isProxySetByOther = false
-    var proxyShouldPaused = false
+    var isProxySetByOther = false {
+        didSet { isProxySetByOtherPublisher.send(isProxySetByOther) }
+    }
+    var proxyShouldPaused = false {
+        didSet { proxyShouldPausedPublisher.send(proxyShouldPaused) }
+    }
 
     var proxyPortAutoSet: Bool = UserDefaults.standard.bool(forKey: "proxyPortAutoSet") {
-        didSet { UserDefaults.standard.set(proxyPortAutoSet, forKey: "proxyPortAutoSet") }
+        didSet {
+            UserDefaults.standard.set(proxyPortAutoSet, forKey: "proxyPortAutoSet")
+            proxyPortAutoSetPublisher.send(proxyPortAutoSet)
+        }
     }
 
     var showNetSpeedIndicator: Bool = UserDefaults.standard.bool(forKey: "showNetSpeedIndicator") {
-        didSet { UserDefaults.standard.set(showNetSpeedIndicator, forKey: "showNetSpeedIndicator") }
+        didSet {
+            UserDefaults.standard.set(showNetSpeedIndicator, forKey: "showNetSpeedIndicator")
+            showNetSpeedIndicatorPublisher.send(showNetSpeedIndicator)
+        }
     }
 
-    private init() {}
+    private init() {
+        proxyPortAutoSetPublisher.send(proxyPortAutoSet)
+        showNetSpeedIndicatorPublisher.send(showNetSpeedIndicator)
+    }
 
     static var selectConfigName: String {
         get {

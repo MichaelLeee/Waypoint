@@ -442,7 +442,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // The remaining publishers drive the NSStatusItem view only.
         guard !Settings.useSwiftUIMenu else { return }
         ConfigManager.shared
-            .$showNetSpeedIndicator
+            .showNetSpeedIndicatorPublisher
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] show in
@@ -462,7 +462,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func setupData() {
         SSIDSuspendTool.shared.setup()
         ConfigManager.shared
-            .$showNetSpeedIndicator
+            .showNetSpeedIndicatorPublisher
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
@@ -471,9 +471,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }.store(in: &cancellables)
 
-        Publishers.Merge3(ConfigManager.shared.$proxyPortAutoSet,
-                          ConfigManager.shared.$isProxySetByOther,
-                          ConfigManager.shared.$proxyShouldPaused)
+        Publishers.Merge3(ConfigManager.shared.proxyPortAutoSetPublisher,
+                          ConfigManager.shared.isProxySetByOtherPublisher,
+                          ConfigManager.shared.proxyShouldPausedPublisher)
             .receive(on: DispatchQueue.main)
             .map { _ -> NSControl.StateValue in
                 MainActor.assumeIsolated {
@@ -491,7 +491,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }.store(in: &cancellables)
 
-        let configPublisher = ConfigManager.shared.$currentConfig
+        let configPublisher = ConfigManager.shared.currentConfigPublisher
         Publishers.Zip(configPublisher, configPublisher.dropFirst())
             .filter { $1 != nil }
             .receive(on: DispatchQueue.main)
@@ -611,7 +611,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }.store(in: &cancellables)
 
         ConfigManager.shared
-            .$isProxySetByOther
+            .isProxySetByOtherPublisher
             .removeDuplicates()
             .filter { $0 }
             .receive(on: DispatchQueue.main)

@@ -50,7 +50,7 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
                 }.store(in: &cancellables)
         }
         ConfigManager.shared
-            .$proxyShouldPaused
+            .proxyShouldPausedPublisher
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .filter { _ in MainActor.assumeIsolated { ConfigManager.shared.proxyPortAutoSet } }
