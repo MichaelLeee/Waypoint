@@ -18,22 +18,26 @@ class StatusItemView: NSView, StatusItemViewProtocol {
 
     static func create(statusItem: NSStatusItem?) -> StatusItemView {
         var topLevelObjects: NSArray?
-        if Bundle.main.loadNibNamed("StatusItemView", owner: self, topLevelObjects: &topLevelObjects) {
-            let view = (topLevelObjects!.first(where: { $0 is NSView }) as? StatusItemView)!
-            view.setupView()
-            view.imageView.image = StatusItemTool.menuImage
-
-            if let button = statusItem?.button {
-                button.addSubview(view)
-                button.imagePosition = .imageOverlaps
-            } else {
-                Logger.log("button = nil")
-                AppDelegate.shared.openConfigFolder(self)
-            }
-            view.updateViewStatus(enableProxy: false)
-            return view
+        // A missing or malformed nib means the menu-bar speed view cannot be
+        // built at all; fail with a message that names the real problem
+        // instead of force-casting a bare NSView.
+        guard Bundle.main.loadNibNamed("StatusItemView", owner: self, topLevelObjects: &topLevelObjects),
+              let view = topLevelObjects?.first(where: { $0 is StatusItemView }) as? StatusItemView
+        else {
+            fatalError("StatusItemView.xib failed to load or contains no StatusItemView")
         }
-        return NSView() as! StatusItemView
+        view.setupView()
+        view.imageView.image = StatusItemTool.menuImage
+
+        if let button = statusItem?.button {
+            button.addSubview(view)
+            button.imagePosition = .imageOverlaps
+        } else {
+            Logger.log("button = nil")
+            AppDelegate.shared.openConfigFolder(self)
+        }
+        view.updateViewStatus(enableProxy: false)
+        return view
     }
 
     func setupView() {
