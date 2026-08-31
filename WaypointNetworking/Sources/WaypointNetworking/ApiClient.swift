@@ -44,6 +44,9 @@ public actor ApiClient {
         var request = URLRequest(url: requestURL)
         request.httpMethod = method
         request.httpBody = body
+        // The shared session's timeout is set to a week for the WebSocket
+        // streams; regular calls must not inherit it.
+        request.timeoutInterval = 30
         if body != nil {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
