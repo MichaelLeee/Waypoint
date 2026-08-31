@@ -23,6 +23,9 @@ final class SettingsStore {
     var benchmarkUrl = Settings.benchMarkUrl {
         didSet { if benchmarkUrl.isUrlVaild() || benchmarkUrl.isEmpty { Settings.benchMarkUrl = benchmarkUrl } }
     }
+    var useSwiftUIMenu = Settings.useSwiftUIMenu {
+        didSet { Settings.useSwiftUIMenu = useSwiftUIMenu }
+    }
 
     var proxyIgnoreListText = Settings.proxyIgnoreList.joined(separator: ",") {
         didSet { commitList(proxyIgnoreListText) { Settings.proxyIgnoreList = $0 } }

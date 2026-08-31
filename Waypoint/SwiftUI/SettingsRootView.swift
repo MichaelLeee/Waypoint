@@ -368,6 +368,18 @@ struct SettingsRootView: View {
                     )
                 )
             }
+            Section(NSLocalizedString("Interface (Experimental)", comment: "")) {
+                Toggle(
+                    NSLocalizedString("Use SwiftUI status menu (MenuBarExtra)", comment: ""),
+                    isOn: $store.useSwiftUIMenu
+                )
+                Text(NSLocalizedString("Switches between the AppKit status menu and the SwiftUI MenuBarExtra comparison UI. Restart the app to apply.", comment: ""))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button(NSLocalizedString("Restart App", comment: "")) {
+                    restartApp()
+                }
+            }
             Section(NSLocalizedString("Files", comment: "")) {
                 Button(NSLocalizedString("Open Log Folder", comment: "")) {
                     NSWorkspace.shared.open(URL(fileURLWithPath: Logger.shared.logFolder()))
@@ -422,6 +434,14 @@ struct SettingsRootView: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    private func restartApp() {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        process.arguments = ["-n", Bundle.main.bundlePath]
+        try? process.run()
+        NSApp.terminate(nil)
     }
 
     private func refreshHelperStatus() {
