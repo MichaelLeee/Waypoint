@@ -51,6 +51,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var runAfterConfigReload: (() -> Void)?
 
+    // Main-actor only: written by startProxy's Task, polled by updateConfig's
+    // Task, so a failed core start can surface its real error immediately.
+    private var lastCoreStartError: Error?
+
     // The SwiftUI adaptor instantiates us on the main thread; the shared
     // reference is captured here because NSApp.delegate is SwiftUI's wrapper.
     override init() {
@@ -683,6 +687,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func startProxy() {
         if ConfigManager.shared.isRunning { return }
 
+        // Cleared synchronously so a stale failure from a previous attempt
+        // can't abort an updateConfig poll that started before this Task.
+        lastCoreStartError = nil
+
         if !Settings.isApiSecretSet {
             if #available(macOS 11.0, *), let password = SecCreateSharedWebCredentialPassword() as? String {
                 Settings.apiSecret = password
@@ -737,6 +745,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 }
             } catch {
+                lastCoreStartError = error
                 ConfigManager.shared.isRunning = false
                 self.proxyModeMenuItem.isEnabled = false
                 Logger.log(error.localizedDescription, level: .error)
@@ -787,16 +796,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             guard let self else { return }
             // startProxy() launches the core asynchronously (readiness alone
             // can take up to 10s), so wait for it here instead of failing on
-            // a synchronous isRunning check that would always be false.
+            // a synchronous isRunning check that would always be false. The
+            // wait ends early once the start attempt reports a failure.
             var waitedNanos = 0
-            while !ConfigManager.shared.isRunning, waitedNanos < 11_000_000_000 {
+            while !ConfigManager.shared.isRunning,
+                  lastCoreStartError == nil,
+                  waitedNanos < 11_000_000_000 {
                 try? await Task.sleep(nanoseconds: 200_000_000)
                 waitedNanos += 200_000_000
             }
             guard ConfigManager.shared.isRunning else {
                 // The start attempt failed (its real error is posted by
                 // startProxy's catch); surface the failure to this caller too.
-                let err: ErrorString = NSLocalizedString("Proxy core is not running. Check the log for details.", comment: "")
+                let err: ErrorString = lastCoreStartError?.localizedDescription
+                    ?? NSLocalizedString("Proxy core is not running. Check the log for details.", comment: "")
                 UpdateConfigAction.showError(text: err, configName: config)
                 completeHandler?(err)
                 return
