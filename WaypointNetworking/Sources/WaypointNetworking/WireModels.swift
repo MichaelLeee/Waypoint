@@ -4,6 +4,8 @@
 //  Sendable snapshots decoded from the mihomo streaming API.
 //
 
+import Foundation
+
 public struct TrafficSnapshot: Sendable {
     public let up: Int
     public let down: Int

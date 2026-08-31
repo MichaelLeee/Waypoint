@@ -3,6 +3,8 @@
 //  WaypointNetworking
 //
 
+import Foundation
+
 public enum ApiError: LocalizedError {
     case notRunning
     case invalidURL
