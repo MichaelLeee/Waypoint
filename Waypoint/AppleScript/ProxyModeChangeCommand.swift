@@ -22,11 +22,7 @@ import Foundation
         var errorCode = 0
         var errorMessage: String?
         MainActor.assumeIsolated {
-            guard let delegate = NSApplication.shared.delegate as? AppDelegate else {
-                errorCode = -2
-                errorMessage = "can't get application, try again later"
-                return
-            }
+            let delegate = AppDelegate.shared
             let menuItem: NSMenuItem
             switch mode {
             case .rule:

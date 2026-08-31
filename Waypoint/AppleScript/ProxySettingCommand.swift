@@ -15,11 +15,7 @@ import Foundation
         var errorCode = 0
         var errorMessage: String?
         MainActor.assumeIsolated {
-            guard let delegate = NSApplication.shared.delegate as? AppDelegate else {
-                errorCode = -2
-                errorMessage = "can't get application, try again later"
-                return
-            }
+            let delegate = AppDelegate.shared
             // actionSetSystemProxy ignores its sender; passing nil avoids
             // sending the non-Sendable script command across the boundary.
             delegate.actionSetSystemProxy(nil)
