@@ -215,7 +215,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let sub = NSMenuItem(title: title,
                                  action: tag == -1
                                      ? #selector(NSResponder.centerSelectionInVisibleArea(_:))
-                                     : #selector(NSResponder.performFindPanelAction(_:)),
+                                     // performFindPanelAction is an informal AppKit action with no Swift declaration.
+                                     : Selector(("performFindPanelAction:")),
                                  keyEquivalent: key)
             sub.tag = tag
             sub.keyEquivalentModifierMask = modifiers
@@ -378,8 +379,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         apiPortMenuItem = item("api port:")
         ipMenuItem = item("IP:")
         for portItem in [httpPortMenuItem, socksPortMenuItem, apiPortMenuItem, ipMenuItem] {
-            portItem.isEnabled = false
-            portsMenu.addItem(portItem)
+            portItem?.isEnabled = false
+            if let portItem {
+                portsMenu.addItem(portItem)
+            }
         }
         portsItem.submenu = portsMenu
         helpMenu.addItem(portsItem)

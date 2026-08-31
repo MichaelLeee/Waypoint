@@ -21,7 +21,9 @@ struct WaypointApp: App {
             }
             .menuBarExtraStyle(.window)
         } else {
-            Settings {
+            // The project has its own top-level `Settings` enum; qualify the
+            // SwiftUI scene type explicitly.
+            SwiftUI.Settings {
                 EmptyView()
             }
         }

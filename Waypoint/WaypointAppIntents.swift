@@ -63,6 +63,7 @@ struct ToggleSystemProxyIntent: AppIntent {
     static let title: LocalizedStringResource = "Set as System Proxy"
     static let description = IntentDescription("Toggles the macOS system proxy through Waypoint.")
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         AppDelegate.shared.actionSetSystemProxy(nil)
         let dialog: IntentDialog = ConfigManager.shared.proxyPortAutoSet
@@ -78,6 +79,7 @@ struct ToggleEnhancedModeIntent: AppIntent {
         "Enables or disables TUN enhanced mode. Applying it restarts the core."
     )
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let enabled = !Settings.tunEnabled
         AppDelegate.shared.actionEnhanceTunMode(AppDelegate.shared.enhanceTunModeMenuItem)
@@ -95,6 +97,7 @@ struct SetProxyModeIntent: AppIntent {
     @Parameter(title: "Proxy Mode")
     var mode: ProxyModeAppEnum
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         AppDelegate.shared.switchProxyMode(mode: mode.mode)
         return .result(dialog: IntentDialog("Proxy mode set to \(mode.rawValue)."))
@@ -108,6 +111,7 @@ struct SelectConfigIntent: AppIntent {
     @Parameter(title: "Config")
     var config: ConfigFileEntity
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         AppDelegate.shared.updateConfig(configName: config.id)
         return .result(dialog: IntentDialog("Config \(config.id) activated."))
@@ -118,6 +122,7 @@ struct ReloadConfigIntent: AppIntent {
     static let title: LocalizedStringResource = "Reload Config"
     static let description = IntentDescription("Reloads the current Waypoint config.")
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         AppDelegate.shared.updateConfig()
         return .result(dialog: IntentDialog("Config reloaded."))
@@ -129,6 +134,7 @@ struct OpenDashboardIntent: AppIntent {
     static let description = IntentDescription("Opens the Waypoint dashboard window.")
     static let openAppWhenRun = true
 
+    @MainActor
     func perform() async throws -> some IntentResult {
         AppDelegate.shared.actionDashboard(nil)
         return .result()
