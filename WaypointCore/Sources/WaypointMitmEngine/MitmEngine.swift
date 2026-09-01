@@ -60,7 +60,7 @@ public final class MitmEngine: @unchecked Sendable {
         signal(SIGPIPE, SIG_IGN)
         for candidate in portRange {
             do {
-                let channel = try bind(candidate, provider: identityProvider).wait()
+                let channel = try bind(candidate, provider: identityProvider)
                 lock.lock()
                 serverChannel = channel
                 activeRules = rules
