@@ -165,6 +165,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusMenu.delegate = self
     }
 
+    @objc private func performEditAction(_ sender: NSMenuItem) {
+        guard let actionName = sender.representedObject as? String else { return }
+        NSApp.sendAction(Selector(actionName), to: nil, from: sender)
+    }
+
     private func item(_ title: String,
                       action: Selector? = nil,
                       key: String = "",
@@ -195,21 +200,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let editItem = NSMenuItem()
         mainMenu.addItem(editItem)
         let editMenu = NSMenu(title: NSLocalizedString("Edit", comment: ""))
-        editMenu.addItem(withTitle: NSLocalizedString("Undo", comment: ""),
-                         action: Selector(("undo:")), keyEquivalent: "z")
-        editMenu.addItem(withTitle: NSLocalizedString("Redo", comment: ""),
-                         action: Selector(("redo:")), keyEquivalent: "Z")
-        editMenu.addItem(.separator())
-        editMenu.addItem(withTitle: NSLocalizedString("Cut", comment: ""),
-                         action: #selector(NSText.cut(_:)), keyEquivalent: "x")
-        editMenu.addItem(withTitle: NSLocalizedString("Copy", comment: ""),
-                         action: #selector(NSText.copy(_:)), keyEquivalent: "c")
-        editMenu.addItem(withTitle: NSLocalizedString("Paste", comment: ""),
-                         action: #selector(NSText.paste(_:)), keyEquivalent: "v")
-        editMenu.addItem(withTitle: NSLocalizedString("Delete", comment: ""),
-                         action: #selector(NSText.delete(_:)), keyEquivalent: "")
-        editMenu.addItem(withTitle: NSLocalizedString("Select All", comment: ""),
-                         action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+        // SwiftUI text fields (notably inside sheets) are invisible to menu
+        // validation, which leaves standard responder-chain items disabled and
+        // their key equivalents (⌘V etc.) dead. Keep the items force-enabled
+        // and forward to the responder chain explicitly on activation instead.
+        editMenu.autoenablesItems = false
+        let editActions: [(String, Selector, String, NSEvent.ModifierFlags)] = [
+            (NSLocalizedString("Undo", comment: ""), Selector(("undo:")), "z", .command),
+            (NSLocalizedString("Redo", comment: ""), Selector(("redo:")), "z", [.command, .shift]),
+            (NSLocalizedString("Cut", comment: ""), #selector(NSText.cut(_:)), "x", .command),
+            (NSLocalizedString("Copy", comment: ""), #selector(NSText.copy(_:)), "c", .command),
+            (NSLocalizedString("Paste", comment: ""), #selector(NSText.paste(_:)), "v", .command),
+            (NSLocalizedString("Delete", comment: ""), #selector(NSText.delete(_:)), "", .command),
+            (NSLocalizedString("Select All", comment: ""), #selector(NSText.selectAll(_:)), "a", .command),
+        ]
+        for (title, action, key, modifiers) in editActions {
+            let item = NSMenuItem(title: title,
+                                  action: #selector(performEditAction(_:)),
+                                  keyEquivalent: key)
+            item.keyEquivalentModifierMask = modifiers
+            item.representedObject = NSStringFromSelector(action)
+            item.target = self
+            editMenu.addItem(item)
+        }
         editMenu.addItem(.separator())
         let findItem = NSMenuItem()
         editMenu.addItem(findItem)

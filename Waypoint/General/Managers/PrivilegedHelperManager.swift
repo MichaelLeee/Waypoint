@@ -98,7 +98,11 @@ class PrivilegedHelperManager: @unchecked Sendable {
         var authRights = withUnsafeMutablePointer(to: &authItem) { pointer in
             AuthorizationRights(count: 1, items: pointer)
         }
-        let flags: AuthorizationFlags = [[], .interactionAllowed, .extendRights, .preAuthorize]
+        // Without .preAuthorize: pre-authorizing only CHECKS the right without
+        // acquiring it, so the ref handed to SMJobBless carries no rights and
+        // bless fails with kSMErrorAuthorizationFailure. extendRights +
+        // interactionAllowed grants the right interactively (admin prompt).
+        let flags: AuthorizationFlags = [.interactionAllowed, .extendRights]
         authStatus = AuthorizationCreate(&authRights, nil, flags, &authRef)
         defer {
             if let ref = authRef {
