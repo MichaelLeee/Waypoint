@@ -80,6 +80,14 @@ class PrivilegedHelperManager: @unchecked Sendable {
         }
 
         let service = SMAppService.daemon(plistName: PrivilegedHelperManager.daemonPlistName)
+        if service.status == .enabled {
+            // Registered but the XPC version check failed to get here: the app
+            // bundle was most likely rebuilt after registration, leaving
+            // launchd holding a stale code-signature requirement. Start from a
+            // clean registration.
+            Logger.log("daemon registered but stale; re-registering", level: .info)
+            try? service.unregister()
+        }
         do {
             try service.register()
         } catch {

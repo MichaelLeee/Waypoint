@@ -13,5 +13,7 @@
 	</dict>
 	<key>BundleProgram</key>
 	<string>Contents/Library/LaunchServices/org.waypnt.waypoint.ProxyConfigHelper</string>
+	<key>StandardErrorPath</key>
+	<string>/Library/Logs/Waypoint-helper.log</string>
 </dict>
 </plist>

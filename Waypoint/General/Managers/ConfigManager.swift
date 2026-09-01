@@ -63,10 +63,10 @@ final class ConfigManager {
 
     static var selectConfigName: String {
         get {
-            if shared.isRunning {
-                return UserDefaults.standard.string(forKey: "selectConfigName") ?? "config"
-            }
-            return "config"
+            // Always honor the stored selection: returning a hard-coded
+            // "config" while the core is down made every cold start load the
+            // default file instead of the user's selected one.
+            return UserDefaults.standard.string(forKey: "selectConfigName") ?? "config"
         }
         set {
             UserDefaults.standard.set(newValue, forKey: "selectConfigName")

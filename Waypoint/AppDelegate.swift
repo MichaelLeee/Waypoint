@@ -55,6 +55,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // Task, so a failed core start can surface its real error immediately.
     private var lastCoreStartError: Error?
 
+    private var editShortcutMonitor: Any?
+
     // The SwiftUI adaptor instantiates us on the main thread; the shared
     // reference is captured here because NSApp.delegate is SwiftUI's wrapper.
     override init() {
@@ -68,6 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // crash recorder
         failLaunchProtect()
         setupMenus()
+        setupEditShortcutMonitor()
         NSAppleEventManager.shared()
             .setEventHandler(self,
                              andSelector: #selector(handleURL(event:reply:)),
@@ -168,6 +171,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func performEditAction(_ sender: NSMenuItem) {
         guard let actionName = sender.representedObject as? String else { return }
         NSApp.sendAction(Selector(actionName), to: nil, from: sender)
+    }
+
+    /// SwiftUI sheets swallow ⌘-based Edit key equivalents before the main
+    /// menu is consulted (the context menu still works, but ⌘V/C/X/A/Z do
+    /// nothing). Intercept them locally and forward to the key window's field
+    /// editor; pass everything else through untouched.
+    private func setupEditShortcutMonitor() {
+        editShortcutMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            guard event.modifierFlags.intersection([.command, .option, .control]) == .command,
+                  let key = event.charactersIgnoringModifiers?.lowercased() else { return event }
+            let actionName: String?
+            switch (key, event.modifierFlags.contains(.shift)) {
+            case ("v", false): actionName = "paste:"
+            case ("c", false): actionName = "copy:"
+            case ("x", false): actionName = "cut:"
+            case ("a", false): actionName = "selectAll:"
+            case ("z", false): actionName = "undo:"
+            case ("z", true): actionName = "redo:"
+            default: actionName = nil
+            }
+            guard let actionName,
+                  let textView = NSApp.keyWindow?.firstResponder as? NSTextView,
+                  textView.isEditable else { return event }
+            NSApp.sendAction(Selector(actionName), to: textView, from: event)
+            return nil
+        }
     }
 
     private func item(_ title: String,
