@@ -5,6 +5,8 @@
 //  pump. Operates on raw bytes; header blocks are ISO Latin-1 per RFC 9110.
 //
 
+import Foundation
+
 enum HTTPWire {
     static let crlfcrlf: [UInt8] = Array("\r\n\r\n".utf8)
     static let crlf: [UInt8] = Array("\r\n".utf8)

@@ -129,8 +129,8 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
         let serverTLS: NIOSSLServerHandler
         let clientTLS: NIOSSLClientHandler
         do {
-            serverTLS = NIOSSLServerHandler(context: try HeadHandler.serverContext(identity: identity))
-            clientTLS = NIOSSLClientHandler(
+            serverTLS = try NIOSSLServerHandler(context: try HeadHandler.serverContext(identity: identity))
+            clientTLS = try NIOSSLClientHandler(
                 context: try NIOSSLContext(configuration: TLSConfiguration.makeClientConfiguration()),
                 serverHostname: host
             )
@@ -232,7 +232,7 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
 
     private static func serverContext(identity: MitmIdentity) throws -> NIOSSLContext {
         let configuration = TLSConfiguration.makeServerConfiguration(
-            certificateChain: [.bytes(identity.certificateDER)],
+            certificateChain: [.certificate(try NIOSSLCertificate(bytes: identity.certificateDER, format: .der))],
             privateKey: .privateKey(NIOSSLPrivateKey(bytes: identity.privateKeyDER, format: .der))
         )
         return try NIOSSLContext(configuration: configuration)
