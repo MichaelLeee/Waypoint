@@ -26,7 +26,11 @@ let package = Package(
         ),
         .testTarget(
             name: "WaypointCoreTests",
-            dependencies: ["WaypointCore", "WaypointMitmEngine"]
+            dependencies: [
+                "WaypointCore",
+                "WaypointMitmEngine",
+                .product(name: "NIO", package: "swift-nio"),
+            ]
         ),
     ]
 )

@@ -48,10 +48,7 @@ final class MitmProxyServer: @unchecked Sendable {
             return try engine.start(rules: engineRules,
                                     identityProvider: MitmCertificateAuthority.shared)
         } catch {
-            throw EngineError(message: NSLocalizedString(
-                "No free port available for the intercept proxy (\(Self.portRangeStart)–\(Self.portRangeEnd)).",
-                comment: ""
-            ))
+            throw EngineError(message: error.localizedDescription)
         }
     }
 
