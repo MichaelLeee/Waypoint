@@ -449,6 +449,7 @@ struct SettingsRootView: View {
         case .installed: helperStatusText = NSLocalizedString("Installed", comment: "")
         case .noFound: helperStatusText = NSLocalizedString("Not installed", comment: "")
         case .needUpdate: helperStatusText = NSLocalizedString("Needs update", comment: "")
+        case .needsApproval: helperStatusText = NSLocalizedString("Awaiting approval in Login Items", comment: "")
         case nil: helperStatusText = NSLocalizedString("Unknown", comment: "")
         }
     }
