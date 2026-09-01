@@ -39,7 +39,7 @@ final class KillSwitchManager {
 
     func clear() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            guard let helper = PrivilegedHelperManager.shared.helper(failture: {
+            guard let helper = PrivilegedHelperManager.shared.helper(failture: { _ in
                 continuation.resume()
             }) else {
                 continuation.resume()
