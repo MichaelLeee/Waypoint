@@ -49,14 +49,13 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
                     }
                 }.store(in: &cancellables)
         }
-        ConfigManager.shared
-            .proxyShouldPausedPublisher
-            .removeDuplicates()
+        NotificationCenter.default
+            .publisher(for: .waypointProxyStatusDidChange)
             .receive(on: DispatchQueue.main)
-            .filter { _ in MainActor.assumeIsolated { ConfigManager.shared.proxyPortAutoSet } }
-            .sink { pause in
+            .sink { [weak self] _ in
                 MainActor.assumeIsolated {
-                    if pause {
+                    guard let self, ConfigManager.shared.proxyPortAutoSet else { return }
+                    if ConfigManager.shared.proxyShouldPaused {
                         SystemProxyManager.shared.disableProxy()
                     } else {
                         SystemProxyManager.shared.enableProxy()

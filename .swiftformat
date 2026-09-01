@@ -1,0 +1,10 @@
+# SwiftFormat configuration for Waypoint
+--swiftversion 6.0
+--indent 4
+--maxwidth 300
+
+--exclude Waypoint/Vendor,Waypoint/Resources,ProxyConfigHelper,Pods
+
+# Conservative for now: only whitespace/structural normalization.
+# Aggressive transforms can be enabled after a one-time formatting pass.
+--disable blankLinesAtStartOfScope,blankLinesBetweenScopes,elseOnSameLine

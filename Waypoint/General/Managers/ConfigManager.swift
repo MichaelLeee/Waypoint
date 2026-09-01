@@ -6,9 +6,16 @@
 //
 
 import Cocoa
-import Combine
 import Observation
 import WaypointCore
+
+// AppKit-side observers (menu bar UI) watch these instead of the old
+// CurrentValueSubject bridge; SwiftUI reads the @Observable properties.
+extension Notification.Name {
+    static let waypointCurrentConfigDidChange = Notification.Name("org.waypnt.waypoint.currentConfigDidChange")
+    static let waypointProxyStatusDidChange = Notification.Name("org.waypnt.waypoint.proxyStatusDidChange")
+    static let waypointShowNetSpeedIndicatorDidChange = Notification.Name("org.waypnt.waypoint.showNetSpeedIndicatorDidChange")
+}
 
 @MainActor
 @Observable
@@ -21,45 +28,38 @@ final class ConfigManager {
     var overrideApiURL: URL?
     var overrideSecret: String?
 
-    // Combine bridge for the AppKit-side observers (AppDelegate,
-    // SSIDSuspendTool) that predate the @Observable migration; SwiftUI reads
-    // the properties directly. Kept in sync via didSet, seeded in init with
-    // the same replay-current-value behavior @Published had.
-    let currentConfigPublisher = CurrentValueSubject<WaypointConfig?, Never>(nil)
-    let isProxySetByOtherPublisher = CurrentValueSubject<Bool, Never>(false)
-    let proxyShouldPausedPublisher = CurrentValueSubject<Bool, Never>(false)
-    let proxyPortAutoSetPublisher = CurrentValueSubject<Bool, Never>(false)
-    let showNetSpeedIndicatorPublisher = CurrentValueSubject<Bool, Never>(false)
-
     var currentConfig: WaypointConfig? {
-        didSet { currentConfigPublisher.send(currentConfig) }
+        didSet {
+            NotificationCenter.default.post(name: .waypointCurrentConfigDidChange, object: nil)
+        }
     }
     var isRunning = false
     var isProxySetByOther = false {
-        didSet { isProxySetByOtherPublisher.send(isProxySetByOther) }
+        didSet {
+            NotificationCenter.default.post(name: .waypointProxyStatusDidChange, object: nil)
+        }
     }
     var proxyShouldPaused = false {
-        didSet { proxyShouldPausedPublisher.send(proxyShouldPaused) }
+        didSet {
+            NotificationCenter.default.post(name: .waypointProxyStatusDidChange, object: nil)
+        }
     }
 
     var proxyPortAutoSet: Bool = UserDefaults.standard.bool(forKey: "proxyPortAutoSet") {
         didSet {
             UserDefaults.standard.set(proxyPortAutoSet, forKey: "proxyPortAutoSet")
-            proxyPortAutoSetPublisher.send(proxyPortAutoSet)
+            NotificationCenter.default.post(name: .waypointProxyStatusDidChange, object: nil)
         }
     }
 
     var showNetSpeedIndicator: Bool = UserDefaults.standard.bool(forKey: "showNetSpeedIndicator") {
         didSet {
             UserDefaults.standard.set(showNetSpeedIndicator, forKey: "showNetSpeedIndicator")
-            showNetSpeedIndicatorPublisher.send(showNetSpeedIndicator)
+            NotificationCenter.default.post(name: .waypointShowNetSpeedIndicatorDidChange, object: nil)
         }
     }
 
-    private init() {
-        proxyPortAutoSetPublisher.send(proxyPortAutoSet)
-        showNetSpeedIndicatorPublisher.send(showNetSpeedIndicator)
-    }
+    private init() {}
 
     static var selectConfigName: String {
         get {

@@ -2,7 +2,6 @@
 //  WaypointConfig.swift
 //  Waypoint
 //
-import CocoaLumberjack
 import Foundation
 
 enum WaypointProxyMode: String, Codable {
@@ -34,23 +33,6 @@ enum WaypointLogLevel: String, Codable {
     case debug
     case silent
     case unknow = "unknown"
-
-    func toDDLogLevel() -> DDLogLevel {
-        switch self {
-        case .info:
-            return .info
-        case .warning:
-            return .warning
-        case .error:
-            return .error
-        case .debug:
-            return .debug
-        case .silent:
-            return .off
-        case .unknow:
-            return .error
-        }
-    }
 }
 
 class WaypointConfig: Codable {

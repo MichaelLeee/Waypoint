@@ -3,125 +3,37 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		E1E100000000000000000D43 /* WaypointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D47 /* WaypointApp.swift */; };
 		E1E100000000000000000D4D /* WaypointAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4E /* WaypointAppIntents.swift */; };
-		E1E100000000000000000D44 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D48 /* AboutView.swift */; };
-		E1E100000000000000000D45 /* RemoteConfigRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D49 /* RemoteConfigRootView.swift */; };
-		E1E100000000000000000D46 /* ExternalControlRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4A /* ExternalControlRootView.swift */; };
-		E1E100000000000000000D4B /* MenuBarMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4C /* MenuBarMenuView.swift */; };
 		4905A2C82A2058D400AEDA2E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */; };
-		4905A2CA2A20841B00AEDA2E /* NSView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4905A2C92A20841B00AEDA2E /* NSView+Layout.swift */; };
 		4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4908087A29F8F3FF007A4944 /* libresolv.tbd */; };
-		4913C82321157D0200F6B87C /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4913C82221157D0200F6B87C /* Notification.swift */; };
 		491E6203258A424D00313AEF /* CommonUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 491E61FD258A424500313AEF /* CommonUtils.m */; };
-		49228457270AADE20027A4B6 /* RemoteConfigUpdateIntervalSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49228456270AADE20027A4B6 /* RemoteConfigUpdateIntervalSettingView.swift */; };
 		4929F677258CD89B00A435F6 /* Country.mmdb.gz in Resources */ = {isa = PBXBuildFile; fileRef = 4929F676258CD89B00A435F6 /* Country.mmdb.gz */; };
-		4929F67F258CE04700A435F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4929F67E258CE04700A435F6 /* Settings.swift */; };
 		4929F684258CE07500A435F6 /* UserDefaultWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4929F683258CE07500A435F6 /* UserDefaultWrapper.swift */; };
-		492C4869210EE6B9004554A0 /* ApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492C4868210EE6B9004554A0 /* ApiRequest.swift */; };
-		492C4871210EF62E004554A0 /* WaypointConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492C4870210EF62E004554A0 /* WaypointConfig.swift */; };
-		493A9F282453E60400D35296 /* ProxyDelayHistoryMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493A9F272453E60400D35296 /* ProxyDelayHistoryMenu.swift */; };
-		493AEAE3221AE3420016FE98 /* AppVersionUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493AEAE2221AE3420016FE98 /* AppVersionUtil.swift */; };
-		493AEAE5221AE7230016FE98 /* ProxyMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493AEAE4221AE7230016FE98 /* ProxyMenuItem.swift */; };
-		4949D154213242F600EF85E6 /* Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4949D153213242F600EF85E6 /* Paths.swift */; };
-		4952C3BF2115C7CA004A4FA8 /* MenuItemFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4952C3BE2115C7CA004A4FA8 /* MenuItemFactory.swift */; };
-		4952C3D02117027C004A4FA8 /* ConfigFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4952C3CF2117027C004A4FA8 /* ConfigFileManager.swift */; };
-		495340B020DE5F7200B0D3FF /* StatusItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 495340AF20DE5F7200B0D3FF /* StatusItemView.xib */; };
-		495340B320DE68C300B0D3FF /* StatusItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495340B220DE68C300B0D3FF /* StatusItemView.swift */; };
-		495A44D320D267D000888A0A /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495A44D220D267D000888A0A /* LaunchAtLogin.swift */; };
-		495BFB8821919B9800C8779D /* RemoteConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495BFB8721919B9800C8779D /* RemoteConfigManager.swift */; };
-		A1B2C3D4E5F6000100000001 /* CoreProcessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000100000002 /* CoreProcessManager.swift */; };
-		E1E100000000000000000D10 /* KillSwitchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D09 /* KillSwitchManager.swift */; };
-		A1B2C3D4E5F6000200000001 /* TunConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000200000002 /* TunConfig.swift */; };
-		496322222AA5D89E00854231 /* UpdateExternalResourceAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496322212AA5D89E00854231 /* UpdateExternalResourceAction.swift */; };
-		4966E9E32118153A00A391FB /* WaypointNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4966E9E22118153A00A391FB /* WaypointNotifier.swift */; };
-		496BDEE021196F1E00C5207F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496BDEDF21196F1E00C5207F /* Logger.swift */; };
-		E1E100000000000000000D02 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D01 /* KeyboardShortcuts.swift */; };
-		E1E100000000000000000D04 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D03 /* SettingsStore.swift */; };
-		E1E100000000000000000D06 /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D05 /* OnboardingRootView.swift */; };
-		E1E100000000000000000D12 /* RewriteRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D11 /* RewriteRule.swift */; };
-		E1E100000000000000000D16 /* X509.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D15 /* X509.swift */; };
-		E1E100000000000000000D18 /* MitmCertificateAuthority.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D17 /* MitmCertificateAuthority.swift */; };
-		E1E100000000000000000D20 /* MitmProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D19 /* MitmProxyServer.swift */; };
-		E1E100000000000000000D22 /* RewriteSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D21 /* RewriteSettingsView.swift */; };
-		E1E100000000000000000D23 /* ProxyUpdateHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D24 /* ProxyUpdateHub.swift */; };
 		49722FEF211F338B00650A41 /* FileEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEA211F338B00650A41 /* FileEvent.swift */; };
 		49722FF0211F338B00650A41 /* EventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEB211F338B00650A41 /* EventStream.swift */; };
 		49722FF1211F338B00650A41 /* Witness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEC211F338B00650A41 /* Witness.swift */; };
 		49761DA721C9497000AE13EF /* dashboard in Resources */ = {isa = PBXBuildFile; fileRef = 49761DA621C9497000AE13EF /* dashboard */; };
 		A1B2C3D4E5F6000100000003 /* mihomo in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000100000004 /* mihomo */; };
 		4981C88B216BAE4A008CC14A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4981C88D216BAE4A008CC14A /* Localizable.strings */; };
-		49862FA0218418C600A1D5EC /* WaypointRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49862F9F218418C600A1D5EC /* WaypointRule.swift */; };
-		49870ADB2AA75DC7002B106B /* TerminalCleanUpAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870ADA2AA75DC7002B106B /* TerminalCleanUpAction.swift */; };
-		49870ADD2AA76602002B106B /* UpdateConfigAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870ADC2AA76602002B106B /* UpdateConfigAction.swift */; };
 		4989F98E20D0AE990001E564 /* sampleConfig.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 4989F98D20D0AE990001E564 /* sampleConfig.yaml */; };
-		4991D2302A564DDC00978143 /* SpeedUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4991D22F2A564DDC00978143 /* SpeedUtils.swift */; };
-		4991D2322A565E6A00978143 /* Combine+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4991D2312A565E6A00978143 /* Combine+Ext.swift */; };
-		4994B5542A47C4FF00E595B9 /* NormalMenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4994B5532A47C4FF00E595B9 /* NormalMenuItemView.swift */; };
-		499A485822ED715200F6C675 /* RemoteConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499A485722ED715200F6C675 /* RemoteConfigModel.swift */; };
-		499A485E22ED9B7C00F6C675 /* NSTableView+Reload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499A485D22ED9B7C00F6C675 /* NSTableView+Reload.swift */; };
-		499A486522EEA3FD00F6C675 /* Array+Safe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499A486422EEA3FC00F6C675 /* Array+Safe.swift */; };
-		499ADAFD2498CC5900C488FE /* RemoteControlManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499ADAFC2498CC5900C488FE /* RemoteControlManager.swift */; };
-		49ABB749236B0F9E00535CD7 /* UnsafePointer+bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49ABB748236B0F9E00535CD7 /* UnsafePointer+bridge.swift */; };
-		49B1086A216A356D0064FFCE /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B10869216A356D0064FFCE /* String+Extension.swift */; };
-		49B445162457CDF000B27E3E /* WaypointStatusTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B445152457CDF000B27E3E /* WaypointStatusTool.swift */; };
-		49B4575D244F4A2A00463C39 /* PrivilegedHelperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B4575C244F4A2A00463C39 /* PrivilegedHelperManager.swift */; };
-		49B4575F244FD4D100463C39 /* PrivilegedHelperManager+Legacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B4575E244FD4D100463C39 /* PrivilegedHelperManager+Legacy.swift */; };
-		49BB31E7246853EA008A4CB0 /* ICloudManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BB31E6246853EA008A4CB0 /* ICloudManager.swift */; };
-		49C9EF64223E78F5005D8B6A /* WaypointProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9EF63223E78F5005D8B6A /* WaypointProxy.swift */; };
-		E1E100000000000000000C02 /* SwiftUIWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000C01 /* SwiftUIWindowController.swift */; };
-		E1E100000000000000000C04 /* DashboardRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000C03 /* DashboardRootView.swift */; };
-		E1E100000000000000000C06 /* ConnectionsRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000C05 /* ConnectionsRootView.swift */; };
-		E1E100000000000000000C08 /* SettingsRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000C07 /* SettingsRootView.swift */; };
-		E1E100000000000000000C0A /* DashboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000C09 /* DashboardStore.swift */; };
-		E1E100000000000000000C0D /* ConnectionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000C0B /* ConnectionsStore.swift */; };
 		49CF3B2120CD7463001EBF94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CF3B2020CD7463001EBF94 /* AppDelegate.swift */; };
-		49CF3B5C20CE8068001EBF94 /* WaypointResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CF3B5B20CE8068001EBF94 /* WaypointResourceManager.swift */; };
-		49CF3B6520CEE06C001EBF94 /* ConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CF3B6420CEE06C001EBF94 /* ConfigManager.swift */; };
-		49D176A72355FE680093DD7B /* NetworkChangeNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D176A62355FE680093DD7B /* NetworkChangeNotifier.swift */; };
-		49D176A9235614340093DD7B /* ProxyGroupSpeedTestMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D176A8235614340093DD7B /* ProxyGroupSpeedTestMenuItem.swift */; };
-		49D176AB23575BB20093DD7B /* ProxyGroupMenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D176AA23575BB20093DD7B /* ProxyGroupMenuItemView.swift */; };
-		49D223392A1DA5F10002FFCB /* SSIDSuspendTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D223382A1DA5F10002FFCB /* SSIDSuspendTool.swift */; };
-		7B0CAC1E2026082700000001 /* WebCacheCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0CAC1E2026082700000000 /* WebCacheCleaner.swift */; };
-		49D6A45229AEEC15006487EF /* StatusItemTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D6A45129AEEC15006487EF /* StatusItemTool.swift */; };
-		49D6A45629AEEC55006487EF /* StatusItemViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D6A45529AEEC55006487EF /* StatusItemViewProtocol.swift */; };
-		49FEC6692AD9369C00BAD9F5 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FEC6682AD9369C00BAD9F5 /* Command.swift */; };
-		8A2BBEA727A03ACB0081EBEF /* ProxySetting.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 8A2BBEA627A03ACB0081EBEF /* ProxySetting.sdef */; };
-		8ACD21BB27A04C7800BC4632 /* ProxySettingCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACD21BA27A04C7800BC4632 /* ProxySettingCommand.swift */; };
-		8ACD21BD27A04ED500BC4632 /* ProxyModeChangeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACD21BC27A04ED500BC4632 /* ProxyModeChangeCommand.swift */; };
 		D2D20000000000000000AA01 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB01 /* Sparkle */; };
-		D2D20000000000000000AA02 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB02 /* CocoaLumberjack */; };
-		D2D20000000000000000AA03 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB03 /* CocoaLumberjackSwift */; };
 		D2D20000000000000000AA04 /* FlexibleDiff in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB04 /* FlexibleDiff */; };
 		D2D20000000000000000AA05 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB05 /* Gzip */; };
 		E1E100000000000000000D39 /* WaypointCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D38 /* WaypointCore */; };
 		E1E100000000000000000D42 /* WaypointNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D41 /* WaypointNetworking */; };
 		E1E100000000000000000A03 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000A02 /* PFMoveApplication.m */; };
-		F910AA24240134AF00116E95 /* ProxyGroupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */; };
-		F915A4622366ADEF004840BE /* WaypointConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915A4612366ADEF004840BE /* WaypointConnection.swift */; };
-		F9203A26236342820020D57D /* AppDelegate+..swift in Sources */ = {isa = PBXBuildFile; fileRef = F9203A25236342820020D57D /* AppDelegate+..swift */; };
-		F92D0B24236BC12000575E15 /* SavedProxyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92D0B23236BC12000575E15 /* SavedProxyModel.swift */; };
-		F92D0B2A236C759100575E15 /* NSTextField+Vibrancy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92D0B29236C759100575E15 /* NSTextField+Vibrancy.swift */; };
-		F92D0B2C236C7C3600575E15 /* MenuItemBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92D0B2B236C7C3600575E15 /* MenuItemBaseView.swift */; };
-		F92D0B2E236D35C000575E15 /* ProxyItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92D0B2D236D35C000575E15 /* ProxyItemView.swift */; };
 		F935B2F02307C52E009E4D33 /* org.waypnt.waypoint.ProxyConfigHelper in Copy Files */ = {isa = PBXBuildFile; fileRef = F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E1E100000000000000000E02 /* org.waypnt.waypoint.ProxyConfigHelper.plist in Copy Files LaunchDaemons */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */; };
 		F935B2F42307CD32009E4D33 /* ProxyConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F935B2F32307CD32009E4D33 /* ProxyConfigHelper.m */; };
 		F935B2FA23083EE6009E4D33 /* ProxySettingTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F935B2F923083EE6009E4D33 /* ProxySettingTool.m */; };
-		F935B2FC23085515009E4D33 /* SystemProxyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F935B2FB23085515009E4D33 /* SystemProxyManager.swift */; };
-		F939724C23A4B33500FE5A3F /* WaypointProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F939724B23A4B33500FE5A3F /* WaypointProvider.swift */; };
-		F939724E23A4DB0600FE5A3F /* DateFormatter+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F939724D23A4DB0600FE5A3F /* DateFormatter+.swift */; };
 		F976275C23634DF8000EDEFE /* LoginServiceKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F976275B23634DF8000EDEFE /* LoginServiceKit.swift */; };
-		F977FAAC2366790500C17F1F /* AutoUpgardeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F977FAAB2366790500C17F1F /* AutoUpgardeManager.swift */; };
-		F977FAAE23669D6400C17F1F /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F977FAAD23669D6400C17F1F /* ConnectionManager.swift */; };
 		F9A7C06C2306E874007163C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F9A7C06B2306E874007163C7 /* main.m */; };
-		F9E754D0239CC21F00CEE7CC /* WebPortalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E754CF239CC21F00CEE7CC /* WebPortalManager.swift */; };
-		F9E754D2239CC28D00CEE7CC /* NSAlert+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E754D1239CC28D00CEE7CC /* NSAlert+Extension.swift */; };
-		F9E8F34623A12B89002DE5E8 /* String+Encode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E8F34523A12B89002DE5E8 /* String+Encode.swift */; };
 		F9FAB31E262BE04800DE02A6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9FAB31D262BE04800DE02A6 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -174,46 +86,11 @@
 		E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "org.waypnt.waypoint.ProxyConfigHelper.plist"; sourceTree = "<group>"; };
 		E1E100000000000000000D47 /* WaypointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointApp.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D4E /* WaypointAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointAppIntents.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D48 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D49 /* RemoteConfigRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigRootView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D4A /* ExternalControlRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalControlRootView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D4C /* MenuBarMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarMenuView.swift; sourceTree = "<group>"; };
-		4905A2C92A20841B00AEDA2E /* NSView+Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSView+Layout.swift"; sourceTree = "<group>"; };
 		4908087A29F8F3FF007A4944 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
-		4913C82221157D0200F6B87C /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		491E61FC258A424500313AEF /* CommonUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtils.h; sourceTree = "<group>"; };
 		491E61FD258A424500313AEF /* CommonUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtils.m; sourceTree = "<group>"; };
-		49228456270AADE20027A4B6 /* RemoteConfigUpdateIntervalSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigUpdateIntervalSettingView.swift; sourceTree = "<group>"; };
 		4929F676258CD89B00A435F6 /* Country.mmdb.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = Country.mmdb.gz; sourceTree = "<group>"; };
-		4929F67E258CE04700A435F6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		4929F683258CE07500A435F6 /* UserDefaultWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultWrapper.swift; sourceTree = "<group>"; };
-		492C4868210EE6B9004554A0 /* ApiRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequest.swift; sourceTree = "<group>"; };
-		492C4870210EF62E004554A0 /* WaypointConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointConfig.swift; sourceTree = "<group>"; };
-		493A9F272453E60400D35296 /* ProxyDelayHistoryMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyDelayHistoryMenu.swift; sourceTree = "<group>"; };
-		493AEAE2221AE3420016FE98 /* AppVersionUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionUtil.swift; sourceTree = "<group>"; };
-		493AEAE4221AE7230016FE98 /* ProxyMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyMenuItem.swift; sourceTree = "<group>"; };
-		4949D153213242F600EF85E6 /* Paths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paths.swift; sourceTree = "<group>"; };
-		4952C3BE2115C7CA004A4FA8 /* MenuItemFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemFactory.swift; sourceTree = "<group>"; };
-		4952C3CF2117027C004A4FA8 /* ConfigFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigFileManager.swift; sourceTree = "<group>"; };
-		495340AF20DE5F7200B0D3FF /* StatusItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = StatusItemView.xib; path = Waypoint/Views/StatusItem/StatusItemView.xib; sourceTree = SOURCE_ROOT; };
-		495340B220DE68C300B0D3FF /* StatusItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemView.swift; sourceTree = "<group>"; };
-		495A44D220D267D000888A0A /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
-		495BFB8721919B9800C8779D /* RemoteConfigManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigManager.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F6000100000002 /* CoreProcessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreProcessManager.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D09 /* KillSwitchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KillSwitchManager.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F6000200000002 /* TunConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunConfig.swift; sourceTree = "<group>"; };
-		496322212AA5D89E00854231 /* UpdateExternalResourceAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateExternalResourceAction.swift; sourceTree = "<group>"; };
-		4966E9E22118153A00A391FB /* WaypointNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WaypointNotifier.swift"; sourceTree = "<group>"; };
-		496BDEDF21196F1E00C5207F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D01 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D03 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D05 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D11 /* RewriteRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewriteRule.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D15 /* X509.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = X509.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D17 /* MitmCertificateAuthority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmCertificateAuthority.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D19 /* MitmProxyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitmProxyServer.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D21 /* RewriteSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewriteSettingsView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D24 /* ProxyUpdateHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyUpdateHub.swift; sourceTree = "<group>"; };
 		49722FEA211F338B00650A41 /* FileEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEvent.swift; sourceTree = "<group>"; };
 		49722FEB211F338B00650A41 /* EventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStream.swift; sourceTree = "<group>"; };
 		49722FEC211F338B00650A41 /* Witness.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Witness.swift; sourceTree = "<group>"; };
@@ -221,59 +98,16 @@
 		49761DA621C9497000AE13EF /* dashboard */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dashboard; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000100000004 /* mihomo */ = {isa = PBXFileReference; lastKnownFileType = file; path = mihomo; sourceTree = "<group>"; };
 		4981C88C216BAE4A008CC14A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		49862F9F218418C600A1D5EC /* WaypointRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointRule.swift; sourceTree = "<group>"; };
-		49870ADA2AA75DC7002B106B /* TerminalCleanUpAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalCleanUpAction.swift; sourceTree = "<group>"; };
-		49870ADC2AA76602002B106B /* UpdateConfigAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateConfigAction.swift; sourceTree = "<group>"; };
 		498960722340F21C00AFB7EC /* org.waypnt.waypoint.ProxyConfigHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = org.waypnt.waypoint.ProxyConfigHelper.entitlements; sourceTree = "<group>"; };
 		4989F98D20D0AE990001E564 /* sampleConfig.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = sampleConfig.yaml; sourceTree = "<group>"; };
-		4991D22F2A564DDC00978143 /* SpeedUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedUtils.swift; sourceTree = "<group>"; };
-		4991D2312A565E6A00978143 /* Combine+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Combine+Ext.swift"; sourceTree = "<group>"; };
-		4994B5532A47C4FF00E595B9 /* NormalMenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalMenuItemView.swift; sourceTree = "<group>"; };
-		499A485722ED715200F6C675 /* RemoteConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigModel.swift; sourceTree = "<group>"; };
-		499A485D22ED9B7C00F6C675 /* NSTableView+Reload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTableView+Reload.swift"; sourceTree = "<group>"; };
-		499A486422EEA3FC00F6C675 /* Array+Safe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Safe.swift"; sourceTree = "<group>"; };
-		499ADAFC2498CC5900C488FE /* RemoteControlManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteControlManager.swift; sourceTree = "<group>"; };
-		49ABB748236B0F9E00535CD7 /* UnsafePointer+bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnsafePointer+bridge.swift"; sourceTree = "<group>"; };
-		49B10869216A356D0064FFCE /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
-		49B445152457CDF000B27E3E /* WaypointStatusTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointStatusTool.swift; sourceTree = "<group>"; };
-		49B4575C244F4A2A00463C39 /* PrivilegedHelperManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivilegedHelperManager.swift; sourceTree = "<group>"; };
-		49B4575E244FD4D100463C39 /* PrivilegedHelperManager+Legacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PrivilegedHelperManager+Legacy.swift"; sourceTree = "<group>"; };
-		49BB31E6246853EA008A4CB0 /* ICloudManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudManager.swift; sourceTree = "<group>"; };
-		49C9EF63223E78F5005D8B6A /* WaypointProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointProxy.swift; sourceTree = "<group>"; };
-		E1E100000000000000000C01 /* SwiftUIWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIWindowController.swift; sourceTree = "<group>"; };
-		E1E100000000000000000C03 /* DashboardRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardRootView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000C05 /* ConnectionsRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsRootView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000C07 /* SettingsRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRootView.swift; sourceTree = "<group>"; };
-		E1E100000000000000000C09 /* DashboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStore.swift; sourceTree = "<group>"; };
-		E1E100000000000000000C0B /* ConnectionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsStore.swift; sourceTree = "<group>"; };
 		49CF3B1D20CD7463001EBF94 /* Waypoint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Waypoint.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49CF3B2020CD7463001EBF94 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49CF3B2920CD7465001EBF94 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49CF3B2A20CD7465001EBF94 /* Waypoint.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Waypoint.entitlements; sourceTree = "<group>"; };
 		49CF3B3520CD75DF001EBF94 /* Waypoint-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Waypoint-Bridging-Header.h"; sourceTree = "<group>"; };
-		49CF3B5B20CE8068001EBF94 /* WaypointResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointResourceManager.swift; sourceTree = "<group>"; };
-		49CF3B6420CEE06C001EBF94 /* ConfigManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigManager.swift; sourceTree = "<group>"; };
-		49D176A62355FE680093DD7B /* NetworkChangeNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChangeNotifier.swift; sourceTree = "<group>"; };
-		49D176A8235614340093DD7B /* ProxyGroupSpeedTestMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyGroupSpeedTestMenuItem.swift; sourceTree = "<group>"; };
-		49D176AA23575BB20093DD7B /* ProxyGroupMenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyGroupMenuItemView.swift; sourceTree = "<group>"; };
-		49D223382A1DA5F10002FFCB /* SSIDSuspendTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSIDSuspendTool.swift; sourceTree = "<group>"; };
-		7B0CAC1E2026082700000000 /* WebCacheCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCacheCleaner.swift; sourceTree = "<group>"; };
-		49D6A45129AEEC15006487EF /* StatusItemTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemTool.swift; sourceTree = "<group>"; };
-		49D6A45529AEEC55006487EF /* StatusItemViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemViewProtocol.swift; sourceTree = "<group>"; };
-		49FEC6682AD9369C00BAD9F5 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
-		8A2BBEA627A03ACB0081EBEF /* ProxySetting.sdef */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ProxySetting.sdef; sourceTree = "<group>"; };
 		E1E100000000000000000A01 /* PFMoveApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFMoveApplication.h; sourceTree = "<group>"; };
 		E1E100000000000000000A02 /* PFMoveApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFMoveApplication.m; sourceTree = "<group>"; };
-		8ACD21BA27A04C7800BC4632 /* ProxySettingCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySettingCommand.swift; sourceTree = "<group>"; };
-		8ACD21BC27A04ED500BC4632 /* ProxyModeChangeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyModeChangeCommand.swift; sourceTree = "<group>"; };
 
-		F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyGroupMenu.swift; sourceTree = "<group>"; };
-		F915A4612366ADEF004840BE /* WaypointConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointConnection.swift; sourceTree = "<group>"; };
-		F9203A25236342820020D57D /* AppDelegate+..swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+..swift"; sourceTree = "<group>"; };
-		F92D0B23236BC12000575E15 /* SavedProxyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedProxyModel.swift; sourceTree = "<group>"; };
-		F92D0B29236C759100575E15 /* NSTextField+Vibrancy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextField+Vibrancy.swift"; sourceTree = "<group>"; };
-		F92D0B2B236C7C3600575E15 /* MenuItemBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemBaseView.swift; sourceTree = "<group>"; };
-		F92D0B2D236D35C000575E15 /* ProxyItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyItemView.swift; sourceTree = "<group>"; };
 		F935B2EA2307B6BA009E4D33 /* Helper-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Helper-Info.plist"; sourceTree = "<group>"; };
 		F935B2F12307C802009E4D33 /* Helper-Launchd.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Helper-Launchd.plist"; sourceTree = "<group>"; };
 		F935B2F22307CD32009E4D33 /* ProxyConfigHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxyConfigHelper.h; sourceTree = "<group>"; };
@@ -281,18 +115,83 @@
 		F935B2F52307D00D009E4D33 /* ProxyConfigRemoteProcessProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxyConfigRemoteProcessProtocol.h; sourceTree = "<group>"; };
 		F935B2F823083EE6009E4D33 /* ProxySettingTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySettingTool.h; sourceTree = "<group>"; };
 		F935B2F923083EE6009E4D33 /* ProxySettingTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProxySettingTool.m; sourceTree = "<group>"; };
-		F935B2FB23085515009E4D33 /* SystemProxyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemProxyManager.swift; sourceTree = "<group>"; };
-		F939724B23A4B33500FE5A3F /* WaypointProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointProvider.swift; sourceTree = "<group>"; };
-		F939724D23A4DB0600FE5A3F /* DateFormatter+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+.swift"; sourceTree = "<group>"; };
 		F976275B23634DF8000EDEFE /* LoginServiceKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginServiceKit.swift; sourceTree = "<group>"; };
-		F977FAAB2366790500C17F1F /* AutoUpgardeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUpgardeManager.swift; sourceTree = "<group>"; };
-		F977FAAD23669D6400C17F1F /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = org.waypnt.waypoint.ProxyConfigHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9A7C06B2306E874007163C7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		F9E754CF239CC21F00CEE7CC /* WebPortalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPortalManager.swift; sourceTree = "<group>"; };
-		F9E754D1239CC28D00CEE7CC /* NSAlert+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAlert+Extension.swift"; sourceTree = "<group>"; };
-		F9E8F34523A12B89002DE5E8 /* String+Encode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Encode.swift"; sourceTree = "<group>"; };
 		F9FAB31D262BE04800DE02A6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F1A000000000000000000001 /* AppleScript */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = AppleScript;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000002 /* Basic */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = Basic;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000003 /* Macro */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = Macro;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000004 /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000005 /* Extensions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000006 /* General */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = General;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000007 /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = Views;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000008 /* Actions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = Actions;
+			sourceTree = "<group>";
+		};
+		F1A000000000000000000009 /* ViewControllers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		F1A00000000000000000000A /* SwiftUI */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -302,8 +201,6 @@
 			files = (
 				4905A2C82A2058D400AEDA2E /* KeyboardShortcuts in Frameworks */,
 				D2D20000000000000000AA01 /* Sparkle in Frameworks */,
-				D2D20000000000000000AA02 /* CocoaLumberjack in Frameworks */,
-				D2D20000000000000000AA03 /* CocoaLumberjackSwift in Frameworks */,
 				D2D20000000000000000AA04 /* FlexibleDiff in Frameworks */,
 				D2D20000000000000000AA05 /* Gzip in Frameworks */,
 				4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */,
@@ -322,122 +219,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4913C82021157CEB00F6B87C /* Macro */ = {
-			isa = PBXGroup;
-			children = (
-				4913C82221157D0200F6B87C /* Notification.swift */,
-				4949D153213242F600EF85E6 /* Paths.swift */,
-			);
-			path = Macro;
-			sourceTree = "<group>";
-		};
-		491C24FF21BD558B00AB5D44 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				499A486422EEA3FC00F6C675 /* Array+Safe.swift */,
-				4966E9E22118153A00A391FB /* WaypointNotifier.swift */,
-				499A485D22ED9B7C00F6C675 /* NSTableView+Reload.swift */,
-				F9203A25236342820020D57D /* AppDelegate+..swift */,
-				F92D0B29236C759100575E15 /* NSTextField+Vibrancy.swift */,
-				F9E754D1239CC28D00CEE7CC /* NSAlert+Extension.swift */,
-				F9E8F34523A12B89002DE5E8 /* String+Encode.swift */,
-				F939724D23A4DB0600FE5A3F /* DateFormatter+.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		491C250021BD55B900AB5D44 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				493AEAE2221AE3420016FE98 /* AppVersionUtil.swift */,
-				49D176A62355FE680093DD7B /* NetworkChangeNotifier.swift */,
-				49B445152457CDF000B27E3E /* WaypointStatusTool.swift */,
-				49D223382A1DA5F10002FFCB /* SSIDSuspendTool.swift */,
-				7B0CAC1E2026082700000000 /* WebCacheCleaner.swift */,
-				49FEC6682AD9369C00BAD9F5 /* Command.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		491C250121BD561200AB5D44 /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				4952C3CF2117027C004A4FA8 /* ConfigFileManager.swift */,
-				49CF3B5B20CE8068001EBF94 /* WaypointResourceManager.swift */,
-				49CF3B6420CEE06C001EBF94 /* ConfigManager.swift */,
-				495BFB8721919B9800C8779D /* RemoteConfigManager.swift */,
-				A1B2C3D4E5F6000100000002 /* CoreProcessManager.swift */,
-				E1E100000000000000000D09 /* KillSwitchManager.swift */,
-				E1E100000000000000000D24 /* ProxyUpdateHub.swift */,
-				E1E100000000000000000D17 /* MitmCertificateAuthority.swift */,
-				E1E100000000000000000D19 /* MitmProxyServer.swift */,
-				4952C3BE2115C7CA004A4FA8 /* MenuItemFactory.swift */,
-				F935B2FB23085515009E4D33 /* SystemProxyManager.swift */,
-				F977FAAB2366790500C17F1F /* AutoUpgardeManager.swift */,
-				F977FAAD23669D6400C17F1F /* ConnectionManager.swift */,
-				F9E754CF239CC21F00CEE7CC /* WebPortalManager.swift */,
-				49B4575C244F4A2A00463C39 /* PrivilegedHelperManager.swift */,
-				49B4575E244FD4D100463C39 /* PrivilegedHelperManager+Legacy.swift */,
-				49BB31E6246853EA008A4CB0 /* ICloudManager.swift */,
-				499ADAFC2498CC5900C488FE /* RemoteControlManager.swift */,
-				4929F67E258CE04700A435F6 /* Settings.swift */,
-			);
-			path = Managers;
-			sourceTree = "<group>";
-		};
-		492C4866210EE69B004554A0 /* General */ = {
-			isa = PBXGroup;
-			children = (
-				491C250121BD561200AB5D44 /* Managers */,
-				491C250021BD55B900AB5D44 /* Utils */,
-				492C4868210EE6B9004554A0 /* ApiRequest.swift */,
-			);
-			path = General;
-			sourceTree = "<group>";
-		};
-		492C486E210EF621004554A0 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				492C4870210EF62E004554A0 /* WaypointConfig.swift */,
-				49862F9F218418C600A1D5EC /* WaypointRule.swift */,
-				49C9EF63223E78F5005D8B6A /* WaypointProxy.swift */,
-				499A485722ED715200F6C675 /* RemoteConfigModel.swift */,
-				F915A4612366ADEF004840BE /* WaypointConnection.swift */,
-				F92D0B23236BC12000575E15 /* SavedProxyModel.swift */,
-				F939724B23A4B33500FE5A3F /* WaypointProvider.swift */,
-				A1B2C3D4E5F6000200000002 /* TunConfig.swift */,
-				E1E100000000000000000D11 /* RewriteRule.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		4931969C21631F2E00A8E6E7 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				49BC1B4029AEEBBB002007B1 /* StatusItem */,
-				F92D0B2B236C7C3600575E15 /* MenuItemBaseView.swift */,
-				49D176AA23575BB20093DD7B /* ProxyGroupMenuItemView.swift */,
-				49D176A8235614340093DD7B /* ProxyGroupSpeedTestMenuItem.swift */,
-				F92D0B2D236D35C000575E15 /* ProxyItemView.swift */,
-				493AEAE4221AE7230016FE98 /* ProxyMenuItem.swift */,
-				F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */,
-				493A9F272453E60400D35296 /* ProxyDelayHistoryMenu.swift */,
-				49228456270AADE20027A4B6 /* RemoteConfigUpdateIntervalSettingView.swift */,
-				4994B5532A47C4FF00E595B9 /* NormalMenuItemView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		496322202AA5D88100854231 /* Actions */ = {
-			isa = PBXGroup;
-			children = (
-				496322212AA5D89E00854231 /* UpdateExternalResourceAction.swift */,
-				49870ADA2AA75DC7002B106B /* TerminalCleanUpAction.swift */,
-				49870ADC2AA76602002B106B /* UpdateConfigAction.swift */,
-			);
-			path = Actions;
-			sourceTree = "<group>";
-		};
 		49722FDD211ED2A900650A41 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
@@ -471,81 +252,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		4989F98520D0AA300001E564 /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				49CCDA2B2A54FA8900FF1E13 /* Connections */,
-				498BC2512929CC0A00CA8084 /* Settings */,
-			);
-			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		498BC2512929CC0A00CA8084 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
-		4991D2262A56467600978143 /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Cell;
-			sourceTree = "<group>";
-		};
-		4997732220D251A60009B136 /* Basic */ = {
-			isa = PBXGroup;
-			children = (
-				E1E100000000000000000D01 /* KeyboardShortcuts.swift */,
-				495A44D220D267D000888A0A /* LaunchAtLogin.swift */,
-				496BDEDF21196F1E00C5207F /* Logger.swift */,
-				E1E100000000000000000D15 /* X509.swift */,
-				4905A2C92A20841B00AEDA2E /* NSView+Layout.swift */,
-				49B10869216A356D0064FFCE /* String+Extension.swift */,
-				49ABB748236B0F9E00535CD7 /* UnsafePointer+bridge.swift */,
-				4991D22F2A564DDC00978143 /* SpeedUtils.swift */,
-				4991D2312A565E6A00978143 /* Combine+Ext.swift */,
-			);
-			path = Basic;
-			sourceTree = "<group>";
-		};
-		49BC1B4029AEEBBB002007B1 /* StatusItem */ = {
-			isa = PBXGroup;
-			children = (
-				495340AF20DE5F7200B0D3FF /* StatusItemView.xib */,
-				495340B220DE68C300B0D3FF /* StatusItemView.swift */,
-				49D6A45129AEEC15006487EF /* StatusItemTool.swift */,
-				49D6A45529AEEC55006487EF /* StatusItemViewProtocol.swift */,
-			);
-			path = StatusItem;
-			sourceTree = "<group>";
-		};
-		49C9AFF52A596ABA00178BB4 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		49CCDA2B2A54FA8900FF1E13 /* Connections */ = {
-			isa = PBXGroup;
-			children = (
-				49D767722A6195BE00830333 /* Requests */,
-				49C9AFF52A596ABA00178BB4 /* ViewModels */,
-				49CCDA2E2A54FC1900FF1E13 /* Views */,
-			);
-			path = Connections;
-			sourceTree = "<group>";
-		};
-		49CCDA2E2A54FC1900FF1E13 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				4991D2262A56467600978143 /* Cell */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		49CF3B1420CD7463001EBF94 = {
 			isa = PBXGroup;
 			children = (
@@ -568,16 +274,16 @@
 		49CF3B1F20CD7463001EBF94 /* Waypoint */ = {
 			isa = PBXGroup;
 			children = (
-				8A2BBEA527A03A920081EBEF /* AppleScript */,
+				F1A000000000000000000001 /* AppleScript */,
 				49722FDD211ED2A900650A41 /* Vendor */,
-				4913C82021157CEB00F6B87C /* Macro */,
-				4997732220D251A60009B136 /* Basic */,
-				492C486E210EF621004554A0 /* Models */,
-				491C24FF21BD558B00AB5D44 /* Extensions */,
-				492C4866210EE69B004554A0 /* General */,
-				4931969C21631F2E00A8E6E7 /* Views */,
-				496322202AA5D88100854231 /* Actions */,
-				4989F98520D0AA300001E564 /* ViewControllers */,
+				F1A000000000000000000003 /* Macro */,
+				F1A000000000000000000002 /* Basic */,
+				F1A000000000000000000004 /* Models */,
+				F1A000000000000000000005 /* Extensions */,
+				F1A000000000000000000006 /* General */,
+				F1A000000000000000000007 /* Views */,
+				F1A000000000000000000008 /* Actions */,
+				F1A000000000000000000009 /* ViewControllers */,
 				49761DA521C9490400AE13EF /* Resources */,
 				49CF3B3A20CD783A001EBF94 /* Support Files */,
 				49CF3B2020CD7463001EBF94 /* AppDelegate.swift */,
@@ -587,44 +293,17 @@
 				49CF3B2A20CD7465001EBF94 /* Waypoint.entitlements */,
 				49CF3B3520CD75DF001EBF94 /* Waypoint-Bridging-Header.h */,
 				F9FAB31D262BE04800DE02A6 /* Images.xcassets */,
-				E1E10000000000000000CB01 /* SwiftUI */,
-			);
-			path = Waypoint;
-			sourceTree = "<group>";
-		};
-		E1E10000000000000000CB01 /* SwiftUI */ = {
-			isa = PBXGroup;
-			children = (
-				E1E100000000000000000D03 /* SettingsStore.swift */,
-				E1E100000000000000000D05 /* OnboardingRootView.swift */,
-				E1E100000000000000000D48 /* AboutView.swift */,
-				E1E100000000000000000D49 /* RemoteConfigRootView.swift */,
-				E1E100000000000000000D4A /* ExternalControlRootView.swift */,
-				E1E100000000000000000D4C /* MenuBarMenuView.swift */,
-				E1E100000000000000000D21 /* RewriteSettingsView.swift */,
-				E1E100000000000000000C01 /* SwiftUIWindowController.swift */,
-				E1E100000000000000000C09 /* DashboardStore.swift */,
-				E1E100000000000000000C03 /* DashboardRootView.swift */,
-				E1E100000000000000000C0B /* ConnectionsStore.swift */,
-				E1E100000000000000000C05 /* ConnectionsRootView.swift */,
-				E1E100000000000000000C07 /* SettingsRootView.swift */,
-			);
-			path = SwiftUI;
-			sourceTree = "<group>";
+				F1A00000000000000000000A /* SwiftUI */,
+		);
+				path = Waypoint;
+				sourceTree = "<group>";
 		};
 		49CF3B3A20CD783A001EBF94 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				4981C88D216BAE4A008CC14A /* Localizable.strings */,
+				isa = PBXGroup;
+				children = (
+					4981C88D216BAE4A008CC14A /* Localizable.strings */,
 			);
 			path = "Support Files";
-			sourceTree = "<group>";
-		};
-		49D767722A6195BE00830333 /* Requests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Requests;
 			sourceTree = "<group>";
 		};
 		E1E100000000000000000B01 /* LetsMove */ = {
@@ -634,16 +313,6 @@
 				E1E100000000000000000A02 /* PFMoveApplication.m */,
 			);
 			path = LetsMove;
-			sourceTree = "<group>";
-		};
-		8A2BBEA527A03A920081EBEF /* AppleScript */ = {
-			isa = PBXGroup;
-			children = (
-				8A2BBEA627A03ACB0081EBEF /* ProxySetting.sdef */,
-				8ACD21BA27A04C7800BC4632 /* ProxySettingCommand.swift */,
-				8ACD21BC27A04ED500BC4632 /* ProxyModeChangeCommand.swift */,
-			);
-			path = AppleScript;
 			sourceTree = "<group>";
 		};
 		CF1AC9FACC36FCE7663C5583 /* Frameworks */ = {
@@ -700,12 +369,22 @@
 			dependencies = (
 				F935B2EC2307B7CD009E4D33 /* PBXTargetDependency */,
 			);
+			fileSystemSynchronizedGroups = (
+				F1A000000000000000000001 /* AppleScript */,
+				F1A000000000000000000002 /* Basic */,
+				F1A000000000000000000003 /* Macro */,
+				F1A000000000000000000004 /* Models */,
+				F1A000000000000000000005 /* Extensions */,
+				F1A000000000000000000006 /* General */,
+				F1A000000000000000000007 /* Views */,
+				F1A000000000000000000008 /* Actions */,
+				F1A000000000000000000009 /* ViewControllers */,
+				F1A00000000000000000000A /* SwiftUI */,
+			);
 			name = Waypoint;
 			packageProductDependencies = (
 				4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */,
 				D2D20000000000000000BB01 /* Sparkle */,
-				D2D20000000000000000BB02 /* CocoaLumberjack */,
-				D2D20000000000000000BB03 /* CocoaLumberjackSwift */,
 				D2D20000000000000000BB04 /* FlexibleDiff */,
 				D2D20000000000000000BB05 /* Gzip */,
 				E1E100000000000000000D38 /* WaypointCore */,
@@ -740,7 +419,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = waypnt;
 				TargetAttributes = {
 					49CF3B1C20CD7463001EBF94 = {
@@ -765,8 +444,7 @@
 				};
 			};
 			buildConfigurationList = 49CF3B1820CD7463001EBF94 /* Build configuration list for PBXProject "Waypoint" */;
-			compatibilityVersion = "Xcode 9.3";
-			developmentRegion = en;
+					developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -776,7 +454,6 @@
 			packageReferences = (
 				4905A2C62A2058D400AEDA2E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				D1D10000000000000000CC01 /* XCRemoteSwiftPackageReference "Sparkle" */,
-				D1D10000000000000000CC02 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				D1D10000000000000000CC03 /* XCRemoteSwiftPackageReference "FlexibleDiff" */,
 				D1D10000000000000000CC04 /* XCRemoteSwiftPackageReference "GzipSwift" */,
 				E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */,
@@ -801,9 +478,7 @@
 				A1B2C3D4E5F6000100000003 /* mihomo in Resources */,
 				4929F677258CD89B00A435F6 /* Country.mmdb.gz in Resources */,
 				4981C88B216BAE4A008CC14A /* Localizable.strings in Resources */,
-				8A2BBEA727A03ACB0081EBEF /* ProxySetting.sdef in Resources */,
 				F9FAB31E262BE04800DE02A6 /* Images.xcassets in Resources */,
-				495340B020DE5F7200B0D3FF /* StatusItemView.xib in Resources */,
 				4989F98E20D0AE990001E564 /* sampleConfig.yaml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -837,99 +512,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49ABB749236B0F9E00535CD7 /* UnsafePointer+bridge.swift in Sources */,
-				49D6A45229AEEC15006487EF /* StatusItemTool.swift in Sources */,
-				49CF3B5C20CE8068001EBF94 /* WaypointResourceManager.swift in Sources */,
-				4952C3D02117027C004A4FA8 /* ConfigFileManager.swift in Sources */,
-				4949D154213242F600EF85E6 /* Paths.swift in Sources */,
-				F939724E23A4DB0600FE5A3F /* DateFormatter+.swift in Sources */,
-				F915A4622366ADEF004840BE /* WaypointConnection.swift in Sources */,
-				F977FAAE23669D6400C17F1F /* ConnectionManager.swift in Sources */,
-				495340B320DE68C300B0D3FF /* StatusItemView.swift in Sources */,
-				F935B2FC23085515009E4D33 /* SystemProxyManager.swift in Sources */,
-				495A44D320D267D000888A0A /* LaunchAtLogin.swift in Sources */,
-				4991D2322A565E6A00978143 /* Combine+Ext.swift in Sources */,
-				E1E100000000000000000C02 /* SwiftUIWindowController.swift in Sources */,
-				E1E100000000000000000C04 /* DashboardRootView.swift in Sources */,
-				E1E100000000000000000C06 /* ConnectionsRootView.swift in Sources */,
-				E1E100000000000000000C08 /* SettingsRootView.swift in Sources */,
-				E1E100000000000000000C0A /* DashboardStore.swift in Sources */,
-				E1E100000000000000000C0D /* ConnectionsStore.swift in Sources */,
-				4929F67F258CE04700A435F6 /* Settings.swift in Sources */,
-				49D6A45629AEEC55006487EF /* StatusItemViewProtocol.swift in Sources */,
-				493AEAE3221AE3420016FE98 /* AppVersionUtil.swift in Sources */,
 				49CF3B2120CD7463001EBF94 /* AppDelegate.swift in Sources */,
 				E1E100000000000000000D43 /* WaypointApp.swift in Sources */,
 				E1E100000000000000000D4D /* WaypointAppIntents.swift in Sources */,
-				E1E100000000000000000D44 /* AboutView.swift in Sources */,
-				E1E100000000000000000D45 /* RemoteConfigRootView.swift in Sources */,
-				E1E100000000000000000D46 /* ExternalControlRootView.swift in Sources */,
-				E1E100000000000000000D4B /* MenuBarMenuView.swift in Sources */,
-				4991D2302A564DDC00978143 /* SpeedUtils.swift in Sources */,
-				496BDEE021196F1E00C5207F /* Logger.swift in Sources */,
-				E1E100000000000000000D02 /* KeyboardShortcuts.swift in Sources */,
-				E1E100000000000000000D04 /* SettingsStore.swift in Sources */,
-				E1E100000000000000000D06 /* OnboardingRootView.swift in Sources */,
-				4905A2CA2A20841B00AEDA2E /* NSView+Layout.swift in Sources */,
 				49722FEF211F338B00650A41 /* FileEvent.swift in Sources */,
-				49D176A72355FE680093DD7B /* NetworkChangeNotifier.swift in Sources */,
-				4913C82321157D0200F6B87C /* Notification.swift in Sources */,
-				8ACD21BD27A04ED500BC4632 /* ProxyModeChangeCommand.swift in Sources */,
-				49228457270AADE20027A4B6 /* RemoteConfigUpdateIntervalSettingView.swift in Sources */,
-				F9203A26236342820020D57D /* AppDelegate+..swift in Sources */,
-				493A9F282453E60400D35296 /* ProxyDelayHistoryMenu.swift in Sources */,
-				492C4871210EF62E004554A0 /* WaypointConfig.swift in Sources */,
-				492C4869210EE6B9004554A0 /* ApiRequest.swift in Sources */,
-				49CF3B6520CEE06C001EBF94 /* ConfigManager.swift in Sources */,
-				49870ADB2AA75DC7002B106B /* TerminalCleanUpAction.swift in Sources */,
-				F9E754D0239CC21F00CEE7CC /* WebPortalManager.swift in Sources */,
-				495BFB8821919B9800C8779D /* RemoteConfigManager.swift in Sources */,
-				A1B2C3D4E5F6000100000001 /* CoreProcessManager.swift in Sources */,
-				E1E100000000000000000D10 /* KillSwitchManager.swift in Sources */,
-				E1E100000000000000000D12 /* RewriteRule.swift in Sources */,
-				E1E100000000000000000D16 /* X509.swift in Sources */,
-				E1E100000000000000000D18 /* MitmCertificateAuthority.swift in Sources */,
-				E1E100000000000000000D20 /* MitmProxyServer.swift in Sources */,
-				E1E100000000000000000D22 /* RewriteSettingsView.swift in Sources */,
-				E1E100000000000000000D23 /* ProxyUpdateHub.swift in Sources */,
-				A1B2C3D4E5F6000200000001 /* TunConfig.swift in Sources */,
-				8ACD21BB27A04C7800BC4632 /* ProxySettingCommand.swift in Sources */,
 				49722FF1211F338B00650A41 /* Witness.swift in Sources */,
 				49722FF0211F338B00650A41 /* EventStream.swift in Sources */,
-				499A486522EEA3FD00F6C675 /* Array+Safe.swift in Sources */,
-				F92D0B24236BC12000575E15 /* SavedProxyModel.swift in Sources */,
-				49FEC6692AD9369C00BAD9F5 /* Command.swift in Sources */,
-				F92D0B2A236C759100575E15 /* NSTextField+Vibrancy.swift in Sources */,
-				49D223392A1DA5F10002FFCB /* SSIDSuspendTool.swift in Sources */,
-				7B0CAC1E2026082700000001 /* WebCacheCleaner.swift in Sources */,
-				F910AA24240134AF00116E95 /* ProxyGroupMenu.swift in Sources */,
-				4952C3BF2115C7CA004A4FA8 /* MenuItemFactory.swift in Sources */,
-				F977FAAC2366790500C17F1F /* AutoUpgardeManager.swift in Sources */,
-				499A485822ED715200F6C675 /* RemoteConfigModel.swift in Sources */,
-				49D176AB23575BB20093DD7B /* ProxyGroupMenuItemView.swift in Sources */,
-				49B4575D244F4A2A00463C39 /* PrivilegedHelperManager.swift in Sources */,
-				49B4575F244FD4D100463C39 /* PrivilegedHelperManager+Legacy.swift in Sources */,
-				4966E9E32118153A00A391FB /* WaypointNotifier.swift in Sources */,
-				F9E754D2239CC28D00CEE7CC /* NSAlert+Extension.swift in Sources */,
-				49D176A9235614340093DD7B /* ProxyGroupSpeedTestMenuItem.swift in Sources */,
 				F976275C23634DF8000EDEFE /* LoginServiceKit.swift in Sources */,
-				4994B5542A47C4FF00E595B9 /* NormalMenuItemView.swift in Sources */,
-				F92D0B2E236D35C000575E15 /* ProxyItemView.swift in Sources */,
-				49BB31E7246853EA008A4CB0 /* ICloudManager.swift in Sources */,
-				49B1086A216A356D0064FFCE /* String+Extension.swift in Sources */,
-				F92D0B2C236C7C3600575E15 /* MenuItemBaseView.swift in Sources */,
-				499ADAFD2498CC5900C488FE /* RemoteControlManager.swift in Sources */,
 				E1E100000000000000000A03 /* PFMoveApplication.m in Sources */,
-				493AEAE5221AE7230016FE98 /* ProxyMenuItem.swift in Sources */,
-				496322222AA5D89E00854231 /* UpdateExternalResourceAction.swift in Sources */,
-				49870ADD2AA76602002B106B /* UpdateConfigAction.swift in Sources */,
-				499A485E22ED9B7C00F6C675 /* NSTableView+Reload.swift in Sources */,
-				F939724C23A4B33500FE5A3F /* WaypointProvider.swift in Sources */,
-				49862FA0218418C600A1D5EC /* WaypointRule.swift in Sources */,
-				49C9EF64223E78F5005D8B6A /* WaypointProxy.swift in Sources */,
 				4929F684258CE07500A435F6 /* UserDefaultWrapper.swift in Sources */,
-				F9E8F34623A12B89002DE5E8 /* String+Encode.swift in Sources */,
-				49B445162457CDF000B27E3E /* WaypointStatusTool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1286,14 +877,6 @@
 				minimumVersion = 2.5.1;
 			};
 		};
-		D1D10000000000000000CC02 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.8.1;
-			};
-		};
 		D1D10000000000000000CC03 /* XCRemoteSwiftPackageReference "FlexibleDiff" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RACCommunity/FlexibleDiff.git";
@@ -1331,16 +914,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D1D10000000000000000CC01 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
-		};
-		D2D20000000000000000BB02 /* CocoaLumberjack */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D1D10000000000000000CC02 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjack;
-		};
-		D2D20000000000000000BB03 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D1D10000000000000000CC02 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
 		};
 		D2D20000000000000000BB04 /* FlexibleDiff */ = {
 			isa = XCSwiftPackageProductDependency;
