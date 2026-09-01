@@ -233,7 +233,7 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
     private static func serverContext(identity: MitmIdentity) throws -> NIOSSLContext {
         let configuration = TLSConfiguration.makeServerConfiguration(
             certificateChain: [.certificate(try NIOSSLCertificate(bytes: identity.certificateDER, format: .der))],
-            privateKey: .privateKey(NIOSSLPrivateKey(bytes: identity.privateKeyDER, format: .der))
+            privateKey: .privateKey(try NIOSSLPrivateKey(bytes: identity.privateKeyDER, format: .der))
         )
         return try NIOSSLContext(configuration: configuration)
     }
