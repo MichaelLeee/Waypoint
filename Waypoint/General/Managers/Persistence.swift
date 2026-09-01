@@ -197,7 +197,7 @@ enum Persistence {
     /// Raw SCNetwork proxy dictionary captured before the app takes over
     /// system proxy settings, used to restore the user's original state.
     static var savedProxyInfo: [String: Any] {
-        get { UserDefaults.standard.dictionary(forKey: Key.savedProxyInfo) }
+        get { UserDefaults.standard.dictionary(forKey: Key.savedProxyInfo) ?? [:] }
         set { UserDefaults.standard.set(newValue, forKey: Key.savedProxyInfo) }
     }
 
