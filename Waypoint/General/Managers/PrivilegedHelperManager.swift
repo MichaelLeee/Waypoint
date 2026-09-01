@@ -123,7 +123,7 @@ class PrivilegedHelperManager: @unchecked Sendable {
         return .success
     }
 
-    func helper(failture: (() -> Void)? = nil) -> ProxyConfigRemoteProcessProtocol? {
+    func helper(failture: ((String) -> Void)? = nil) -> ProxyConfigRemoteProcessProtocol? {
         connection = NSXPCConnection(machServiceName: PrivilegedHelperManager.machServiceName, options: NSXPCConnection.Options.privileged)
         connection?.remoteObjectInterface = NSXPCInterface(with: ProxyConfigRemoteProcessProtocol.self)
         connection?.invalidationHandler = {
@@ -132,7 +132,7 @@ class PrivilegedHelperManager: @unchecked Sendable {
         connection?.resume()
         guard let helper = connection?.remoteObjectProxyWithErrorHandler({ error in
             Logger.log("Helper connection was closed with error: \(error)")
-            failture?()
+            failture?(error.localizedDescription)
         }) as? ProxyConfigRemoteProcessProtocol else { return nil }
         return helper
     }

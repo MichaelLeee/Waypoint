@@ -21,8 +21,8 @@ final class KillSwitchManager {
     func applyNow() async -> String? {
         let rules = Self.buildRules()
         return await withCheckedContinuation { (continuation: CheckedContinuation<String?, Never>) in
-            guard let helper = PrivilegedHelperManager.shared.helper(failture: {
-                continuation.resume(returning: "proxy helper unavailable")
+            guard let helper = PrivilegedHelperManager.shared.helper(failture: { message in
+                continuation.resume(returning: "proxy helper unavailable: \(message)")
             }) else {
                 continuation.resume(returning: "proxy helper unavailable")
                 return

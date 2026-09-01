@@ -132,8 +132,8 @@ final class CoreProcessManager {
 
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             let once = ResumeOnce(continuation)
-            guard let helper = PrivilegedHelperManager.shared.helper(failture: {
-                once.resume(.failure(CoreProcessError.launchFailed("proxy helper unavailable")))
+            guard let helper = PrivilegedHelperManager.shared.helper(failture: { message in
+                once.resume(.failure(CoreProcessError.launchFailed(message)))
             }) else {
                 once.resume(.failure(CoreProcessError.launchFailed("proxy helper unavailable")))
                 return
