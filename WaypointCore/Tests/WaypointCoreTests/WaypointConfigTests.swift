@@ -63,6 +63,65 @@ struct WaypointConfigTests {
         #expect(TunConfig.apply(nil as TunConfig?, to: config) == config)
     }
 
+    // MARK: - dns-hijack sanitizer
+
+    @Test("Sanitizer replaces hostname hijack entries in a user tun: block")
+    func sanitizerReplacesHostnames() {
+        let config = """
+        port: 7890
+        tun:
+          enable: true
+          stack: mixed
+          dns-hijack:
+            - dns.google
+            - 8.8.8.8:53
+            - tcp://1.1.1.1:53
+            - bad.example.org:53
+        rules:
+          - MATCH,DIRECT
+        """
+        let out = TunConfig.sanitizedDNSHijackEntries(in: config)
+        let lines = out.split(separator: "\n").map(String.init)
+        let hijackIdx = lines.firstIndex(of: "  dns-hijack:")!
+        #expect(lines[hijackIdx + 1] == "    - any:53")
+        #expect(lines[hijackIdx + 2] == "    - 8.8.8.8:53")
+        #expect(lines[hijackIdx + 3] == "    - tcp://1.1.1.1:53")
+        #expect(lines[hijackIdx + 4] == "    - any:53")
+    }
+
+    @Test("Sanitizer leaves valid entries and configs without tun: untouched")
+    func sanitizerKeepsValidEntries() {
+        let config = "port: 7890\ntun:\n  dns-hijack:\n    - any:53\n    - udp://2001:4860:4860::8888:53\n"
+        #expect(TunConfig.sanitizedDNSHijackEntries(in: config) == config)
+        let plain = "port: 7890\nmode: rule\n"
+        #expect(TunConfig.sanitizedDNSHijackEntries(in: plain) == plain)
+    }
+
+    @Test("Sanitizer handles an inline dns-hijack flow list")
+    func sanitizerInlineList() {
+        let config = "tun:\n  enable: true\n  dns-hijack: [dns.google, 8.8.8.8:53]\n"
+        #expect(TunConfig.sanitizedDNSHijackEntries(in: config)
+            == "tun:\n  enable: true\n  dns-hijack: [any:53, 8.8.8.8:53]\n")
+    }
+
+    @Test("Sanitizer stops at the next top-level section")
+    func sanitizerSectionBoundary() {
+        let config = "tun:\n  enable: true\nrules:\n  - MATCH,DIRECT\n"
+        #expect(TunConfig.sanitizedDNSHijackEntries(in: config) == config)
+    }
+
+    @Test("Hijack entry validation accepts any, IPv4 and IPv6 only")
+    func hijackEntryValidation() {
+        #expect(TunConfig.isValidHijackEntry("any:53"))
+        #expect(TunConfig.isValidHijackEntry("8.8.8.8:53"))
+        #expect(TunConfig.isValidHijackEntry("tcp://1.1.1.1:53"))
+        #expect(TunConfig.isValidHijackEntry("[::1]:53"))
+        #expect(!TunConfig.isValidHijackEntry("dns.google"))
+        #expect(!TunConfig.isValidHijackEntry("dns.google:53"))
+        #expect(!TunConfig.isValidHijackEntry("999.1.1.1:53"))
+        #expect(!TunConfig.isValidHijackEntry("8.8.8.8"))
+    }
+
     // MARK: - DnsConfig
 
     @Test("DNS block renders fake-ip defaults")

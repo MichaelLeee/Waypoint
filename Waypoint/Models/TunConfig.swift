@@ -22,13 +22,18 @@ extension TunConfig {
     /// real error).
     static func effectivePath(from sourcePath: String, configName: String) -> String {
         let mitmActive = Settings.mitmEnabled && !RewriteRuleStore.load().isEmpty
-        guard let text = try? String(contentsOfFile: sourcePath, encoding: .utf8) else {
+        guard let rawText = try? String(contentsOfFile: sourcePath, encoding: .utf8) else {
             return sourcePath
         }
+        // mihomo rejects hostname dns-hijack entries at TUN startup, so the
+        // derived config always goes through the sanitizer even when no
+        // enhancement is enabled.
+        let text = TunConfig.sanitizedDNSHijackEntries(in: rawText)
+        let sanitized = text != rawText
         // mihomo listens on nothing when the config omits ports; the API then
         // reports mixed-port 0 and first launch would trip "Ports Open Fail".
         let needsPorts = !text.hasTopLevelPortKey()
-        guard Settings.tunEnabled || Settings.fakeIPEnabled || Settings.adBlockEnabled || mitmActive || needsPorts else {
+        guard Settings.tunEnabled || Settings.fakeIPEnabled || Settings.adBlockEnabled || mitmActive || needsPorts || sanitized else {
             return sourcePath
         }
         var injected = text

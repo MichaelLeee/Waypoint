@@ -109,6 +109,7 @@
 		F92D0B2C236C7C3600575E15 /* MenuItemBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92D0B2B236C7C3600575E15 /* MenuItemBaseView.swift */; };
 		F92D0B2E236D35C000575E15 /* ProxyItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92D0B2D236D35C000575E15 /* ProxyItemView.swift */; };
 		F935B2F02307C52E009E4D33 /* org.waypnt.waypoint.ProxyConfigHelper in Copy Files */ = {isa = PBXBuildFile; fileRef = F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E1E100000000000000000E02 /* org.waypnt.waypoint.ProxyConfigHelper.plist in Copy Files LaunchDaemons */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */; };
 		F935B2F42307CD32009E4D33 /* ProxyConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F935B2F32307CD32009E4D33 /* ProxyConfigHelper.m */; };
 		F935B2FA23083EE6009E4D33 /* ProxySettingTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F935B2F923083EE6009E4D33 /* ProxySettingTool.m */; };
 		F935B2FC23085515009E4D33 /* SystemProxyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F935B2FB23085515009E4D33 /* SystemProxyManager.swift */; };
@@ -156,9 +157,21 @@
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		E1E100000000000000000E03 /* Copy Files LaunchDaemons */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchDaemons;
+			dstSubfolderSpec = 1;
+			files = (
+				E1E100000000000000000E02 /* org.waypnt.waypoint.ProxyConfigHelper.plist in Copy Files LaunchDaemons */,
+			);
+			name = "Copy Files LaunchDaemons";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "org.waypnt.waypoint.ProxyConfigHelper.plist"; sourceTree = "<group>"; };
 		E1E100000000000000000D47 /* WaypointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointApp.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D4E /* WaypointAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointAppIntents.swift; sourceTree = "<group>"; };
 		E1E100000000000000000D48 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
@@ -657,6 +670,7 @@
 				498960722340F21C00AFB7EC /* org.waypnt.waypoint.ProxyConfigHelper.entitlements */,
 				F9A7C06B2306E874007163C7 /* main.m */,
 				F935B2F12307C802009E4D33 /* Helper-Launchd.plist */,
+				E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */,
 				F935B2EA2307B6BA009E4D33 /* Helper-Info.plist */,
 				F935B2F22307CD32009E4D33 /* ProxyConfigHelper.h */,
 				F935B2F32307CD32009E4D33 /* ProxyConfigHelper.m */,
@@ -679,6 +693,7 @@
 				49CF3B1B20CD7463001EBF94 /* Resources */,
 				A1B2C3D4E5F6000100000005 /* Fix mihomo exec bit */,
 				663E4677213FCDC4006F11BB /* Copy Files */,
+				E1E100000000000000000E03 /* Copy Files LaunchDaemons */,
 			);
 			buildRules = (
 			);

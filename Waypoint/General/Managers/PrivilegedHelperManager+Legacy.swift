@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import ServiceManagement
 
 extension PrivilegedHelperManager {
     func getInstallScript() -> String {
@@ -84,6 +85,7 @@ extension PrivilegedHelperManager {
             resetConnection()
             Thread.sleep(forTimeInterval: 5)
         }
+        try? SMAppService.daemon(plistName: PrivilegedHelperManager.daemonPlistName).unregister()
         let script = """
         /bin/launchctl remove \(PrivilegedHelperManager.machServiceName) || true
         /usr/bin/killall -u root -9 \(PrivilegedHelperManager.machServiceName)
