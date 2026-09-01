@@ -51,18 +51,13 @@ struct RewriteRule: Codable, Identifiable, Equatable {
 }
 
 enum RewriteRuleStore {
-    static let defaultsKey = "mitmRewriteRules"
-
     static func load() -> [RewriteRule] {
-        guard let data = UserDefaults.standard.data(forKey: defaultsKey) else {
-            return []
-        }
-        return (try? JSONDecoder().decode([RewriteRule].self, from: data)) ?? []
+        Persistence.loadCodable([RewriteRule].self,
+                                forKey: Persistence.Key.mitmRewriteRules) ?? []
     }
 
     static func save(_ rules: [RewriteRule]) {
-        guard let data = try? JSONEncoder().encode(rules) else { return }
-        UserDefaults.standard.set(data, forKey: defaultsKey)
+        Persistence.saveCodable(rules, forKey: Persistence.Key.mitmRewriteRules)
     }
 
     static func rejectHosts(in rules: [RewriteRule]) -> [RewriteRule] {

@@ -4,38 +4,30 @@
 //
 
 import Foundation
+
+/// General preference facade. Keys live in Persistence.Key; storage is via
+/// Persistence. Statics are computed (not stored) so they stay usable from
+/// nonisolated contexts under Swift 6 strict concurrency.
 enum Settings {
-    // UserDefaults-backed computed statics. The @UserDefault property wrapper
-    // was replaced: its synthesized backing storage defeats nonisolated(unsafe)
-    // and fails strict-concurrency checks on static stored properties.
-
-    private static func read<T: PropertyListValue>(_ key: String, default value: T) -> T {
-        UserDefaults.standard.object(forKey: key) as? T ?? value
-    }
-
-    private static func write<T: PropertyListValue>(_ value: T, forKey key: String) {
-        UserDefaults.standard.set(value, forKey: key)
-    }
-
     static let defaultMmdbDownloadUrl = "https://github.com/MetaCubeX/meta-rules-dat/releases/latest/download/country.mmdb"
     static var mmdbDownloadUrl: String {
-        get { read("mmdbDownloadUrl", default: defaultMmdbDownloadUrl) }
-        set { write(newValue, forKey: "mmdbDownloadUrl") }
+        get { Persistence.read(Persistence.Key.mmdbDownloadUrl, default: defaultMmdbDownloadUrl) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.mmdbDownloadUrl) }
     }
 
     static var filterInterface: Bool {
-        get { read("filterInterface", default: true) }
-        set { write(newValue, forKey: "filterInterface") }
+        get { Persistence.read(Persistence.Key.filterInterface, default: true) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.filterInterface) }
     }
 
     static var disableNoti: Bool {
-        get { read("disableNoti", default: false) }
-        set { write(newValue, forKey: "disableNoti") }
+        get { Persistence.read(Persistence.Key.disableNoti, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.disableNoti) }
     }
 
     static var configAutoUpdateInterval: TimeInterval {
-        get { read("configAutoUpdateInterval", default: 48 * 60 * 60) }
-        set { write(newValue, forKey: "configAutoUpdateInterval") }
+        get { Persistence.read(Persistence.Key.configAutoUpdateInterval, default: 48 * 60 * 60) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.configAutoUpdateInterval) }
     }
 
     static let proxyIgnoreListDefaultValue = ["192.168.0.0/16",
@@ -48,113 +40,111 @@ enum Settings {
                                               "sequoia.apple.com",
                                               "seed-sequoia.siri.apple.com"]
     static var proxyIgnoreList: [String] {
-        get { read("proxyIgnoreList", default: proxyIgnoreListDefaultValue) }
-        set { write(newValue, forKey: "proxyIgnoreList") }
+        get { Persistence.read(Persistence.Key.proxyIgnoreList, default: proxyIgnoreListDefaultValue) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.proxyIgnoreList) }
     }
 
     static var disableMenubarNotice: Bool {
-        get { read("disableMenubarNotice", default: false) }
-        set { write(newValue, forKey: "disableMenubarNotice") }
+        get { Persistence.read(Persistence.Key.disableMenubarNotice, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.disableMenubarNotice) }
     }
 
     static var proxyPort: Int {
-        get { read("proxyPort", default: 0) }
-        set { write(newValue, forKey: "proxyPort") }
+        get { Persistence.read(Persistence.Key.proxyPort, default: 0) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.proxyPort) }
     }
 
     static var apiPort: Int {
-        get { read("apiPort", default: 0) }
-        set { write(newValue, forKey: "apiPort") }
+        get { Persistence.read(Persistence.Key.apiPort, default: 0) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.apiPort) }
     }
 
     static var apiPortAllowLan: Bool {
-        get { read("apiPortAllowLan", default: false) }
-        set { write(newValue, forKey: "apiPortAllowLan") }
+        get { Persistence.read(Persistence.Key.apiPortAllowLan, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.apiPortAllowLan) }
     }
 
     static var disableSSIDList: [String] {
-        get { read("disableSSIDList", default: []) }
-        set { write(newValue, forKey: "disableSSIDList") }
+        get { Persistence.read(Persistence.Key.disableSSIDList, default: []) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.disableSSIDList) }
     }
 
     static var enableIPV6: Bool {
-        get { read("enableIPV6", default: false) }
-        set { write(newValue, forKey: "enableIPV6") }
+        get { Persistence.read(Persistence.Key.enableIPV6, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.enableIPV6) }
     }
 
     /// Comparison flag: render the status menu with a SwiftUI MenuBarExtra
     /// instead of the legacy NSStatusItem + NSMenu.
     static var useSwiftUIMenu: Bool {
-        get { read("useSwiftUIMenu", default: false) }
-        set { write(newValue, forKey: "useSwiftUIMenu") }
+        get { Persistence.read(Persistence.Key.useSwiftUIMenu, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.useSwiftUIMenu) }
     }
 
     static var tunEnabled: Bool {
-        get { read("tunEnabled", default: false) }
-        set { write(newValue, forKey: "tunEnabled") }
+        get { Persistence.read(Persistence.Key.tunEnabled, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.tunEnabled) }
     }
 
     static var fakeIPEnabled: Bool {
-        get { read("fakeIPEnabled", default: false) }
-        set { write(newValue, forKey: "fakeIPEnabled") }
+        get { Persistence.read(Persistence.Key.fakeIPEnabled, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.fakeIPEnabled) }
     }
 
     static var adBlockEnabled: Bool {
-        get { read("adBlockEnabled", default: false) }
-        set { write(newValue, forKey: "adBlockEnabled") }
+        get { Persistence.read(Persistence.Key.adBlockEnabled, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.adBlockEnabled) }
     }
 
     static var killSwitchEnabled: Bool {
-        get { read("killSwitchEnabled", default: false) }
-        set { write(newValue, forKey: "killSwitchEnabled") }
+        get { Persistence.read(Persistence.Key.killSwitchEnabled, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.killSwitchEnabled) }
     }
 
     static var mitmEnabled: Bool {
-        get { read("mitmEnabled", default: false) }
-        set { write(newValue, forKey: "mitmEnabled") }
+        get { Persistence.read(Persistence.Key.mitmEnabled, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.mitmEnabled) }
     }
 
     /// Port the intercept engine actually bound last time (it scans upward if
     /// the preferred port is taken); config injection must match it.
     static var mitmEnginePort: Int {
-        get { read("mitmEnginePort", default: 6153) }
-        set { write(newValue, forKey: "mitmEnginePort") }
+        get { Persistence.read(Persistence.Key.mitmEnginePort, default: 6153) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.mitmEnginePort) }
     }
 
-    static let apiSecretKey = "api-secret"
-
     static var isApiSecretSet: Bool {
-        return UserDefaults.standard.object(forKey: apiSecretKey) != nil
+        return Persistence.hasValue(forKey: Persistence.Key.apiSecret)
     }
 
     static var apiSecret: String {
-        get { read(apiSecretKey, default: "") }
-        set { write(newValue, forKey: apiSecretKey) }
+        get { Persistence.read(Persistence.Key.apiSecret, default: "") }
+        set { Persistence.write(newValue, forKey: Persistence.Key.apiSecret) }
     }
 
     static var overrideConfigSecret: Bool {
-        get { read("overrideConfigSecret", default: false) }
-        set { write(newValue, forKey: "overrideConfigSecret") }
+        get { Persistence.read(Persistence.Key.overrideConfigSecret, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.overrideConfigSecret) }
     }
 
     static var builtInApiMode: Bool {
-        get { read("kBuiltInApiMode", default: true) }
-        set { write(newValue, forKey: "kBuiltInApiMode") }
+        get { Persistence.read(Persistence.Key.builtInApiMode, default: true) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.builtInApiMode) }
     }
 
     static let disableShowCurrentProxyInMenu = !AppDelegate.isAboveMacOS14
 
     static let defaultBenchmarkUrl = "http://cp.cloudflare.com/generate_204"
     static var benchMarkUrl: String {
-        get { read("benchMarkUrl", default: defaultBenchmarkUrl) }
+        get { Persistence.read(Persistence.Key.benchMarkUrl, default: defaultBenchmarkUrl) }
         set {
             let trimmed = newValue.isEmpty ? defaultBenchmarkUrl : newValue
-            write(trimmed, forKey: "benchMarkUrl")
+            Persistence.write(trimmed, forKey: Persistence.Key.benchMarkUrl)
         }
     }
 
     static var disableRestoreProxy: Bool {
-        get { read("kDisableRestoreProxy", default: false) }
-        set { write(newValue, forKey: "kDisableRestoreProxy") }
+        get { Persistence.read(Persistence.Key.disableRestoreProxy, default: false) }
+        set { Persistence.write(newValue, forKey: Persistence.Key.disableRestoreProxy) }
     }
 }

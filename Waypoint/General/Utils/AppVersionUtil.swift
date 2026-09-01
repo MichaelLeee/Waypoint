@@ -9,8 +9,6 @@ import Cocoa
 class AppVersionUtil: NSObject, @unchecked Sendable {
     private static let shared = AppVersionUtil()
 
-    private static let kLastVersionNumberKey = "org.waypnt.lastVersionNumber"
-
     private let lastVersionNumber: String?
 
     static var currentVersion: String {
@@ -26,8 +24,8 @@ class AppVersionUtil: NSObject, @unchecked Sendable {
     }
 
     override init() {
-        lastVersionNumber = UserDefaults.standard.string(forKey: AppVersionUtil.kLastVersionNumberKey)
-        UserDefaults.standard.set(AppVersionUtil.currentVersion, forKey: AppVersionUtil.kLastVersionNumberKey)
+        lastVersionNumber = Persistence.lastVersionNumber
+        Persistence.lastVersionNumber = AppVersionUtil.currentVersion
     }
 
     static var isFirstLaunch: Bool {

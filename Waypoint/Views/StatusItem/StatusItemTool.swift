@@ -23,7 +23,7 @@ enum StatusItemTool {
     nonisolated(unsafe) static let font: NSFont = {
         let fontSize: CGFloat = 9
         let font: NSFont
-        if let fontName = UserDefaults.standard.string(forKey: "kStatusMenuFontName"),
+        if let fontName = Persistence.statusMenuFontName,
            let f = NSFont(name: fontName, size: fontSize) {
             font = f
         } else {

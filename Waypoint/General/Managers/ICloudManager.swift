@@ -22,9 +22,9 @@ class ICloudManager: @unchecked Sendable {
     // Thread-safe: read from background queues (RemoteConfigManager) and MainActor alike.
     let useiCloud = CurrentValueSubject<Bool, Never>(false)
 
-    var userEnableiCloud: Bool = UserDefaults.standard.bool(forKey: "kUserEnableiCloud") {
+    var userEnableiCloud: Bool = Persistence.userEnableiCloud {
         didSet {
-            UserDefaults.standard.set(userEnableiCloud, forKey: "kUserEnableiCloud")
+            Persistence.userEnableiCloud = userEnableiCloud
             useiCloud.send(userEnableiCloud && icloudAvailable)
         }
     }

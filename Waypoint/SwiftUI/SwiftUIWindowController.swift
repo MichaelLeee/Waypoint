@@ -24,7 +24,7 @@ private final class SwiftUIWindowsRecorder {
 class SwiftUIWindowController<Content: View>: NSWindowController, NSWindowDelegate {
     var onWindowClose: (() -> Void)?
     private var fromCache = false
-    private var sizeKey: String { "lastSize.\(String(describing: Content.self))" }
+    private var sizeKey: String { "\(Persistence.Key.windowSizePrefix)\(String(describing: Content.self))" }
 
     static func create(
         title: String,

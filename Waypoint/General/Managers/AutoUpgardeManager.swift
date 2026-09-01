@@ -12,7 +12,7 @@ class AutoUpgardeManager: NSObject, @unchecked Sendable {
     static let shared = AutoUpgardeManager()
     private var controller: SPUStandardUpdaterController?
     private var current: Channel = {
-        if let value = UserDefaults.standard.object(forKey: "AutoUpgardeManager.current") as? Int,
+        if let value = Persistence.upgradeChannelRaw,
            let channel = Channel(rawValue: value) { return channel }
         #if PRO_VERSION
             return .appcenter
@@ -21,7 +21,7 @@ class AutoUpgardeManager: NSObject, @unchecked Sendable {
         #endif
     }() {
         didSet {
-            UserDefaults.standard.set(current.rawValue, forKey: "AutoUpgardeManager.current")
+            Persistence.upgradeChannelRaw = current.rawValue
         }
     }
 

@@ -160,8 +160,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// First-run onboarding: only when no config has ever been imported.
     func showOnboardingIfNeeded() {
         guard RemoteConfigManager.shared.configs.isEmpty,
-              !UserDefaults.standard.bool(forKey: "kOnboardingCompleted") else { return }
-        UserDefaults.standard.set(true, forKey: "kOnboardingCompleted")
+              !Persistence.onboardingCompleted else { return }
+        Persistence.onboardingCompleted = true
         SwiftUIWindowController.create(title: NSLocalizedString("Welcome to Waypoint", comment: ""), content: OnboardingRootView())
             .showWindow(nil)
     }
@@ -171,7 +171,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        UserDefaults.standard.set(0, forKey: "launch_fail_times")
+        Persistence.launchFailTimes = 0
         Logger.log("Waypoint will terminate")
         MitmProxyServer.shared.stop()
         if NetworkChangeNotifier.isCurrentSystemSetToWaypoint(looser: true) ||

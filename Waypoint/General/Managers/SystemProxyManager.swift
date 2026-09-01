@@ -11,12 +11,8 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
     static let shared = SystemProxyManager()
 
     private var savedProxyInfo: [String: Any] {
-        get {
-            return UserDefaults.standard.dictionary(forKey: "kSavedProxyInfo") ?? [:]
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "kSavedProxyInfo")
-        }
+        get { Persistence.savedProxyInfo }
+        set { Persistence.savedProxyInfo = newValue }
     }
 
     private var helper: ProxyConfigRemoteProcessProtocol? {

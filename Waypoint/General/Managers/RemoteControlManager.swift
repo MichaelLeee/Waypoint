@@ -21,11 +21,9 @@ class RemoteControl: Codable {
 
 class RemoteControlManager {
     enum Recorder {
-        // A plain computed property: the @UserDefault wrapper's synthesized
-        // backing storage would defeat the nonisolated(unsafe) annotation.
         nonisolated(unsafe) static var selected: String {
-            get { UserDefaults.standard.string(forKey: "selectedRemoteControlConfigID") ?? "" }
-            set { UserDefaults.standard.set(newValue, forKey: "selectedRemoteControlConfigID") }
+            get { Persistence.selectedRemoteControlConfigID }
+            set { Persistence.selectedRemoteControlConfigID = newValue }
         }
     }
 
@@ -34,9 +32,7 @@ class RemoteControlManager {
     nonisolated(unsafe) static let shared = RemoteControlManager()
     nonisolated(unsafe) static var configs: [RemoteControl] = loadConfig() {
         didSet {
-            if let encoded = try? JSONEncoder().encode(configs) {
-                UserDefaults.standard.set(encoded, forKey: "kRemoteControls")
-            }
+            Persistence.saveCodable(configs, forKey: Persistence.Key.remoteControls)
             updateMenuItems()
         }
     }
@@ -50,15 +46,8 @@ class RemoteControlManager {
     private nonisolated(unsafe) static var menuSeparator: NSMenuItem?
 
     static func loadConfig() -> [RemoteControl] {
-        if let savedConfigs = UserDefaults.standard.object(forKey: "kRemoteControls") as? Data {
-            if let loadedConfig = try? JSONDecoder().decode([RemoteControl].self, from: savedConfigs) {
-                return loadedConfig
-            } else {
-                assertionFailure()
-                return []
-            }
-        }
-        return []
+        Persistence.loadCodable([RemoteControl].self,
+                                forKey: Persistence.Key.remoteControls) ?? []
     }
 
     static func setupMenuItem(separator: NSMenuItem) {

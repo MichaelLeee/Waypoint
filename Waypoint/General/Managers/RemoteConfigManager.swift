@@ -13,31 +13,22 @@ final class RemoteConfigManager {
     static let shared = RemoteConfigManager()
 
     private init() {
-        if let savedConfigs = UserDefaults.standard.object(forKey: "kRemoteConfigs") as? Data {
-            let decoder = JSONDecoder()
-            if let loadedConfig = try? decoder.decode([RemoteConfigModel].self, from: savedConfigs) {
-                configs = loadedConfig
-            } else {
-                assertionFailure()
-            }
-        }
+        configs = Persistence.loadCodable([RemoteConfigModel].self,
+                                          forKey: Persistence.Key.remoteConfigs) ?? []
         migrateOldRemoteConfig()
         setupAutoUpdateTimer()
     }
 
     func saveConfigs() {
         Logger.log("Saving Remote Config Setting")
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(configs) {
-            UserDefaults.standard.set(encoded, forKey: "kRemoteConfigs")
-        }
+        Persistence.saveCodable(configs, forKey: Persistence.Key.remoteConfigs)
     }
 
     func migrateOldRemoteConfig() {
-        if let url = UserDefaults.standard.string(forKey: "kRemoteConfigUrl"),
+        if let url = Persistence.string(forKey: Persistence.Key.legacyRemoteConfigUrl),
            let name = URL(string: url)?.host {
             configs.append(RemoteConfigModel(url: url, name: name))
-            UserDefaults.standard.removeObject(forKey: "kRemoteConfigUrl")
+            Persistence.removeValue(forKey: Persistence.Key.legacyRemoteConfigUrl)
             saveConfigs()
         }
     }
@@ -65,11 +56,9 @@ final class RemoteConfigManager {
     }
 
     static var autoUpdateEnable: Bool {
-        get {
-            return UserDefaults.standard.object(forKey: "kAutoUpdateEnable") as? Bool ?? true
-        }
+        get { Persistence.autoUpdateEnable }
         set {
-            UserDefaults.standard.set(newValue, forKey: "kAutoUpdateEnable")
+            Persistence.autoUpdateEnable = newValue
             Task { @MainActor in
                 RemoteConfigManager.shared.setupAutoUpdateTimer()
             }

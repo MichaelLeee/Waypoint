@@ -309,7 +309,7 @@ struct OnboardingRootView: View {
     }
 
     private func finish() {
-        UserDefaults.standard.set(true, forKey: "kOnboardingCompleted")
+        Persistence.onboardingCompleted = true
         NSApp.keyWindow?.close()
     }
 }

@@ -45,16 +45,16 @@ final class ConfigManager {
         }
     }
 
-    var proxyPortAutoSet: Bool = UserDefaults.standard.bool(forKey: "proxyPortAutoSet") {
+    var proxyPortAutoSet: Bool = Persistence.proxyPortAutoSet {
         didSet {
-            UserDefaults.standard.set(proxyPortAutoSet, forKey: "proxyPortAutoSet")
+            Persistence.proxyPortAutoSet = proxyPortAutoSet
             NotificationCenter.default.post(name: .waypointProxyStatusDidChange, object: nil)
         }
     }
 
-    var showNetSpeedIndicator: Bool = UserDefaults.standard.bool(forKey: "showNetSpeedIndicator") {
+    var showNetSpeedIndicator: Bool = Persistence.showNetSpeedIndicator {
         didSet {
-            UserDefaults.standard.set(showNetSpeedIndicator, forKey: "showNetSpeedIndicator")
+            Persistence.showNetSpeedIndicator = showNetSpeedIndicator
             NotificationCenter.default.post(name: .waypointShowNetSpeedIndicatorDidChange, object: nil)
         }
     }
@@ -66,10 +66,10 @@ final class ConfigManager {
             // Always honor the stored selection: returning a hard-coded
             // "config" while the core is down made every cold start load the
             // default file instead of the user's selected one.
-            return UserDefaults.standard.string(forKey: "selectConfigName") ?? "config"
+            return Persistence.selectConfigName
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "selectConfigName")
+            Persistence.selectConfigName = newValue
             watchCurrentConfigFile()
         }
     }
@@ -112,31 +112,19 @@ final class ConfigManager {
     }
 
     static var selectOutBoundMode: WaypointProxyMode {
-        get {
-            return WaypointProxyMode(rawValue: UserDefaults.standard.string(forKey: "selectOutBoundMode") ?? "") ?? .rule
-        }
-        set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: "selectOutBoundMode")
-        }
+        get { Persistence.selectOutBoundMode }
+        set { Persistence.selectOutBoundMode = newValue }
     }
 
     static var allowConnectFromLan: Bool {
-        get {
-            return UserDefaults.standard.bool(forKey: "allowConnectFromLan")
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "allowConnectFromLan")
-        }
+        get { Persistence.allowConnectFromLan }
+        set { Persistence.allowConnectFromLan = newValue }
     }
 
     // Pure UserDefaults access; safe from any thread (Logger reads it from init).
     nonisolated static var selectLoggingApiLevel: WaypointLogLevel {
-        get {
-            return WaypointLogLevel(rawValue: UserDefaults.standard.string(forKey: "selectLoggingApiLevel") ?? "") ?? .info
-        }
-        set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: "selectLoggingApiLevel")
-        }
+        get { Persistence.selectLoggingApiLevel }
+        set { Persistence.selectLoggingApiLevel = newValue }
     }
 
     static func getConfigPath(configName: String, complete: ((String) -> Void)? = nil) {

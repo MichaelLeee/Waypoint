@@ -16,11 +16,9 @@ extension AppDelegate {
             return
         #else
             UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": false])
-            let x = UserDefaults.standard
-            var launch_fail_times = 0
-            if let xx = x.object(forKey: "launch_fail_times") as? Int { launch_fail_times = xx }
+            var launch_fail_times = Persistence.launchFailTimes
             launch_fail_times += 1
-            x.set(launch_fail_times, forKey: "launch_fail_times")
+            Persistence.launchFailTimes = launch_fail_times
             if launch_fail_times > 3 {
                 // consecutive crashes — reset state for a clean launch
                 ConfigFileManager.backupAndRemoveConfigFile()
@@ -32,7 +30,7 @@ extension AppDelegate {
                 WaypointNotifier.post(title: "Fail on launch protect", info: "You origin Config has been renamed", notiOnly: false)
             }
             DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + Double(Int64(5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
-                x.set(0, forKey: "launch_fail_times")
+                Persistence.launchFailTimes = 0
             }
         #endif
     }
