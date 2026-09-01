@@ -69,14 +69,14 @@ extension AppDelegate {
             .sink { [weak self] _ in
                 MainActor.assumeIsolated {
                     guard let self else { return }
-                    guard configStreamPrimed else {
-                        configStreamPrimed = true
-                        previousStreamedConfig = ConfigManager.shared.currentConfig
+                    guard self.configStreamPrimed else {
+                        self.configStreamPrimed = true
+                        self.previousStreamedConfig = ConfigManager.shared.currentConfig
                         return
                     }
-                    let old = previousStreamedConfig
+                    let old = self.previousStreamedConfig
                     let config = ConfigManager.shared.currentConfig
-                    previousStreamedConfig = config
+                    self.previousStreamedConfig = config
                     guard let config else { return }
                     self.proxyModeDirectMenuItem.state = .off
                     self.proxyModeGlobalMenuItem.state = .off
@@ -196,8 +196,8 @@ extension AppDelegate {
             .sink { _ in
                 MainActor.assumeIsolated {
                     let setByOther = ConfigManager.shared.isProxySetByOther
-                    guard setByOther != lastSetByOtherObserved else { return }
-                    lastSetByOtherObserved = setByOther
+                    guard setByOther != self.lastSetByOtherObserved else { return }
+                    self.lastSetByOtherObserved = setByOther
                     guard setByOther else { return }
                     guard ConfigManager.shared.proxyPortAutoSet, !ConfigManager.shared.proxyShouldPaused else { return }
                     let rawProxy = NetworkChangeNotifier.getRawProxySetting()
