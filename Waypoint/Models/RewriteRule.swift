@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import WaypointMitmEngine
 
 struct RewriteRule: Codable, Identifiable, Equatable {
     enum Kind: String, Codable, CaseIterable, Identifiable {
@@ -47,6 +48,14 @@ struct RewriteRule: Codable, Identifiable, Equatable {
             return lowered == domain || lowered.hasSuffix("." + domain)
         }
         return lowered == host.lowercased()
+    }
+
+    /// The engine-side mirror handed to WaypointMitmEngine.
+    var engineRule: MitmRule {
+        MitmRule(kind: MitmRule.Kind(rawValue: kind.rawValue) ?? .reject,
+                 host: host,
+                 headerKey: headerKey,
+                 headerValue: headerValue)
     }
 }
 

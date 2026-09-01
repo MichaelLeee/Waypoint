@@ -6,17 +6,19 @@
 //  to trust it once; leaf identities carry fully ephemeral keys and never
 //  touch the keychain.
 //  Thread-safety: NSLock instead of an actor — the MITM engine mints leaf
-//  identities from its per-tunnel worker threads, where an actor hop onto
-//  the main queue would be both illegal under Swift 6 isolation rules and
-//  wrong for latency. Every entry point takes the lock; keychain calls are
-//  already internally serialized but stay inside it for coherent snapshots.
+//  identities on its event-loop threads, where an actor hop onto the main
+//  queue would be both illegal under Swift 6 isolation rules and wrong for
+//  latency. Every entry point takes the lock; keychain calls are already
+//  internally serialized but stay inside it for coherent snapshots.
 //
 
+import CryptoKit
 import Foundation
 import Security
+import WaypointMitmEngine
 
 // @unchecked: all mutable state is guarded by `lock`.
-final class MitmCertificateAuthority: @unchecked Sendable {
+final class MitmCertificateAuthority: @unchecked Sendable, MitmIdentityProviding {
     static let shared = MitmCertificateAuthority()
 
     static let caTag = "org.waypnt.waypoint.mitm.ca"
@@ -26,13 +28,7 @@ final class MitmCertificateAuthority: @unchecked Sendable {
     private var caPrivateKey: SecKey?
     private var caCertificate: SecCertificate?
     /// host -> issued leaf; caches so repeat CONNECTs skip re-signing.
-    private var leafIdentities: [String: LeafIdentity] = [:]
-
-    /// Certificate + key bundle handed to the MITM engine's TLS server leg.
-    struct LeafIdentity {
-        let certificate: SecCertificate
-        let privateKey: SecKey
-    }
+    private var leafIdentities: [String: MitmIdentity] = [:]
 
     enum AuthorityError: LocalizedError {
         case keyUnavailable(OSStatus)
@@ -167,35 +163,26 @@ final class MitmCertificateAuthority: @unchecked Sendable {
     // MARK: - Leaf identities
 
     /// Builds (and caches) a TLS identity for `host`, signed by the local CA.
-    /// The leaf key is ephemeral — it never enters the keychain. Safe to call
-    /// from the engine's tunnel threads.
-    func identity(forHost host: String) throws -> LeafIdentity {
+    /// The leaf key is an ephemeral CryptoKit P-256 key — it never enters the
+    /// keychain and its DER is exportable, which keychain keys are not.
+    /// Satisfies `MitmIdentityProviding`; called on engine event-loop threads.
+    func identity(forHost host: String) throws -> MitmIdentity {
         lock.lock()
         defer { lock.unlock() }
         if let cached = leafIdentities[host] { return cached }
         try ensureAuthorityLocked()
         guard let caPrivateKey else { throw AuthorityError.notInitialized }
 
-        let parameters: [String: Any] = [
-            kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
-            kSecAttrKeySizeInBits as String: 256,
-        ]
-        var keyError: Unmanaged<CFError>?
-        guard let leafKey = SecKeyCreateRandomKey(parameters as CFDictionary, &keyError) else {
-            throw AuthorityError.certificateGeneration(
-                "leaf key (\(Self.statusCode(of: keyError)))"
-            )
-        }
-        let point = try externalPoint(of: leafKey)
+        let leafKey = P256.Signing.PrivateKey()
         let tbs = X509.buildTBSCertificate(
             template: .init(commonName: host, isCertificateAuthority: false, dnsNames: [host]),
-            uncompressedPoint: point
+            uncompressedPoint: [UInt8](leafKey.publicKey.x963Representation)
         )
         let der = try X509.sign(tbs: tbs, privateKey: caPrivateKey)
-        guard let leafCert = SecCertificateCreateWithData(nil, der as CFData) else {
-            throw AuthorityError.certificateGeneration("leaf DER rejected for \(host)")
-        }
-        let identity = LeafIdentity(certificate: leafCert, privateKey: leafKey)
+        let identity = MitmIdentity(
+            certificateDER: [UInt8](der),
+            privateKeyDER: [UInt8](leafKey.derRepresentation)
+        )
         leafIdentities[host] = identity
         return identity
     }

@@ -27,6 +27,7 @@
 		D2D20000000000000000AA05 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB05 /* Gzip */; };
 		E1E100000000000000000D39 /* WaypointCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D38 /* WaypointCore */; };
 		E1E100000000000000000D42 /* WaypointNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D41 /* WaypointNetworking */; };
+		E1E100000000000000000D52 /* WaypointMitmEngine in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D51 /* WaypointMitmEngine */; };
 		E1E100000000000000000A03 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000A02 /* PFMoveApplication.m */; };
 		F935B2F02307C52E009E4D33 /* org.waypnt.waypoint.ProxyConfigHelper in Copy Files */ = {isa = PBXBuildFile; fileRef = F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E1E100000000000000000E02 /* org.waypnt.waypoint.ProxyConfigHelper.plist in Copy Files LaunchDaemons */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */; };
@@ -206,6 +207,7 @@
 				4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */,
 				E1E100000000000000000D39 /* WaypointCore in Frameworks */,
 				E1E100000000000000000D42 /* WaypointNetworking in Frameworks */,
+				E1E100000000000000000D52 /* WaypointMitmEngine in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +391,7 @@
 				D2D20000000000000000BB05 /* Gzip */,
 				E1E100000000000000000D38 /* WaypointCore */,
 				E1E100000000000000000D41 /* WaypointNetworking */,
+				E1E100000000000000000D51 /* WaypointMitmEngine */,
 			);
 			productName = Waypoint;
 			productReference = 49CF3B1D20CD7463001EBF94 /* Waypoint.app */;
@@ -932,6 +935,10 @@
 		E1E100000000000000000D41 /* WaypointNetworking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WaypointNetworking;
+		};
+		E1E100000000000000000D51 /* WaypointMitmEngine */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WaypointMitmEngine;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
