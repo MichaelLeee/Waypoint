@@ -88,26 +88,32 @@ class PrivilegedHelperManager: @unchecked Sendable {
         var authStatus = AuthorizationCreate(nil, nil, [], &authRef)
 
         // Check if the reference is valid
-        guard authStatus == errAuthorizationSuccess else {
+        guard authStatus == errAuthorizationSuccess, let authRef else {
             Logger.log("Authorization failed: \(authStatus)", level: .error)
             return .authorizationFail
         }
 
-        // Ask user for the admin privileges to install the
-        var authItem = AuthorizationItem(name: (kSMRightBlessPrivilegedHelper as NSString).utf8String!, valueLength: 0, value: nil, flags: 0)
-        var authRights = withUnsafeMutablePointer(to: &authItem) { pointer in
-            AuthorizationRights(count: 1, items: pointer)
+        // Ask user for the admin privileges to install the helper. The rights
+        // are granted ONTO the existing ref via AuthorizationCopyRights (the
+        // canonical SMJobBless dance); a fresh ref from AuthorizationCreate is
+        // not equivalent. Which right SMJobBless requires has flip-flopped on
+        // recent macOS (kSMErrorAuthorizationFailure otherwise), so request
+        // both the bless right and the historical implicit kAuthorizationRight
+        // Execute grant in a single prompt.
+        let rightNames: [NSString] = [
+            kSMRightBlessPrivilegedHelper as NSString,
+            kAuthorizationRightExecute as NSString,
+        ]
+        var authItems: [AuthorizationItem] = rightNames.map {
+            AuthorizationItem(name: $0.utf8String!, valueLength: 0, value: nil, flags: 0)
         }
-        // Without .preAuthorize: pre-authorizing only CHECKS the right without
-        // acquiring it, so the ref handed to SMJobBless carries no rights and
-        // bless fails with kSMErrorAuthorizationFailure. extendRights +
-        // interactionAllowed grants the right interactively (admin prompt).
-        let flags: AuthorizationFlags = [.interactionAllowed, .extendRights]
-        authStatus = AuthorizationCreate(&authRights, nil, flags, &authRef)
+        var authRights = authItems.withUnsafeMutableBufferPointer { pointer in
+            AuthorizationRights(count: pointer.count, items: pointer.baseAddress!)
+        }
+        authStatus = AuthorizationCopyRights(authRef, &authRights, nil,
+                                             [.interactionAllowed, .extendRights], nil)
         defer {
-            if let ref = authRef {
-                AuthorizationFree(ref, [])
-            }
+            AuthorizationFree(authRef, [])
         }
         // Check if the authorization went succesfully
         guard authStatus == errAuthorizationSuccess else {
@@ -312,7 +318,7 @@ private enum DaemonInstallResult {
             switch code {
             case kSMErrorInternalFailure: return "blessError: kSMErrorInternalFailure"
             case kSMErrorInvalidSignature: return "blessError: kSMErrorInvalidSignature"
-            case kSMErrorAuthorizationFailure: return "blessError: kSMErrorAuthorizationFailure"
+            case kSMErrorAuthorizationFailure: return "blessError: kSMErrorAuthorizationFailure (the detailed reason is in Console.app under install.log)"
             case kSMErrorToolNotValid: return "blessError: kSMErrorToolNotValid"
             case kSMErrorJobNotFound: return "blessError: kSMErrorJobNotFound"
             case kSMErrorServiceUnavailable: return "blessError: kSMErrorServiceUnavailable"
