@@ -108,7 +108,7 @@ class PrivilegedHelperManager: @unchecked Sendable {
             AuthorizationItem(name: $0.utf8String!, valueLength: 0, value: nil, flags: 0)
         }
         var authRights = authItems.withUnsafeMutableBufferPointer { pointer in
-            AuthorizationRights(count: pointer.count, items: pointer.baseAddress!)
+            AuthorizationRights(count: UInt32(pointer.count), items: pointer.baseAddress!)
         }
         authStatus = AuthorizationCopyRights(authRef, &authRights, nil,
                                              [.interactionAllowed, .extendRights], nil)
