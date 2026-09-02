@@ -37,7 +37,7 @@ extension AppDelegate {
 
     func updateLoggingLevel() {
         Task {
-            if !await ApiRequest.updateLogLevel(ConfigManager.selectLoggingApiLevel) {
+            if !(await ApiRequest.updateLogLevel(ConfigManager.selectLoggingApiLevel)) {
                 Logger.log("failed to update core log level", level: .error)
             }
         }

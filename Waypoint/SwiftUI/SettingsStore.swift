@@ -70,7 +70,7 @@ final class SettingsStore {
         didSet {
             Settings.enableIPV6 = enableIPv6
             Task {
-                if !await ApiRequest.updateIPv6(enableIPv6) {
+                if !(await ApiRequest.updateIPv6(enableIPv6)) {
                     WaypointNotifier.postConfigErrorNotice(
                         msg: NSLocalizedString("Failed to update IPv6 on the core.", comment: ""))
                 }
@@ -126,7 +126,7 @@ final class SettingsStore {
             if ConfigManager.shared.isRunning {
                 Task { [weak self] in
                     guard let self else { return }
-                    if !await self.reloadConfig() {
+                    if !(await self.reloadConfig()) {
                         WaypointNotifier.postConfigErrorNotice(
                             msg: NSLocalizedString("Failed to reload the config after the MITM change.", comment: ""))
                     }
