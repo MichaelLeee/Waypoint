@@ -91,8 +91,19 @@ class PrivilegedHelperManager: @unchecked Sendable {
         do {
             try service.register()
         } catch {
-            Logger.log("daemon register failed: \(error)", level: .error)
-            return .registerError(error.localizedDescription)
+            // A daemon with this identifier can be registered from a previous,
+            // differently signed build (e.g. the app moved from Xcode
+            // DerivedData to /Applications). SMAppService then reports
+            // .notRegistered yet refuses to replace the stale record; drop it
+            // and try once more before giving up.
+            Logger.log("daemon register failed: \(error); retrying after unregister", level: .error)
+            try? service.unregister()
+            do {
+                try service.register()
+            } catch {
+                Logger.log("daemon register failed after unregister: \(error)", level: .error)
+                return .registerError(error.localizedDescription)
+            }
         }
 
         Logger.log("\(PrivilegedHelperManager.machServiceName) installed successfully", level: .info)
