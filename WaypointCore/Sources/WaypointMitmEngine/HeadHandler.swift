@@ -129,7 +129,7 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
         let serverTLS: NIOSSLServerHandler
         let clientTLS: NIOSSLClientHandler
         do {
-            serverTLS = try NIOSSLServerHandler(context: try HeadHandler.serverContext(identity: identity))
+            serverTLS = NIOSSLServerHandler(context: try HeadHandler.serverContext(identity: identity))
             clientTLS = try NIOSSLClientHandler(
                 context: try NIOSSLContext(configuration: TLSConfiguration.makeClientConfiguration()),
                 serverHostname: host
@@ -139,6 +139,11 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
             return
         }
 
+        // NIOSSL handlers and the context are event-loop-confined; the loop
+        // bound lets them cross into the setup future's callbacks safely.
+        let boundContext = NIOLoopBound(context, eventLoop: context.eventLoop)
+        let boundServerTLS = NIOLoopBound(serverTLS, eventLoop: context.eventLoop)
+        let boundClientTLS = NIOLoopBound(clientTLS, eventLoop: context.eventLoop)
         let clientChannel = context.channel
         let rules = self.rules
         let bootstrap = ClientBootstrap(group: context.eventLoop)
@@ -153,24 +158,29 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
             }
 
         bootstrap.connect(host: host, port: Int(port)).flatMap { upstreamChannel -> EventLoopFuture<Void> in
-            upstreamChannel.pipeline.addHandler(clientTLS).flatMap {
-                context.writeAndFlush(NIOAny(HeadHandler.byteBuffer("HTTP/1.1 200 Connection established\r\n\r\n")))
-            }.flatMap {
-                let pump = PumpHandler(
-                    peer: upstreamChannel,
-                    direction: .request,
-                    rules: rules,
-                    host: host,
-                    startsRewritten: false
-                )
-                return context.pipeline.addHandlers([serverTLS, pump])
+            do {
+                try upstreamChannel.pipeline.syncOperations.addHandler(boundClientTLS.value)
+            } catch {
+                return boundContext.value.eventLoop.makeFailedFuture(error)
+            }
+            return boundContext.value.writeAndFlush(NIOAny(HeadHandler.byteBuffer("HTTP/1.1 200 Connection established\r\n\r\n")))
+        }.flatMap {
+            let pump = PumpHandler(
+                peer: upstreamChannel,
+                direction: .request,
+                rules: rules,
+                host: host,
+                startsRewritten: false
+            )
+            return boundContext.value.eventLoop.makeCompletedFuture {
+                try boundContext.value.pipeline.syncOperations.addHandlers([boundServerTLS.value, pump])
             }
         }.whenComplete { result in
             switch result {
             case .success:
-                self.finishSetup(context: context)
+                self.finishSetup(context: boundContext.value)
             case .failure:
-                context.close(promise: nil)
+                boundContext.value.close(promise: nil)
             }
         }
     }
@@ -182,9 +192,11 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
     private func setupPlainHTTP(context: ChannelHandlerContext, head: [UInt8], blockEnd: Int, host: String, port: UInt16) {
         let matched = rules.filter { $0.kind == .requestHeader && $0.matches(host: host) }
         let rewrittenHead = HTTPWire.rewrittenHeaderBlock(Array(head[..<blockEnd]), rules: matched)
-        var firstPayload = rewrittenHead
-        firstPayload.append(contentsOf: head[blockEnd...])
+        let firstPayload = rewrittenHead + Array(head[blockEnd...])
 
+        // NIOSSL handlers and the context are event-loop-confined; the loop
+        // bound lets them cross into the setup future's callbacks safely.
+        let boundContext = NIOLoopBound(context, eventLoop: context.eventLoop)
         let clientChannel = context.channel
         let rules = self.rules
         let bootstrap = ClientBootstrap(group: context.eventLoop)
@@ -199,7 +211,7 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
             }
 
         bootstrap.connect(host: host, port: Int(port)).flatMap { upstreamChannel -> EventLoopFuture<Void> in
-            upstreamChannel.writeAndFlush(NIOAny(HeadHandler.byteBuffer(firstPayload))).flatMap {
+            upstreamChannel.writeAndFlush(HeadHandler.byteBuffer(firstPayload)).flatMap {
                 let pump = PumpHandler(
                     peer: upstreamChannel,
                     direction: .request,
@@ -207,14 +219,16 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
                     host: host,
                     startsRewritten: true
                 )
-                return context.pipeline.addHandler(pump)
+                return boundContext.value.eventLoop.makeCompletedFuture {
+                    try boundContext.value.pipeline.syncOperations.addHandler(pump)
+                }
             }
         }.whenComplete { result in
             switch result {
             case .success:
-                self.finishSetup(context: context)
+                self.finishSetup(context: boundContext.value)
             case .failure:
-                context.close(promise: nil)
+                boundContext.value.close(promise: nil)
             }
         }
     }

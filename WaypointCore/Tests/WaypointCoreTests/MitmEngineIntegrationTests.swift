@@ -46,8 +46,9 @@ struct MitmEngineIntegrationTests {
             hits.increment()
             var payload = Array("HTTP/1.1 200 OK\r\nX-Echo-Old: z\r\nContent-Length: \(received.count)\r\n\r\n".utf8)
             payload.append(contentsOf: received)
+            let boundContext = NIOLoopBound(context, eventLoop: context.eventLoop)
             context.writeAndFlush(NIOAny(ByteBuffer(bytes: payload))).whenComplete { _ in
-                context.close(promise: nil)
+                boundContext.value.close(promise: nil)
             }
         }
     }
