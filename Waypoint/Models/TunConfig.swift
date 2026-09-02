@@ -21,7 +21,11 @@ extension TunConfig {
     /// injected or the source can't be read/written (mihomo then surfaces the
     /// real error).
     static func effectivePath(from sourcePath: String, configName: String) -> String {
-        let mitmActive = Settings.mitmEnabled && !RewriteRuleStore.load().isEmpty
+        // Gate on the engine's actual bound port, not the persisted one: the
+        // persisted port can be a stale last-success value after a bind
+        // failure, which made MITM-matched sites time out against a dead port.
+        let mitmPort = MitmProxyServer.ensureRunning()
+        let mitmActive = Settings.mitmEnabled && !RewriteRuleStore.load().isEmpty && mitmPort > 0
         guard let rawText = try? String(contentsOfFile: sourcePath, encoding: .utf8) else {
             return sourcePath
         }
@@ -53,7 +57,7 @@ extension TunConfig {
         if mitmActive {
             injected = MitmConfig.apply(
                 to: injected,
-                port: Settings.mitmEnginePort,
+                port: Int(mitmPort),
                 hosts: RewriteRuleStore.load().map(\.host)
             )
         }

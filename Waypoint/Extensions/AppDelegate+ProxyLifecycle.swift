@@ -36,7 +36,11 @@ extension AppDelegate {
     }
 
     func updateLoggingLevel() {
-        Task { _ = await ApiRequest.updateLogLevel(ConfigManager.selectLoggingApiLevel) }
+        Task {
+            if !await ApiRequest.updateLogLevel(ConfigManager.selectLoggingApiLevel) {
+                Logger.log("failed to update core log level", level: .error)
+            }
+        }
         for item in logLevelMenuItem.submenu?.items ?? [] {
             item.state = item.title.lowercased() == ConfigManager.selectLoggingApiLevel.rawValue ? .on : .off
         }
@@ -44,7 +48,12 @@ extension AppDelegate {
     }
 
     func startProxy() {
-        if ConfigManager.shared.isRunning { return }
+        // Guard concurrent starts too: isRunning only becomes true after full
+        // startup success, so without this overlapping invocations (menu
+        // toggle + config reload + network change) each kill the previous
+        // attempt's core during the up-to-10s readiness window.
+        if ConfigManager.shared.isRunning || coreStartInFlight { return }
+        coreStartInFlight = true
 
         // Cleared synchronously so a stale failure from a previous attempt
         // can't abort an updateConfig poll that started before this Task.
@@ -71,6 +80,7 @@ extension AppDelegate {
 
         Task { [weak self] in
             guard let self else { return }
+            defer { self.coreStartInFlight = false }
             MitmProxyServer.ensureRunning()
             let configPath: String = await withCheckedContinuation { continuation in
                 ConfigManager.getEffectiveConfigPath(configName: ConfigManager.selectConfigName) {
@@ -81,6 +91,9 @@ extension AppDelegate {
             CoreProcessManager.shared.onUnexpectedExit = { [weak self] in
                 ConfigManager.shared.isRunning = false
                 MitmProxyServer.shared.stop()
+                // The core held the pf anchor's pass rules; drop the lockout
+                // immediately so the user keeps network access.
+                Task { await KillSwitchManager.shared.clear() }
                 self?.proxyModeMenuItem.isEnabled = false
                 self?.dashboardMenuItem.isEnabled = false
                 WaypointNotifier.postConfigErrorNotice(msg: "mihomo core exited unexpectedly.")

@@ -53,13 +53,22 @@ final class ConnectionsStore {
 
     private var activeIDs = Set<String>()
     private var rowsByID = [String: ConnectionRow]()
+    // nonisolated(unsafe): only touched from init and deinit, both on the
+    // main actor.
+    private nonisolated(unsafe) var streamTask: Task<Void, Never>?
 
     init() {
-        Task { [weak self] in
+        streamTask = Task { [weak self] in
             for await snapshot in await ApiRequest.client.connectionsStream() {
                 self?.apply(snapshot: snapshot)
             }
         }
+    }
+
+    deinit {
+        // The stream auto-reconnects forever; without cancelling, a closed
+        // window's store keeps a live WebSocket and a mutating closure.
+        streamTask?.cancel()
     }
 
     var filteredRows: [ConnectionRow] {

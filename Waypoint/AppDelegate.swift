@@ -61,6 +61,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // Task, so a failed core start can surface its real error immediately.
     var lastCoreStartError: Error?
 
+    // True while a core start attempt is between spawn and readiness.
+    var coreStartInFlight = false
+
+    // True while a TUN toggle is waiting for its restart to settle.
+    var isTunToggleInFlight = false
+
     var editShortcutMonitor: Any?
 
     // The SwiftUI adaptor instantiates us on the main thread; the shared
@@ -173,6 +179,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         Persistence.launchFailTimes = 0
         Logger.log("Waypoint will terminate")
+        // Stop the core before the process dies so a root-spawned mihomo is
+        // not orphaned; the helper tears down its own children on exit, but a
+        // local (non-TUN) child would survive.
+        CoreProcessManager.shared.stop()
         MitmProxyServer.shared.stop()
         if NetworkChangeNotifier.isCurrentSystemSetToWaypoint(looser: true) ||
             NetworkChangeNotifier.hasInterfaceProxySetToWaypoint() {

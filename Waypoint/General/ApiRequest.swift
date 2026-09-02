@@ -72,12 +72,24 @@ extension ApiRequest {
         }
     }
 
-    static func updateIPv6(_ enable: Bool) async {
-        _ = try? await client.send("/configs", method: "PATCH", body: try json(["ipv6": enable]))
+    static func updateIPv6(_ enable: Bool) async -> Bool {
+        do {
+            _ = try await client.send("/configs", method: "PATCH", body: try json(["ipv6": enable]))
+            return true
+        } catch {
+            Logger.log("failed to update ipv6: \(error.localizedDescription)", level: .error)
+            return false
+        }
     }
 
-    static func updateProxyPort(_ port: Int) async {
-        _ = try? await client.send("/configs", method: "PATCH", body: try json(["mixed-port": port]))
+    static func updateProxyPort(_ port: Int) async -> Bool {
+        do {
+            _ = try await client.send("/configs", method: "PATCH", body: try json(["mixed-port": port]))
+            return true
+        } catch {
+            Logger.log("failed to update port: \(error.localizedDescription)", level: .error)
+            return false
+        }
     }
 
     static func updateProxyGroup(group: String, selectProxy: String) async -> Bool {

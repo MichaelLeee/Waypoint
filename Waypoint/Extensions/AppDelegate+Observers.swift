@@ -13,6 +13,9 @@ import WaypointNetworking
 extension AppDelegate {
     func setupStatusMenuItemData() {
         enhanceTunModeMenuItem.state = Settings.tunEnabled ? .on : .off
+        // Otherwise the checkmark is stale until the first toggle: the action
+        // now derives its new value from the manager, and this sink mirrors it.
+        showNetSpeedIndicatorMenuItem.state = ConfigManager.shared.showNetSpeedIndicator ? .on : .off
         // The remaining publishers drive the NSStatusItem view only.
         guard !Settings.useSwiftUIMenu else { return }
         NotificationCenter.default

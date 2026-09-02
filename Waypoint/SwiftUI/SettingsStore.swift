@@ -39,7 +39,16 @@ final class SettingsStore {
         didSet {
             guard let port = Int(proxyPortText), port != Settings.proxyPort else { return }
             Settings.proxyPort = port
-            Task { await ApiRequest.updateProxyPort(port) }
+            Task {
+                if await ApiRequest.updateProxyPort(port) {
+                    // Refresh currentConfig so the port-change observer
+                    // re-applies the system proxy with the new port.
+                    AppDelegate.shared.syncConfig()
+                } else {
+                    WaypointNotifier.postConfigErrorNotice(
+                        msg: NSLocalizedString("Failed to update the proxy port on the core.", comment: ""))
+                }
+            }
         }
     }
     var apiPortText = Settings.apiPort > 0 ? "\(Settings.apiPort)" : "" {
@@ -60,7 +69,12 @@ final class SettingsStore {
     var enableIPv6 = Settings.enableIPV6 {
         didSet {
             Settings.enableIPV6 = enableIPv6
-            Task { await ApiRequest.updateIPv6(enableIPv6) }
+            Task {
+                if !await ApiRequest.updateIPv6(enableIPv6) {
+                    WaypointNotifier.postConfigErrorNotice(
+                        msg: NSLocalizedString("Failed to update IPv6 on the core.", comment: ""))
+                }
+            }
         }
     }
 
@@ -110,7 +124,13 @@ final class SettingsStore {
                 MitmProxyServer.shared.stop()
             }
             if ConfigManager.shared.isRunning {
-                Task { await reloadConfig() }
+                Task { [weak self] in
+                    guard let self else { return }
+                    if !await self.reloadConfig() {
+                        WaypointNotifier.postConfigErrorNotice(
+                            msg: NSLocalizedString("Failed to reload the config after the MITM change.", comment: ""))
+                    }
+                }
             }
         }
     }

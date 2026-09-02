@@ -62,7 +62,9 @@ final class MenuBarMenuStore {
         let config = ConfigManager.shared.currentConfig?.copy()
         config?.mode = mode
         Task {
-            _ = await ApiRequest.updateOutBoundMode(mode)
+            // Only persist and propagate on API success; otherwise the picker
+            // and the core's actual mode desync.
+            guard await ApiRequest.updateOutBoundMode(mode) else { return }
             ConfigManager.shared.currentConfig = config
             ConfigManager.selectOutBoundMode = mode
             MenuItemFactory.recreateProxyMenuItems()

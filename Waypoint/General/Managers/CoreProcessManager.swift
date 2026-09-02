@@ -29,6 +29,9 @@ final class CoreProcessManager {
     }
 
     private var process: Process?
+    // Processes awaiting exit after stop(); a relaunch must not start until
+    // they release their ports.
+    private var terminatingProcesses = [Process]()
     private var spawnedViaHelper = false
     private let maxReadinessAttempts = 50 // 50 * 0.2s = up to 10s
 
@@ -54,6 +57,19 @@ final class CoreProcessManager {
                secret: String,
                externalUI: String? = nil) async throws {
         stop()
+        // Wait for any previously stopped local core to actually exit before
+        // relaunching, otherwise the new mihomo races a still-dying one for
+        // the same ports and fails to bind.
+        for proc in terminatingProcesses where proc.isRunning {
+            proc.terminationHandler = nil
+            for _ in 0 ..< 30 where proc.isRunning {
+                try await Task.sleep(nanoseconds: 100_000_000)
+            }
+            if proc.isRunning {
+                kill(proc.processIdentifier, SIGKILL)
+            }
+        }
+        terminatingProcesses.removeAll()
 
         if Settings.tunEnabled {
             try await startViaHelper(configPath: configPath,
@@ -96,9 +112,9 @@ final class CoreProcessManager {
             proc.standardOutput = nullHandle
             proc.standardError = nullHandle
         }
-        proc.terminationHandler = { [weak self] _ in
+        proc.terminationHandler = { [weak self] finishedProc in
             Task { @MainActor in
-                guard let self else { return }
+                guard let self, self.process === finishedProc else { return }
                 let wasRunning = self.isRunning
                 self.process = nil
                 self.isRunning = false
@@ -156,10 +172,21 @@ final class CoreProcessManager {
 
     func stop() {
         if spawnedViaHelper {
-            PrivilegedHelperManager.shared.helper()?.stopCore { _ in }
+            if let helper = PrivilegedHelperManager.shared.helper() {
+                helper.stopCore { _ in }
+            } else {
+                Logger.log("cannot stop root core: proxy helper unavailable", level: .error)
+            }
             spawnedViaHelper = false
-        } else {
-            process?.terminate()
+        } else if let proc = process {
+            // Detach the handler first: this is an intentional stop, not an
+            // unexpected exit, and the handler must not clobber a replacement
+            // process that start() launches afterwards.
+            proc.terminationHandler = nil
+            if proc.isRunning {
+                proc.terminate()
+                terminatingProcesses.append(proc)
+            }
         }
         process = nil
         isRunning = false

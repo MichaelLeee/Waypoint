@@ -40,29 +40,43 @@ extension AppDelegate {
     }
 
     @IBAction func actionEnhanceTunMode(_ sender: NSMenuItem) {
-        let enable = sender.state != .on
+        guard !isTunToggleInFlight else { return }
+        isTunToggleInFlight = true
+        // The SwiftUI menu hands us freshly created NSMenuItems that don't
+        // carry state, so derive the new value from the persisted setting
+        // instead of the sender.
+        let enable = !Settings.tunEnabled
         Settings.tunEnabled = enable
-        sender.state = enable ? .on : .off
-        // The tun block is injected at config-derivation time, so the core
-        // must fully restart; a hot reload is not enough.
-        CoreProcessManager.shared.stop()
-        ConfigManager.shared.isRunning = false
-        startProxy()
+        enhanceTunModeMenuItem.state = enable ? .on : .off
         Task { [weak self, enable] in
+            guard let self else { return }
+            defer { self.isTunToggleInFlight = false }
+            // Wait out any still-settling start attempt so the restart below
+            // actually picks up the new tun setting.
+            while self.coreStartInFlight {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+            }
+            // The tun block is injected at config-derivation time, so the core
+            // must fully restart; a hot reload is not enough.
+            CoreProcessManager.shared.stop()
+            ConfigManager.shared.isRunning = false
+            self.startProxy()
             // CoreProcessManager probes readiness for up to 10s before
             // settling isRunning; give the start attempt time to settle.
-            for _ in 0..<60 {
+            for _ in 0 ..< 60 {
                 try? await Task.sleep(nanoseconds: 200_000_000)
-                guard ConfigManager.shared.isRunning else { continue }
-                return
+                if ConfigManager.shared.isRunning { return }
+                if self.lastCoreStartError != nil { break }
             }
-            guard let self, !ConfigManager.shared.isRunning else { return }
-            // Start failed (e.g. helper unavailable); revert the toggle.
+            guard !ConfigManager.shared.isRunning else { return }
+            // Start failed (e.g. helper unavailable); revert the toggle and
+            // bring back the previously working proxy without TUN.
             Settings.tunEnabled = !enable
             self.enhanceTunModeMenuItem.state = enable ? .off : .on
             WaypointNotifier
                 .post(title: NSLocalizedString("Enhanced Mode Failed", comment: ""),
                       info: NSLocalizedString("Failed to apply Enhanced Mode. Please install the helper tool first.", comment: ""))
+            self.startProxy()
         }
     }
 
@@ -89,7 +103,9 @@ extension AppDelegate {
         let config = ConfigManager.shared.currentConfig?.copy()
         config?.mode = mode
         Task {
-            _ = await ApiRequest.updateOutBoundMode(mode)
+            // Only persist and propagate on API success; otherwise the menu
+            // checkmark and the core's actual mode desync.
+            guard await ApiRequest.updateOutBoundMode(mode) else { return }
             ConfigManager.shared.currentConfig = config
             ConfigManager.selectOutBoundMode = mode
             MenuItemFactory.recreateProxyMenuItems()
@@ -97,7 +113,9 @@ extension AppDelegate {
     }
 
     @IBAction func actionShowNetSpeedIndicator(_ sender: NSMenuItem) {
-        ConfigManager.shared.showNetSpeedIndicator = !(sender.state == .on)
+        // Derive from the manager, not the sender: SwiftUI-created items carry
+        // no state. The observers sink mirrors the new value into the menu.
+        ConfigManager.shared.showNetSpeedIndicator = !ConfigManager.shared.showNetSpeedIndicator
     }
 
     @IBAction func actionSetSystemProxy(_ sender: Any?) {

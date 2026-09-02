@@ -9,14 +9,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ProxySettingTool : NSObject
 
-- (void)enableProxyWithport:(int)port socksPort:(int)socksPort
+// All return nil on success, or a localized error description.
+- (nullable NSString *)enableProxyWithport:(int)port socksPort:(int)socksPort
                      pacUrl:(NSString *)pacUrl
             filterInterface:(BOOL)filterInterface
                  ignoreList:(NSArray<NSString *>*)ignoreList;
 
-- (void)disableProxyWithfilterInterface:(BOOL)filterInterFace;
+- (nullable NSString *)disableProxyWithfilterInterface:(BOOL)filterInterFace;
 
-- (void)restoreProxySetting:(NSDictionary *)savedInfo
+- (nullable NSString *)restoreProxySetting:(NSDictionary *)savedInfo
                 currentPort:(int)port
            currentSocksPort:(int)socksPort
             filterInterface:(BOOL)filterInterface;

@@ -12,6 +12,7 @@
 #import <objc/runtime.h> /* Ivar */
 #import "ProxyConfigRemoteProcessProtocol.h"
 #import "ProxySettingTool.h"
+#import <signal.h>
 
 @interface ProxyConfigHelper()
 <
@@ -229,16 +230,16 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
             error:(stringReplyBlock)reply {
     dispatch_async(dispatch_get_main_queue(), ^{
         ProxySettingTool *tool = [ProxySettingTool new];
-        [tool enableProxyWithport:port socksPort:socksPort pacUrl:pac filterInterface:filterInterface ignoreList:ignoreList];
-        reply(nil);
+        NSString *error = [tool enableProxyWithport:port socksPort:socksPort pacUrl:pac filterInterface:filterInterface ignoreList:ignoreList];
+        reply(error);
     });
 }
 
 - (void)disableProxyWithFilterInterface:(BOOL)filterInterface reply:(stringReplyBlock)reply {
     dispatch_async(dispatch_get_main_queue(), ^{
         ProxySettingTool *tool = [ProxySettingTool new];
-        [tool disableProxyWithfilterInterface:filterInterface];
-        reply(nil);
+        NSString *error = [tool disableProxyWithfilterInterface:filterInterface];
+        reply(error);
     });
 }
 
@@ -249,8 +250,8 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
                               error:(stringReplyBlock)reply {
     dispatch_async(dispatch_get_main_queue(), ^{
         ProxySettingTool *tool = [ProxySettingTool new];
-        [tool restoreProxySetting:dict currentPort:port currentSocksPort:socksPort filterInterface:filterInterface];
-        reply(nil);
+        NSString *error = [tool restoreProxySetting:dict currentPort:port currentSocksPort:socksPort filterInterface:filterInterface];
+        reply(error);
     });
 }
 
@@ -311,10 +312,22 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
 }
 
 - (void)stopCoreTask {
-    if (self.coreTask.isRunning) {
-        [self.coreTask terminate];
-    }
+    NSTask *task = self.coreTask;
     self.coreTask = nil;
+    if (!task.isRunning) {
+        return;
+    }
+    [task terminate];
+    // Wait for the old core to release its listening ports before the caller
+    // (launchCore especially) starts a replacement; a relaunch that races a
+    // still-dying mihomo fails to bind and dies.
+    for (int i = 0; i < 30 && task.isRunning; i++) {
+        [NSThread sleepForTimeInterval:0.1];
+    }
+    if (task.isRunning) {
+        kill(task.processIdentifier, SIGKILL);
+        [task waitUntilExit];
+    }
 }
 
 // MARK: - Kill Switch (pf)
@@ -327,7 +340,7 @@ static NSString * const kWPEndMark = @"# <<< Waypoint kill switch <<<";
 
 - (void)setFirewallKillSwitch:(NSString *)rulesText reply:(stringReplyBlock)reply {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.pfWasRunningBeforeUs = ![self pfIsEnabled];
+        self.pfWasRunningBeforeUs = [self pfIsEnabled];
 
         NSError *writeError = nil;
         [rulesText writeToFile:kWPAnchorFile atomically:YES encoding:NSUTF8StringEncoding error:&writeError];
@@ -336,25 +349,21 @@ static NSString * const kWPEndMark = @"# <<< Waypoint kill switch <<<";
             return;
         }
 
-        NSMutableString *conf = [NSMutableString stringWithContentsOfFile:kWPPfConfPath encoding:NSUTF8StringEncoding error:nil];
-        if (conf == nil) {
-            reply(@"failed to read /etc/pf.conf");
+        // Runtime-only load. Never reference the anchor from /etc/pf.conf: a
+        // persistent "load anchor" would re-apply the lockout rules at every
+        // boot, bricking the network whenever the app (and its teardown) is
+        // absent. clearFirewallState still removes blocks left by older builds.
+        int loadStatus = 0;
+        NSString *output = [self runPfctlWithArgs:@[@"-a", kWPAnchorName, @"-f", kWPAnchorFile] status:&loadStatus];
+        if (loadStatus != 0) {
+            reply([NSString stringWithFormat:@"pfctl failed: %@", output]);
             return;
         }
-        if ([conf rangeOfString:kWPBeginMark].location == NSNotFound) {
-            [conf appendString:[NSString stringWithFormat:@"\n%@\nanchor \"%@\"\nload anchor \"%@\" from \"%@\"\n%@\n",
-                                kWPBeginMark, kWPAnchorName, kWPAnchorName, kWPAnchorFile, kWPEndMark]];
-            NSError *confError = nil;
-            [conf writeToFile:kWPPfConfPath atomically:YES encoding:NSUTF8StringEncoding error:&confError];
-            if (confError) {
-                reply(confError.localizedDescription ?: @"failed to update /etc/pf.conf");
-                return;
-            }
-        }
 
-        int status = 0;
-        NSString *output = [self runPfctlWithArgs:@[@"-e", @"-f", kWPPfConfPath] status:&status];
-        if (status != 0) {
+        int enableStatus = 0;
+        output = [self runPfctlWithArgs:@[@"-e"] status:&enableStatus];
+        // "pf already enabled" exits non-zero but is not an error for us.
+        if (enableStatus != 0 && ![self pfIsEnabled]) {
             reply([NSString stringWithFormat:@"pfctl failed: %@", output]);
             return;
         }

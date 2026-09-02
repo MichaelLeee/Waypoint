@@ -24,31 +24,31 @@
 
 // MARK: - Public
 
-- (void)enableProxyWithport:(int)port socksPort:(int)socksPort
+- (NSString *)enableProxyWithport:(int)port socksPort:(int)socksPort
                      pacUrl:(NSString *)pacUrl
             filterInterface:(BOOL)filterInterface
                  ignoreList:(NSArray<NSString *>*)ignoreList {
 
-    [self applySCNetworkSettingWithRef:^(SCPreferencesRef ref) {
+    return [self applySCNetworkSettingWithRef:^(SCPreferencesRef ref) {
         [ProxySettingTool getDiviceListWithPrefRef:ref filterInterface:filterInterface devices:^(NSString *key, NSDictionary *dict) {
             [self enableProxySettings:ref interface:key port:port socksPort:socksPort ignoreList:ignoreList pac:pacUrl];
         }];
     }];
 }
 
-- (void)disableProxyWithfilterInterface:(BOOL)filterInterface {
-    [self applySCNetworkSettingWithRef:^(SCPreferencesRef ref) {
+- (NSString *)disableProxyWithfilterInterface:(BOOL)filterInterface {
+    return [self applySCNetworkSettingWithRef:^(SCPreferencesRef ref) {
         [ProxySettingTool getDiviceListWithPrefRef:ref filterInterface:filterInterface devices:^(NSString *key, NSDictionary *dict) {
             [self disableProxySetting:ref interface:key];
         }];
     }];
 }
 
-- (void)restoreProxySetting:(NSDictionary *)savedInfo
+- (NSString *)restoreProxySetting:(NSDictionary *)savedInfo
                 currentPort:(int)port
            currentSocksPort:(int)socksPort
             filterInterface:(BOOL)filterInterface{
-    [self applySCNetworkSettingWithRef:^(SCPreferencesRef ref) {
+    return [self applySCNetworkSettingWithRef:^(SCPreferencesRef ref) {
         [ProxySettingTool getDiviceListWithPrefRef:ref filterInterface:filterInterface devices:^(NSString *key, NSDictionary *dict) {
             NSDictionary *proxySetting = savedInfo[key];
             if (![proxySetting isKindOfClass:[NSDictionary class]]) {
@@ -202,17 +202,24 @@
     }
 }
 
-- (void)applySCNetworkSettingWithRef:(void(^)(SCPreferencesRef))callback {
+// Returns nil on success, otherwise an error description. Previously every
+// failure here was silent: the app reported success while nothing was applied.
+- (NSString *)applySCNetworkSettingWithRef:(void(^)(SCPreferencesRef))callback {
     SCPreferencesRef ref = SCPreferencesCreateWithAuthorization(nil, CFSTR("org.waypnt.waypoint.ProxyConfigHelper.config"), nil, self.authRef);
     if (!ref) {
-        return;
+        return @"failed to open System Configuration preferences";
     }
     callback(ref);
-    
-    SCPreferencesCommitChanges(ref);
-    SCPreferencesApplyChanges(ref);
+
+    NSString *error = nil;
+    if (!SCPreferencesCommitChanges(ref)) {
+        error = @"failed to commit proxy settings";
+    } else if (!SCPreferencesApplyChanges(ref)) {
+        error = @"failed to apply proxy settings";
+    }
     SCPreferencesSynchronize(ref);
     CFRelease(ref);
+    return error;
 }
 
 - (AuthorizationFlags)authFlags {
