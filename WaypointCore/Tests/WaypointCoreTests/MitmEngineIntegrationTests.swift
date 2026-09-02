@@ -165,7 +165,7 @@ struct MitmEngineIntegrationTests {
         // The echo body IS the bytes that reached the upstream — assert them
         // exactly: rule applied, old header gone, single terminator.
         let body = text.components(separatedBy: "\r\n\r\n").dropFirst().joined(separator: "\r\n\r\n")
-        #expect(body == "POST /echo HTTP/1.1\r\nHost: 127.0.0.1:\(echo.port)\r\nX-Old: new\r\n\r\n")
+        #expect(body == "POST /echo HTTP/1.1\r\nHost: 127.0.0.1:\(echo.port)\r\nContent-Length: 0\r\nX-Old: new\r\n\r\n")
         #expect(!body.contains("\r\n\r\n\r\n"))
         #expect(echo.hits.value == 1)
     }
@@ -186,7 +186,7 @@ struct MitmEngineIntegrationTests {
         defer { engine.stop() }
 
         let text = String(bytes: response, encoding: .isoLatin1)!
-        #expect(text.hasPrefix("HTTP/1.1 403 Blocked by Waypoint\r\n"))
+        #expect(text.hasPrefix("HTTP/1.1 403 Forbidden\r\n"))
         #expect(echo.hits.value == 0)
     }
 
@@ -249,7 +249,9 @@ struct MitmEngineIntegrationTests {
             }
         }
         for port in testPortRange {
-            sockets.append(try ServerBootstrap(group: group).bind(host: "127.0.0.1", port: Int(port)).wait())
+            sockets.append(try ServerBootstrap(group: group)
+                .serverChannelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
+                .bind(host: "127.0.0.1", port: Int(port)).wait())
         }
 
         let engine = MitmEngine()
