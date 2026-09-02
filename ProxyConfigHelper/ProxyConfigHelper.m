@@ -157,9 +157,12 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
 
     // Helper is ad-hoc/unsigned (development builds): no team identity exists
     // to compare, so fall back to requiring the caller's signing identifier
-    // to be our app's. Enforced automatically once the helper carries real
+    // to be our app's. Xcode derives the identifier from the bundle
+    // identifier, but old ad-hoc-era builds carried the executable name, so
+    // both are accepted. Enforced automatically once the helper carries real
     // distribution signing — the Team ID branch above takes over then.
-    static NSString * const kWPOurSigningId = @"Waypoint";
+    static NSString * const kWPOurSigningId = @"org.waypnt.waypoint";
+    static NSString * const kWPLegacySigningId = @"Waypoint";
     NSString *remoteSigningId = nil;
     {
         CFDictionaryRef infoRef = NULL;
@@ -174,7 +177,8 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
     }
     CFRelease(remote);
 
-    if (![remoteSigningId isEqualToString:kWPOurSigningId]) {
+    if (![remoteSigningId isEqualToString:kWPOurSigningId] &&
+        ![remoteSigningId isEqualToString:kWPLegacySigningId]) {
         [self logRejection:connection
                     reason:[NSString stringWithFormat:@"signing identifier mismatch (%@ != %@)",
                             remoteSigningId ?: @"<none>", kWPOurSigningId]];
