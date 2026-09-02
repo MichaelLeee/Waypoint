@@ -163,17 +163,17 @@ final class HeadHandler: ChannelInboundHandler, @unchecked Sendable {
             } catch {
                 return boundContext.value.eventLoop.makeFailedFuture(error)
             }
-            return boundContext.value.writeAndFlush(NIOAny(HeadHandler.byteBuffer("HTTP/1.1 200 Connection established\r\n\r\n")))
-        }.flatMap {
-            let pump = PumpHandler(
-                peer: upstreamChannel,
-                direction: .request,
-                rules: rules,
-                host: host,
-                startsRewritten: false
-            )
-            return boundContext.value.eventLoop.makeCompletedFuture {
-                try boundContext.value.pipeline.syncOperations.addHandlers([boundServerTLS.value, pump])
+            return boundContext.value.writeAndFlush(NIOAny(HeadHandler.byteBuffer("HTTP/1.1 200 Connection established\r\n\r\n"))).flatMap {
+                let pump = PumpHandler(
+                    peer: upstreamChannel,
+                    direction: .request,
+                    rules: rules,
+                    host: host,
+                    startsRewritten: false
+                )
+                return boundContext.value.eventLoop.makeCompletedFuture {
+                    try boundContext.value.pipeline.syncOperations.addHandlers([boundServerTLS.value, pump])
+                }
             }
         }.whenComplete { result in
             switch result {
