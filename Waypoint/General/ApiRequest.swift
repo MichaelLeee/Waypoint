@@ -62,9 +62,14 @@ extension ApiRequest {
         await patch(["log-level": level.rawValue])
     }
 
-    static func updateAllowLan(_ allow: Bool) async {
+    static func updateAllowLan(_ allow: Bool) async -> Bool {
         Logger.log("update allow lan:\(allow)", level: .debug)
-        _ = try? await client.send("/configs", method: "PATCH", body: try json(["allow-lan": allow]))
+        do {
+            _ = try await client.send("/configs", method: "PATCH", body: try json(["allow-lan": allow]))
+            return true
+        } catch {
+            return false
+        }
     }
 
     static func updateIPv6(_ enable: Bool) async {

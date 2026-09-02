@@ -27,10 +27,15 @@ extension AppDelegate {
 
     @IBAction func actionAllowFromLan(_ sender: NSMenuItem) {
         Task { [weak self] in
-            await ApiRequest.updateAllowLan(!ConfigManager.allowConnectFromLan)
+            // The checkmark follows the core's config, so the new value must
+            // come from there too — the local persisted flag can disagree
+            // (e.g. an imported config with allow-lan: true), which made
+            // unchecking re-send "allowed".
+            let enable = !(ConfigManager.shared.currentConfig?.allowLan ?? false)
+            guard await ApiRequest.updateAllowLan(enable) else { return }
             guard let self else { return }
             self.syncConfig()
-            ConfigManager.allowConnectFromLan.toggle()
+            ConfigManager.allowConnectFromLan = enable
         }
     }
 
