@@ -40,10 +40,23 @@ struct HTTPWireTests {
 
     @Test("parseAuthority handles host, host:port, userinfo and absolute URLs")
     func parseAuthorityCases() {
-        #expect(HTTPWire.parseAuthority("example.com", defaultPort: 443) == (host: "example.com", port: 443))
-        #expect(HTTPWire.parseAuthority("example.com:8443", defaultPort: 443) == (host: "example.com", port: 8443))
-        #expect(HTTPWire.parseAuthority("user:pass@example.com:99", defaultPort: 80) == (host: "example.com", port: 99))
-        #expect(HTTPWire.parseAuthority("http://example.com/x", defaultPort: 80) == (host: "example.com", port: 80))
+        // Optional tuples have no direct literal comparison; assert per field.
+        let simple = HTTPWire.parseAuthority("example.com", defaultPort: 443)
+        #expect(simple?.host == "example.com")
+        #expect(simple?.port == 443)
+
+        let withPort = HTTPWire.parseAuthority("example.com:8443", defaultPort: 443)
+        #expect(withPort?.host == "example.com")
+        #expect(withPort?.port == 8443)
+
+        let withUserinfo = HTTPWire.parseAuthority("user:pass@example.com:99", defaultPort: 80)
+        #expect(withUserinfo?.host == "example.com")
+        #expect(withUserinfo?.port == 99)
+
+        let absolute = HTTPWire.parseAuthority("http://example.com/x", defaultPort: 80)
+        #expect(absolute?.host == "example.com")
+        #expect(absolute?.port == 80)
+
         #expect(HTTPWire.parseAuthority("", defaultPort: 80) == nil)
     }
 

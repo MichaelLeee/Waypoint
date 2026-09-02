@@ -141,7 +141,7 @@ struct MitmEngineIntegrationTests {
             }
             .connect(host: "127.0.0.1", port: Int(engine.port)).wait()
         try channel.writeAndFlush(ByteBuffer(bytes: request)).wait()
-        channel.closeFuture.wait()
+        try channel.closeFuture.wait()
         return (box.value, engine)
     }
 
