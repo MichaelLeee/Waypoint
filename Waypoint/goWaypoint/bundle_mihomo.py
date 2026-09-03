@@ -220,38 +220,36 @@ def download(url, dest):
 def official_download(ver, pinned_version, pinned_hashes):
     pinned = ver == pinned_version
     release = fetch_json(f"{REPO_API}/releases/tags/v{ver}")
-    tmp = tempfile.mkdtemp(prefix="mihomo-official-")
-    try:
-        slices = []
-        for arch in ("amd64", "arm64"):
-            asset = pick_asset(release["assets"], arch, ver)
-            gz = os.path.join(tmp, asset["name"])
-            raw = gz[:-3] if gz.endswith(".gz") else gz + ".bin"
-            download(asset["browser_download_url"], gz)
-            digest = sha256_of(gz)
-            if pinned:
-                expected = pinned_hashes.get(asset["name"])
-                if not expected:
-                    raise SystemExit(
-                        f"{asset['name']} has no pinned hash in {PIN_FILE}; "
-                        "add it or fix the pin before building"
-                    )
-                if digest != expected:
-                    raise SystemExit(
-                        f"CHECKSUM MISMATCH for {asset['name']}: got {digest}, "
-                        f"expected {expected}. Do not proceed — the download "
-                        "differs from the pinned release asset."
-                    )
-                print(f"  {asset['name']}: sha256 OK")
-            else:
-                print(f"  WARNING: unpinned version v{ver}, no checksum "
-                      f"verification. {asset['name']} sha256={digest}")
-            with gzip.open(gz, "rb") as fin, open(raw, "wb") as fout:
-                shutil.copyfileobj(fin, fout)
-            slices.append(raw)
-        return slices
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
+    out_dir = os.path.join(CACHE_ROOT, f"v{ver}", "official")
+    os.makedirs(out_dir, exist_ok=True)
+    slices = []
+    for arch in ("amd64", "arm64"):
+        asset = pick_asset(release["assets"], arch, ver)
+        gz = os.path.join(out_dir, asset["name"])
+        raw = gz[:-3] if gz.endswith(".gz") else gz + ".bin"
+        download(asset["browser_download_url"], gz)
+        digest = sha256_of(gz)
+        if pinned:
+            expected = pinned_hashes.get(asset["name"])
+            if not expected:
+                raise SystemExit(
+                    f"{asset['name']} has no pinned hash in {PIN_FILE}; "
+                    "add it or fix the pin before building"
+                )
+            if digest != expected:
+                raise SystemExit(
+                    f"CHECKSUM MISMATCH for {asset['name']}: got {digest}, "
+                    f"expected {expected}. Do not proceed — the download "
+                    "differs from the pinned release asset."
+                )
+            print(f"  {asset['name']}: sha256 OK")
+        else:
+            print(f"  WARNING: unpinned version v{ver}, no checksum "
+                  f"verification. {asset['name']} sha256={digest}")
+        with gzip.open(gz, "rb") as fin, open(raw, "wb") as fout:
+            shutil.copyfileobj(fin, fout)
+        slices.append(raw)
+    return slices
 
 
 def write_core_version(info_plist, ver):
