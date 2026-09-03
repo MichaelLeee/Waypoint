@@ -3,7 +3,7 @@ set -e
 echo "Download mihomo core"
 
 cd Waypoint/goWaypoint
-python3 download_mihomo.py
+python3 bundle_mihomo.py
 cd ../..
 
 echo "delete old files"

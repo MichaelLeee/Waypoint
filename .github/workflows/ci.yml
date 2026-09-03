@@ -58,7 +58,7 @@ jobs:
       - name: Verify pinned download
         run: |
           cd Waypoint/goWaypoint
-          python3 download_mihomo.py
+          python3 bundle_mihomo.py --official
 
       - uses: actions/setup-go@v5
         with:
@@ -66,17 +66,8 @@ jobs:
 
       - name: Build mihomo from the pinned source tag
         run: |
-          VER=$(grep '^version=' Waypoint/goWaypoint/mihomo.sha256 | cut -d= -f2)
-          echo "Building v$VER from source"
-          git clone --depth 1 --branch "v$VER" https://github.com/MetaCubeX/mihomo.git /tmp/mihomo-src
-          cd /tmp/mihomo-src
-          # Same flags as upstream's Makefile, with a fixed version string.
-          for ARCH in arm64 amd64; do
-            CGO_ENABLED=0 GOOS=darwin GOARCH=$ARCH \
-            go build -tags with_gvisor -trimpath \
-              -ldflags "-s -w -buildid= -X github.com/metacubex/mihomo/constant.Version=v$VER" \
-              -o "/tmp/mihomo-built-darwin-$ARCH" .
-          done
+          cd Waypoint/goWaypoint
+          python3 bundle_mihomo.py --force
 
       # Upstream injects a wall-clock BUILDTIME, so bit-for-bit equality is
       # not expected; a match is a strong signal, a mismatch alone is not an
@@ -89,7 +80,7 @@ jobs:
           curl -sL -H "User-Agent: Waypoint-build" -o /tmp/official.gz \
             "https://github.com/MetaCubeX/mihomo/releases/download/v$VER/mihomo-darwin-arm64-v$VER.gz"
           gzip -dc /tmp/official.gz | shasum -a 256 > /tmp/official.sha
-          shasum -a 256 /tmp/mihomo-built-darwin-arm64 > /tmp/built.sha
+          shasum -a 256 "Waypoint/goWaypoint/.mihomo-build/v$VER/darwin-arm64" > /tmp/built.sha
           echo "official: $(cat /tmp/official.sha)"
           echo "built:    $(cat /tmp/built.sha)"
           if [ "$(cut -d' ' -f1 /tmp/official.sha)" = "$(cut -d' ' -f1 /tmp/built.sha)" ]; then

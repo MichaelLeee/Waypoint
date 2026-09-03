@@ -1,10 +1,13 @@
 # Supply-chain pin for the bundled mihomo core.
 #
-# MetaCubeX publishes no checksum file or signatures on its releases, so these
-# hashes were computed from the official GitHub release assets at pin time.
-# They protect the build against tampered mirrors and silent re-download
-# drift. To upgrade: pass --version to download_mihomo.py, then replace this
-# file's contents with the hashes it prints, and review the upstream diff.
+# The default build path compiles the tag pinned here from source on the
+# building machine (bundle_mihomo.py), so the commit= line is the primary
+# trust anchor. The asset hashes were computed from the official GitHub
+# release at pin time (MetaCubeX publishes no checksums/signatures) and are
+# used by --official mode and by the CI comparison job. To upgrade: change
+# version= and commit= here, review the upstream diff, and refresh the asset
+# hashes (bundle_mihomo.py --official --version <new> prints them).
 version=1.19.30
+commit=ac017cdd246ce8bd547653d927e7bf77d7ee73d5
 mihomo-darwin-amd64-compatible-v1.19.30.gz=6e75de0732e8afabe413ff7c235e8f16226ce136672371c60787cbf9607402c5
 mihomo-darwin-arm64-v1.19.30.gz=2c7f3a7904fa1cee291e124123e630e7b1ebd13765dd9bf26c0a28432004d9f4
