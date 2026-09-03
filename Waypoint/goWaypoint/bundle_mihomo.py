@@ -35,6 +35,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
 import urllib.request
 
 REPO = "https://github.com/MetaCubeX/mihomo"
@@ -144,11 +145,24 @@ def ls_remote_tag_commit(ver, attempts=3):
     raise SystemExit(f"cannot resolve tag v{ver} on {REPO}: {last_error}")
 
 
-def clone_pinned(ver, commit):
+def clone_pinned(ver, commit, attempts=3):
     src = tempfile.mkdtemp(prefix="mihomo-src-")
-    subprocess.check_call(
-        ["git", "clone", "--depth", "1", "--branch", f"v{ver}", REPO, src]
-    )
+    last_error = None
+    for attempt in range(1, attempts + 1):
+        try:
+            subprocess.check_call(
+                ["git", "clone", "--depth", "1", "--branch", f"v{ver}", REPO, src]
+            )
+            last_error = None
+            break
+        except subprocess.CalledProcessError as exc:
+            last_error = exc
+            shutil.rmtree(src, ignore_errors=True)
+            os.makedirs(src, exist_ok=True)
+            print(f"  git clone failed (attempt {attempt}/{attempts}), retrying")
+            time.sleep(5 * attempt)
+    if last_error is not None:
+        raise SystemExit(f"cannot clone {REPO}: {last_error}")
     head = subprocess.check_output(
         ["git", "-C", src, "rev-parse", "HEAD"], text=True
     ).strip()
@@ -199,17 +213,6 @@ def build_from_source(ver, commit, force):
         shutil.rmtree(src, ignore_errors=True)
 
 
-def pick_asset(assets, arch, ver):
-    wanted = [p.format(ver=ver) for p in ARCH_ASSETS[arch]]
-    by_name = {a["name"]: a for a in assets}
-    for name in wanted:
-        if name in by_name:
-            return by_name[name]
-    raise SystemExit(
-        f"no mihomo darwin-{arch} asset for v{ver}; looked for: {', '.join(wanted)}"
-    )
-
-
 def download(url, dest):
     print(f"  downloading {url}")
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
@@ -219,33 +222,46 @@ def download(url, dest):
 
 def official_download(ver, pinned_version, pinned_hashes):
     pinned = ver == pinned_version
-    release = fetch_json(f"{REPO_API}/releases/tags/v{ver}")
     out_dir = os.path.join(CACHE_ROOT, f"v{ver}", "official")
     os.makedirs(out_dir, exist_ok=True)
     slices = []
     for arch in ("amd64", "arm64"):
-        asset = pick_asset(release["assets"], arch, ver)
-        gz = os.path.join(out_dir, asset["name"])
-        raw = gz[:-3] if gz.endswith(".gz") else gz + ".bin"
-        download(asset["browser_download_url"], gz)
-        digest = sha256_of(gz)
+        candidates = [p.format(ver=ver) for p in ARCH_ASSETS[arch]]
         if pinned:
-            expected = pinned_hashes.get(asset["name"])
-            if not expected:
+            pinned_names = [n for n in candidates if n in pinned_hashes]
+            if not pinned_names:
                 raise SystemExit(
-                    f"{asset['name']} has no pinned hash in {PIN_FILE}; "
+                    f"no pinned darwin-{arch} asset for v{ver} in {PIN_FILE}; "
                     "add it or fix the pin before building"
                 )
+            candidates = pinned_names
+        asset_name = None
+        for name in candidates:
+            url = f"https://github.com/MetaCubeX/mihomo/releases/download/v{ver}/{name}"
+            gz = os.path.join(out_dir, name)
+            try:
+                download(url, gz)
+            except urllib.error.HTTPError as exc:
+                print(f"  {name} not available ({exc.code}); trying the next candidate")
+                continue
+            asset_name = name
+            break
+        if not asset_name:
+            raise SystemExit(f"no downloadable darwin-{arch} asset for v{ver}")
+        raw = gz[:-3] if gz.endswith(".gz") else gz + ".bin"
+        digest = sha256_of(gz)
+        if pinned:
+            expected = pinned_hashes.get(asset_name)
             if digest != expected:
                 raise SystemExit(
-                    f"CHECKSUM MISMATCH for {asset['name']}: got {digest}, "
+                    f"CHECKSUM MISMATCH for {asset_name}: got {digest}, "
                     f"expected {expected}. Do not proceed — the download "
                     "differs from the pinned release asset."
                 )
-            print(f"  {asset['name']}: sha256 OK")
+            print(f"  {asset_name}: sha256 OK")
         else:
             print(f"  WARNING: unpinned version v{ver}, no checksum "
-                  f"verification. {asset['name']} sha256={digest}")
+                  f"verification. {asset_name} sha256={digest}")
         with gzip.open(gz, "rb") as fin, open(raw, "wb") as fout:
             shutil.copyfileobj(fin, fout)
         slices.append(raw)
