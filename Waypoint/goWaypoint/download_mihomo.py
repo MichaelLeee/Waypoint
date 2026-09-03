@@ -9,12 +9,17 @@ for both macOS architectures, merge them into one universal Mach-O with
 expects to find it via ``Bundle.main.path(forResource:ofType:)``.
 
 Usage:
-    python3 download_mihomo.py                 # latest release
+    python3 download_mihomo.py                 # the version pinned in mihomo.sha256
     python3 download_mihomo.py --version 1.19  # specific tag (v prefix optional)
+
+Every download is verified against the SHA256 hashes pinned in
+``mihomo.sha256``; an unpinned version skips verification and prints its
+hashes for pinning — review the upstream diff before pinning a new version.
 """
 
 import argparse
 import gzip
+import hashlib
 import json
 import os
 import plistlib
@@ -26,6 +31,7 @@ import urllib.request
 
 REPO_API = "https://api.github.com/repos/MetaCubeX/mihomo"
 USER_AGENT = "Waypoint-build"
+PIN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mihomo.sha256")
 
 # Per-architecture asset name, newest-first preference. Intel Macs on macOS
 # 10.14 need the ``-compatible`` build (lower deployment target); Apple Silicon
@@ -47,10 +53,43 @@ def fetch_json(url):
         return json.loads(resp.read().decode("utf-8"))
 
 
+def read_pin():
+    """Returns (version, {asset_name: sha256}) from mihomo.sha256."""
+    version, hashes = None, {}
+    with open(PIN_FILE) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if line.startswith("version="):
+                version = line.split("=", 1)[1]
+            elif "=" in line:
+                name, digest = line.split("=", 1)
+                hashes[name.strip()] = digest.strip().lower()
+    if not version or not hashes:
+        raise SystemExit(f"malformed pin file {PIN_FILE}")
+    return version, hashes
+
+
+def sha256_of(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def resolve_version(version):
     if version and version != "latest":
         return version.lstrip("v")
-    return fetch_json(f"{REPO_API}/releases/latest")["tag_name"].lstrip("v")
+    # "latest" means the pinned version when a pin exists; an explicit
+    # --version latest bypasses the pin deliberately (upgrade flow).
+    try:
+        pinned, _ = read_pin()
+        print(f"  using pinned version v{pinned} (override with --version)")
+        return pinned
+    except FileNotFoundError:
+        return fetch_json(f"{REPO_API}/releases/latest")["tag_name"].lstrip("v")
 
 
 def pick_asset(assets, arch, ver):
@@ -85,7 +124,7 @@ def main():
     parser.add_argument(
         "--version",
         default=os.environ.get("MIHOMO_VERSION", "latest"),
-        help="mihomo version tag to bundle (default: latest)",
+        help="mihomo version tag to bundle (default: the version pinned in mihomo.sha256)",
     )
     args = parser.parse_args()
 
@@ -94,8 +133,14 @@ def main():
     info_plist = os.path.abspath(os.path.join(here, "..", "Info.plist"))
     out_binary = os.path.join(resources_dir, "mihomo")
 
+    try:
+        pinned_version, pinned_hashes = read_pin()
+    except FileNotFoundError:
+        pinned_version, pinned_hashes = None, {}
+
     ver = resolve_version(args.version)
     print(f"bundling mihomo v{ver}")
+    pinned = ver == pinned_version
 
     release = fetch_json(f"{REPO_API}/releases/tags/v{ver}")
     assets = release["assets"]
@@ -108,6 +153,24 @@ def main():
             gz = os.path.join(tmp, asset["name"])
             raw = gz[:-3] if gz.endswith(".gz") else gz + ".bin"
             download(asset["browser_download_url"], gz)
+            digest = sha256_of(gz)
+            if pinned:
+                expected = pinned_hashes.get(asset["name"])
+                if not expected:
+                    raise SystemExit(
+                        f"{asset['name']} has no pinned hash in {PIN_FILE}; "
+                        "add it or fix the pin before building"
+                    )
+                if digest != expected:
+                    raise SystemExit(
+                        f"CHECKSUM MISMATCH for {asset['name']}: got {digest}, "
+                        f"expected {expected}. Do not proceed — the download "
+                        "differs from the pinned release asset."
+                    )
+                print(f"  {asset['name']}: sha256 OK")
+            else:
+                print(f"  WARNING: unpinned version v{ver}, no checksum "
+                      f"verification. {asset['name']} sha256={digest}")
             with gzip.open(gz, "rb") as fin, open(raw, "wb") as fout:
                 shutil.copyfileobj(fin, fout)
             slices.append(raw)
@@ -118,6 +181,13 @@ def main():
         print(f"  wrote {out_binary}")
 
         write_core_version(info_plist, ver)
+
+        if not pinned:
+            print("\nTo pin this version, update mihomo.sha256 with:")
+            print(f"version={ver}")
+            for asset in assets:
+                if asset["name"] in [p.format(ver=ver) for arch in ARCH_ASSETS for p in ARCH_ASSETS[arch]]:
+                    print(f"{asset['name']}={sha256_of(os.path.join(tmp, asset['name']))}")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

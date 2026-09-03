@@ -48,3 +48,52 @@ jobs:
       - name: SwiftFormat (advisory)
         continue-on-error: true
         run: swiftformat --lint .
+
+  mihomo-supply-chain:
+    name: Mihomo supply chain
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify pinned download
+        run: |
+          cd Waypoint/goWaypoint
+          python3 download_mihomo.py
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+
+      - name: Build mihomo from the pinned source tag
+        run: |
+          VER=$(grep '^version=' Waypoint/goWaypoint/mihomo.sha256 | cut -d= -f2)
+          echo "Building v$VER from source"
+          git clone --depth 1 --branch "v$VER" https://github.com/MetaCubeX/mihomo.git /tmp/mihomo-src
+          cd /tmp/mihomo-src
+          # Same flags as upstream's Makefile, with a fixed version string.
+          for ARCH in arm64 amd64; do
+            CGO_ENABLED=0 GOOS=darwin GOARCH=$ARCH \
+            go build -tags with_gvisor -trimpath \
+              -ldflags "-s -w -buildid= -X github.com/metacubex/mihomo/constant.Version=v$VER" \
+              -o "/tmp/mihomo-built-darwin-$ARCH" .
+          done
+
+      # Upstream injects a wall-clock BUILDTIME, so bit-for-bit equality is
+      # not expected; a match is a strong signal, a mismatch alone is not an
+      # alarm. The point of this step is to make that status visible and to
+      # prove the pinned source builds cleanly.
+      - name: Compare source build with official arm64 asset
+        continue-on-error: true
+        run: |
+          VER=$(grep '^version=' Waypoint/goWaypoint/mihomo.sha256 | cut -d= -f2)
+          curl -sL -H "User-Agent: Waypoint-build" -o /tmp/official.gz \
+            "https://github.com/MetaCubeX/mihomo/releases/download/v$VER/mihomo-darwin-arm64-v$VER.gz"
+          gzip -dc /tmp/official.gz | shasum -a 256 > /tmp/official.sha
+          shasum -a 256 /tmp/mihomo-built-darwin-arm64 > /tmp/built.sha
+          echo "official: $(cat /tmp/official.sha)"
+          echo "built:    $(cat /tmp/built.sha)"
+          if [ "$(cut -d' ' -f1 /tmp/official.sha)" = "$(cut -d' ' -f1 /tmp/built.sha)" ]; then
+            echo "REPRODUCED: official arm64 binary matches the source build" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "NOT REPRODUCED: official arm64 binary differs from the source build (expected: upstream embeds a build timestamp; audit the tag before trusting the official binary)" >> "$GITHUB_STEP_SUMMARY"
+          fi

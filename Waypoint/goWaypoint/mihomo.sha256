@@ -1,0 +1,10 @@
+# Supply-chain pin for the bundled mihomo core.
+#
+# MetaCubeX publishes no checksum file or signatures on its releases, so these
+# hashes were computed from the official GitHub release assets at pin time.
+# They protect the build against tampered mirrors and silent re-download
+# drift. To upgrade: pass --version to download_mihomo.py, then replace this
+# file's contents with the hashes it prints, and review the upstream diff.
+version=1.19.30
+mihomo-darwin-amd64-compatible-v1.19.30.gz=6e75de0732e8afabe413ff7c235e8f16226ce136672371c60787cbf9607402c5
+mihomo-darwin-arm64-v1.19.30.gz=2c7f3a7904fa1cee291e124123e630e7b1ebd13765dd9bf26c0a28432004d9f4
