@@ -6,73 +6,80 @@
 import AppKit
 import Foundation
 
-class StatusItemView: NSView, StatusItemViewProtocol {
-    @IBOutlet var imageView: NSImageView!
+/// Drives the standard NSStatusItem button (icon + one-line speed title).
+/// A custom NSView subview inside the status-bar button is avoided on
+/// purpose: AppKit's status-item replicant machinery re-snapshots the button
+/// content whenever one of its layers is re-displayed, and a custom subview
+/// keeps that cycle alive — each snapshot re-displays the subview's layers,
+/// re-marks the status window, and schedules the next snapshot, burning
+/// ~40% CPU at idle on macOS 26. The standard image+title path converges.
+@MainActor
+final class StatusItemView: NSObject, StatusItemViewProtocol {
+    private let statusItem: NSStatusItem
+    private let button: NSStatusBarButton
 
-    @IBOutlet var uploadSpeedLabel: NSTextField!
-    @IBOutlet var downloadSpeedLabel: NSTextField!
-    @IBOutlet var speedContainerView: NSView!
+    private var showsSpeed: Bool
+    private var lastTitle: String?
+    private var lastEnableProxy: Bool?
+    private var up = 0
+    private var down = 0
 
-    var up: Int = 0
-    var down: Int = 0
-
-    static func create(statusItem: NSStatusItem?) -> StatusItemView {
-        var topLevelObjects: NSArray?
-        // A missing or malformed nib means the menu-bar speed view cannot be
-        // built at all; fail with a message that names the real problem
-        // instead of force-casting a bare NSView.
-        guard Bundle.main.loadNibNamed("StatusItemView", owner: self, topLevelObjects: &topLevelObjects),
-              let view = topLevelObjects?.first(where: { $0 is StatusItemView }) as? StatusItemView
-        else {
-            fatalError("StatusItemView.xib failed to load or contains no StatusItemView")
+    init(statusItem: NSStatusItem) {
+        self.statusItem = statusItem
+        guard let button = statusItem.button else {
+            fatalError("NSStatusItem has no button")
         }
-        view.setupView()
-        view.imageView.image = StatusItemTool.menuImage
-
-        if let button = statusItem?.button {
-            button.addSubview(view)
-            button.imagePosition = .imageOverlaps
-        } else {
-            Logger.log("button = nil")
-            AppDelegate.shared.openConfigFolder(self)
-        }
-        view.updateViewStatus(enableProxy: false)
-        return view
+        self.button = button
+        self.showsSpeed = ConfigManager.shared.showNetSpeedIndicator
+        super.init()
+        button.image = StatusItemTool.menuImage
+        button.imagePosition = .imageLeading
+        button.font = StatusItemTool.font
+        refreshTitle()
     }
 
-    func setupView() {
-        uploadSpeedLabel.font = StatusItemTool.font
-        downloadSpeedLabel.font = StatusItemTool.font
-
-        uploadSpeedLabel.textColor = NSColor.labelColor
-        downloadSpeedLabel.textColor = NSColor.labelColor
+    static func create(statusItem: NSStatusItem?) -> StatusItemView {
+        guard let statusItem else {
+            fatalError("a status item is required to build the menu bar view")
+        }
+        return StatusItemView(statusItem: statusItem)
     }
 
     func updateSize(width: CGFloat) {
-        frame = CGRect(x: 0, y: 0, width: width, height: 22)
+        if statusItem.length != width {
+            statusItem.length = width
+        }
     }
 
     func updateViewStatus(enableProxy: Bool) {
-        if enableProxy {
-            imageView.contentTintColor = NSColor.labelColor
-        } else {
-            imageView.contentTintColor = NSColor.labelColor.withSystemEffect(.disabled)
-        }
+        guard enableProxy != lastEnableProxy else { return }
+        lastEnableProxy = enableProxy
+        button.appearsDisabled = !enableProxy
     }
 
     func updateSpeedLabel(up: Int, down: Int) {
-        guard !speedContainerView.isHidden else { return }
-        if up != self.up {
-            uploadSpeedLabel.stringValue = SpeedUtils.getSpeedString(for: up)
+        guard showsSpeed else { return }
+        if up != self.up || down != self.down {
             self.up = up
-        }
-        if down != self.down {
-            downloadSpeedLabel.stringValue = SpeedUtils.getSpeedString(for: down)
             self.down = down
+            refreshTitle()
         }
     }
 
     func showSpeedContainer(show: Bool) {
-        speedContainerView.isHidden = !show
+        guard show != showsSpeed else { return }
+        showsSpeed = show
+        up = 0
+        down = 0
+        refreshTitle()
+    }
+
+    private func refreshTitle() {
+        let title = showsSpeed
+            ? "↑\(SpeedUtils.getSpeedString(for: up)) ↓\(SpeedUtils.getSpeedString(for: down))"
+            : ""
+        guard title != lastTitle else { return }
+        lastTitle = title
+        button.title = title
     }
 }

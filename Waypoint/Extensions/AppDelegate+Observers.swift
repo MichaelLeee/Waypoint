@@ -27,7 +27,6 @@ extension AppDelegate {
                     let show = ConfigManager.shared.showNetSpeedIndicator
                     self.showNetSpeedIndicatorMenuItem.state = show ? .on : .off
                     let statusItemLength: CGFloat = show ? statusItemLengthWithSpeed : 25
-                    self.statusItem.length = statusItemLength
                     self.statusItemView.updateSize(width: statusItemLength)
                     self.statusItemView.showSpeedContainer(show: show)
                 }
