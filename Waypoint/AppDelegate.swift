@@ -99,9 +99,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // no-op so speed/status call sites remain safe.
         statusItemView = NullStatusItemView()
         if !Settings.useSwiftUIMenu {
-            statusItem = NSStatusBar.system.statusItem(withLength: statusItemLengthWithSpeed)
+            // Icon-only width unless the speed indicator is already enabled —
+            // the wide length must not be applied before that setting changes.
+            let showSpeed = ConfigManager.shared.showNetSpeedIndicator
+            let initialLength: CGFloat = showSpeed ? statusItemLengthWithSpeed : 25
+            statusItem = NSStatusBar.system.statusItem(withLength: initialLength)
             statusItemView = StatusItemView.create(statusItem: statusItem)
-            statusItemView.updateSize(width: statusItemLengthWithSpeed)
+            statusItemView.updateSize(width: initialLength)
         }
         setupStatusMenuItemData()
         DispatchQueue.main.async {
