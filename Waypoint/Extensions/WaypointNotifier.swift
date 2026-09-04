@@ -29,7 +29,9 @@ enum WaypointNotifier {
             case .authorized, .provisional:
                 postNotification(title: title, info: info, identifier: identifier)
             case .notDetermined:
-                center.requestAuthorization(options: .alert) { granted, _ in
+                // Query the center fresh here: it is non-Sendable and must
+                // not be captured into this @Sendable closure.
+                UNUserNotificationCenter.current().requestAuthorization(options: .alert) { granted, _ in
                     if granted {
                         postNotification(title: title, info: info, identifier: identifier)
                     } else {

@@ -108,7 +108,7 @@ class Logger: @unchecked Sendable {
     private func appendToFile(_ line: String) {
         openLogFile()
         guard let handle = currentFileHandle, let data = "\(line)\n".data(using: .utf8) else { return }
-        try? handle.write(data)
+        handle.write(data)
     }
 
     private func pruneOldLogs() {

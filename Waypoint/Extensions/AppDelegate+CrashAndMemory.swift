@@ -85,7 +85,7 @@ extension AppDelegate {
     }
 
     func selectAllowLanWithMenory() async {
-        await ApiRequest.updateAllowLan(ConfigManager.allowConnectFromLan)
+        _ = await ApiRequest.updateAllowLan(ConfigManager.allowConnectFromLan)
         syncConfig()
     }
 

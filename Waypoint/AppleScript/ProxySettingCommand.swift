@@ -12,8 +12,8 @@ import Foundation
         // because NSScriptCommand is not MainActor-annotated in the SDK.
         // Error state is written back outside the closure so `self` (non-
         // Sendable) is never sent across the isolation boundary.
-        var errorCode = 0
-        var errorMessage: String?
+        let errorCode = 0
+        let errorMessage: String?
         MainActor.assumeIsolated {
             let delegate = AppDelegate.shared
             // actionSetSystemProxy ignores its sender; passing nil avoids

@@ -129,9 +129,9 @@ extension AppDelegate {
 
     func applyRuntimeGeneralSettings() async {
         await selectAllowLanWithMenory()
-        await ApiRequest.updateIPv6(Settings.enableIPV6)
+        _ = await ApiRequest.updateIPv6(Settings.enableIPV6)
         if Settings.proxyPort > 0 {
-            await ApiRequest.updateProxyPort(Settings.proxyPort)
+            _ = await ApiRequest.updateProxyPort(Settings.proxyPort)
         }
     }
 

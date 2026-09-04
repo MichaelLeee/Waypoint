@@ -3,7 +3,7 @@
     {
       "filename": "icon_1024.png",
       "idiom": "universal",
-      "platform": "macos",
+      "platform": "osx",
       "size": "1024x1024"
     }
   ],

@@ -54,7 +54,7 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 MainActor.assumeIsolated {
-                    guard let self, ConfigManager.shared.proxyPortAutoSet else { return }
+                    guard ConfigManager.shared.proxyPortAutoSet else { return }
                     if ConfigManager.shared.proxyShouldPaused {
                         SystemProxyManager.shared.disableProxy()
                     } else {
