@@ -7,7 +7,10 @@ import Cocoa
 import Combine
 import WaypointNetworking
 
-let statusItemLengthWithSpeed: CGFloat = 72
+// Wide enough that "↑0KB/s ↓0KB/s" (and everyday magnitudes) never truncate
+// once the button's icon and padding are accounted for; fixed so menu-bar
+// neighbors don't shift as the numbers tick.
+let statusItemLengthWithSpeed: CGFloat = 100
 
 // Responsibilities live in Extensions/AppDelegate+{Menu,Observers,
 // ProxyLifecycle,MenuActions,CrashAndMemory,MenuDelegate}.swift; this file

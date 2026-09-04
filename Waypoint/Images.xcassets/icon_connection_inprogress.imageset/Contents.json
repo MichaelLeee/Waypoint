@@ -1,18 +1,14 @@
 {
   "images" : [
     {
-      "filename" : "icon_connecting.png",
-      "idiom" : "universal",
-      "scale" : "1x"
+      "idiom" : "mac",
+      "scale" : "1x",
+      "filename" : "icon_connecting.png"
     },
     {
-      "filename" : "icon_connecting@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
+      "idiom" : "mac",
+      "scale" : "2x",
+      "filename" : "icon_connecting@2x.png"
     }
   ],
   "info" : {

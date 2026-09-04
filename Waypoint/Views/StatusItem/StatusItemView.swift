@@ -34,7 +34,10 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
         super.init()
         button.image = StatusItemTool.menuImage
         button.imagePosition = .imageLeading
-        button.font = StatusItemTool.font
+        // Monospaced digits keep the ↑x ↓x title a constant width as the
+        // numbers tick, so only the glyphs change — no layout jitter.
+        button.font = .monospacedDigitSystemFont(
+            ofSize: StatusItemTool.font.pointSize, weight: .regular)
         refreshTitle()
     }
 

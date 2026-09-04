@@ -9,9 +9,9 @@
 	<key>CFBundleName</key>
 	<string>org.waypnt.waypoint.ProxyConfigHelper</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
+	<string>2.6.0</string>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>2.6.0</string>
 	<key>SMAuthorizedClients</key>
 	<array>
 		<string>anchor apple generic and identifier &quot;org.waypnt.waypoint&quot; and certificate leaf[subject.OU] = N48L43Q7F9</string>
