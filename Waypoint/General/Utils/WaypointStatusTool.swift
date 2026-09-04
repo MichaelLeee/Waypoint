@@ -6,6 +6,11 @@
 import Cocoa
 
 class WaypointStatusTool {
+    // The config snapshot arrives on every reload/reconnect, so guard the
+    // notice to once per app run — a modal here (the old behavior) re-armed on
+    // each snapshot and trapped the whole app in stacked modal sessions.
+    private static var didNoticeNoPorts = false
+
     static func checkPortConfig(cfg: WaypointConfig?) {
         guard let cfg else { return }
         // Only value types cross the isolation boundary (WaypointConfig itself
@@ -14,19 +19,21 @@ class WaypointStatusTool {
         let mixedPort = cfg.mixedPort
         Task { @MainActor in
             guard ConfigManager.shared.isRunning else { return }
-            if httpPort == 0 {
-                Logger.log("checkPortConfig: \(mixedPort) ", level: .error)
-                let alert = NSAlert()
-                alert.messageText = NSLocalizedString("Waypoint Start Error!", comment: "")
-                alert.informativeText = NSLocalizedString("Ports Open Fail, Please try to restart Waypoint", comment: "")
-                alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
-                alert.addButton(withTitle: "Edit Config")
-                let ret = alert.runModal()
-                if ret == .alertSecondButtonReturn {
-                    NSWorkspace.shared.open(URL(fileURLWithPath: Paths.localConfigPath(for: "config")))
-                }
-                NSApp.terminate(nil)
+            guard httpPort == 0 else {
+                didNoticeNoPorts = false
+                return
             }
+            guard !didNoticeNoPorts else { return }
+            didNoticeNoPorts = true
+            Logger.log("checkPortConfig: running core reports no inbound ports (mixed-port: \(mixedPort)); system proxy cannot be applied", level: .error)
+            // Zero ports is legitimate with Enhanced Mode (TUN) or a
+            // portless config — it must never block the UI or quit the app,
+            // so this stays a dismissible notification, not a modal alert.
+            WaypointNotifier.post(
+                title: NSLocalizedString("Ports Open Fail", comment: ""),
+                info: NSLocalizedString(
+                    "The proxy core reports no open ports, so the system proxy cannot be set. Edit your config to add a mixed-port (or enable Enhanced Mode), then reload the config.",
+                    comment: ""))
         }
     }
 }

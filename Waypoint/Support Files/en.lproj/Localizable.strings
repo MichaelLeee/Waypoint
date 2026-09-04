@@ -23,7 +23,10 @@
 "Waypoint needs to install/update a helper tool with administrator privileges, otherwise Waypoint won't be able to configure system proxy." = "Waypoint needs to install/update a helper tool with administrator privileges, otherwise Waypoint won't be able to configure system proxy.";
 
 /* No comment provided by engineer. */
-"Waypoint Start Error!" = "Waypoint Start Error!";
+"Ports Open Fail" = "Ports Open Fail";
+
+/* No comment provided by engineer. */
+"The proxy core reports no open ports, so the system proxy cannot be set. Edit your config to add a mixed-port (or enable Enhanced Mode), then reload the config." = "The proxy core reports no open ports, so the system proxy cannot be set. Edit your config to add a mixed-port (or enable Enhanced Mode), then reload the config.";
 
 /* No comment provided by engineer. */
 "Waypoint use a daemon helper to setup your system proxy. Please enable Waypoint in the Login Items under the Allow in the Background section and relaunch the app" = "Waypoint use a daemon helper to setup your system proxy. Please enable Waypoint in the Login Items under the Allow in the Background section and relaunch the app";
@@ -138,9 +141,6 @@
 
 /* No comment provided by engineer. */
 "Please enable the location service for Waypoint to detect your current WiFi network's SSID name and provide the auto-suspend services." = "Please enable the location service for Waypoint to detect your current WiFi network's SSID name and provide the auto-suspend services.";
-
-/* No comment provided by engineer. */
-"Ports Open Fail, Please try to restart Waypoint" = "Ports Open Fail, Please try to restart Waypoint";
 
 /* No comment provided by engineer. */
 "Prelease" = "Prelease";
