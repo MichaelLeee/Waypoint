@@ -486,3 +486,8 @@ private struct ShortcutRecorderView: NSViewRepresentable {
 
     func updateNSView(_ nsView: KeyboardShortcuts.RecorderCocoa, context: Context) {}
 }
+
+#Preview("Settings") {
+    SettingsRootView()
+        .frame(width: 680, height: 460)
+}

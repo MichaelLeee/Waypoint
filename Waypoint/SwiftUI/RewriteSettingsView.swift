@@ -124,3 +124,8 @@ struct RewriteSettingsView: View {
         )
     }
 }
+
+#Preview("Rewrite") {
+    RewriteSettingsView(store: SettingsStore())
+        .frame(width: 480)
+}

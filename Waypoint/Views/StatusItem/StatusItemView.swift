@@ -113,7 +113,15 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
         ]
         let attributed = lines.map { NSAttributedString(string: $0, attributes: attributes) }
         let lineHeight = ceil(font.ascender - font.descender)
-        let textWidth = attributed.map { ceil($0.size().width) }.max() ?? 0
+        // Fixed-width slot sized for the widest possible rate string. The
+        // status button centers its content, so letting the image width
+        // follow the current digit count would re-center (wiggle) icon and
+        // text on every 1↔3-digit transition; a constant width keeps the
+        // layout anchored, with the extra space trailing after the text.
+        let slotSamples = ["1023.9GB/s", "99.99MB/s", "1023KB/s"]
+        let textWidth = slotSamples
+            .map { ceil(($0 as NSString).size(withAttributes: attributes).width) }
+            .max() ?? 0
         let width = iconLength + iconTextGap + textWidth
         let height = max(displayHeight, lineHeight * CGFloat(lines.count))
 

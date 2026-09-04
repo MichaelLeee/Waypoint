@@ -335,3 +335,8 @@ struct MenuBarMenuView: View {
         }
     }
 }
+
+#Preview("Menu") {
+    MenuBarMenuView()
+        .frame(width: 300, height: 420)
+}

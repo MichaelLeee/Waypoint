@@ -110,3 +110,8 @@ struct ConnectionsRootView: View {
         .padding(.vertical, 6)
     }
 }
+
+#Preview("Connections") {
+    ConnectionsRootView()
+        .frame(width: 760, height: 500)
+}

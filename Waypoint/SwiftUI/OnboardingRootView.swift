@@ -313,3 +313,8 @@ struct OnboardingRootView: View {
         NSApp.keyWindow?.close()
     }
 }
+
+#Preview("Onboarding") {
+    OnboardingRootView()
+        .frame(width: 480, height: 420)
+}

@@ -156,3 +156,8 @@ struct ExternalControlAddSheet: View {
         .frame(width: 380)
     }
 }
+
+#Preview("External Control") {
+    ExternalControlRootView()
+        .frame(width: 520, height: 320)
+}

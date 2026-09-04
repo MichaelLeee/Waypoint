@@ -50,3 +50,7 @@ struct AboutView: View {
         return NSImage()
     }
 }
+
+#Preview("About") {
+    AboutView()
+}

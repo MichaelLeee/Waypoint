@@ -265,3 +265,8 @@ struct RemoteConfigAddSheet: View {
         return URL(string: urlText)?.host ?? NSLocalizedString("Name", comment: "")
     }
 }
+
+#Preview("Remote Config") {
+    RemoteConfigRootView()
+        .frame(width: 480, height: 320)
+}

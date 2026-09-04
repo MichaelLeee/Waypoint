@@ -109,3 +109,8 @@ private struct SpeedBadge: View {
         }
     }
 }
+
+#Preview("Dashboard") {
+    DashboardRootView()
+        .frame(width: 720, height: 480)
+}
