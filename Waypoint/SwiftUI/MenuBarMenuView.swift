@@ -15,7 +15,6 @@ final class NullStatusItemView: StatusItemViewProtocol {
     func updateViewStatus(enableProxy: Bool) {}
     func updateSpeedLabel(up: Int, down: Int) {}
     func showSpeedContainer(show: Bool) {}
-    func updateSize(width: CGFloat) {}
 }
 
 @MainActor

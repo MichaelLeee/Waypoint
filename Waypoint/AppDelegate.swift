@@ -7,11 +7,6 @@ import Cocoa
 import Combine
 import WaypointNetworking
 
-// Wide enough that "↑0KB/s ↓0KB/s" (and everyday magnitudes) never truncate
-// once the button's icon and padding are accounted for; fixed so menu-bar
-// neighbors don't shift as the numbers tick.
-let statusItemLengthWithSpeed: CGFloat = 100
-
 // Responsibilities live in Extensions/AppDelegate+{Menu,Observers,
 // ProxyLifecycle,MenuActions,CrashAndMemory,MenuDelegate}.swift; this file
 // keeps the class declaration, stored state, and app lifecycle callbacks.
@@ -102,13 +97,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // no-op so speed/status call sites remain safe.
         statusItemView = NullStatusItemView()
         if !Settings.useSwiftUIMenu {
-            // Icon-only width unless the speed indicator is already enabled —
-            // the wide length must not be applied before that setting changes.
-            let showSpeed = ConfigManager.shared.showNetSpeedIndicator
-            let initialLength: CGFloat = showSpeed ? statusItemLengthWithSpeed : 25
-            statusItem = NSStatusBar.system.statusItem(withLength: initialLength)
+            statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItemVariableLength)
             statusItemView = StatusItemView.create(statusItem: statusItem)
-            statusItemView.updateSize(width: initialLength)
         }
         setupStatusMenuItemData()
         DispatchQueue.main.async {

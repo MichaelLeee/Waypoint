@@ -6,21 +6,29 @@
 import AppKit
 import Foundation
 
-/// Drives the standard NSStatusItem button (icon + one-line speed title).
+/// Drives the standard NSStatusItem button (icon + stacked ↑/↓ rates).
 /// A custom NSView subview inside the status-bar button is avoided on
 /// purpose: AppKit's status-item replicant machinery re-snapshots the button
 /// content whenever one of its layers is re-displayed, and a custom subview
 /// keeps that cycle alive — each snapshot re-displays the subview's layers,
 /// re-marks the status window, and schedules the next snapshot, burning
-/// ~40% CPU at idle on macOS 26. The standard image+title path converges.
+/// ~40% CPU at idle on macOS 26. The standard image path converges, so the
+/// two-line rate display is rendered into a single template image instead.
 @MainActor
 final class StatusItemView: NSObject, StatusItemViewProtocol {
+    private static let iconLength: CGFloat = 18
+    private static let iconTextGap: CGFloat = 4
+    private static let buttonPadding: CGFloat = 8
+    private static let iconOnlyLength: CGFloat = 25
+    private static let displayHeight: CGFloat = 22
+
     private let statusItem: NSStatusItem
     private let button: NSStatusBarButton
 
     private var showsSpeed: Bool
-    private var lastTitle: String?
     private var lastEnableProxy: Bool?
+    private var lastUpText: String?
+    private var lastDownText: String?
     private var up = 0
     private var down = 0
 
@@ -32,13 +40,8 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
         self.button = button
         self.showsSpeed = ConfigManager.shared.showNetSpeedIndicator
         super.init()
-        button.image = StatusItemTool.menuImage
-        button.imagePosition = .imageLeading
-        // Monospaced digits keep the ↑x ↓x title a constant width as the
-        // numbers tick, so only the glyphs change — no layout jitter.
-        button.font = .monospacedDigitSystemFont(
-            ofSize: StatusItemTool.font.pointSize, weight: .regular)
-        refreshTitle()
+        button.imagePosition = .imageOnly
+        refreshDisplay()
     }
 
     static func create(statusItem: NSStatusItem?) -> StatusItemView {
@@ -46,12 +49,6 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
             fatalError("a status item is required to build the menu bar view")
         }
         return StatusItemView(statusItem: statusItem)
-    }
-
-    func updateSize(width: CGFloat) {
-        if statusItem.length != width {
-            statusItem.length = width
-        }
     }
 
     func updateViewStatus(enableProxy: Bool) {
@@ -65,7 +62,7 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
         if up != self.up || down != self.down {
             self.up = up
             self.down = down
-            refreshTitle()
+            refreshDisplay()
         }
     }
 
@@ -74,15 +71,79 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
         showsSpeed = show
         up = 0
         down = 0
-        refreshTitle()
+        refreshDisplay()
     }
 
-    private func refreshTitle() {
-        let title = showsSpeed
-            ? "↑\(SpeedUtils.getSpeedString(for: up)) ↓\(SpeedUtils.getSpeedString(for: down))"
-            : ""
-        guard title != lastTitle else { return }
-        lastTitle = title
-        button.title = title
+    private func refreshDisplay() {
+        guard showsSpeed else {
+            button.image = StatusItemTool.menuImage
+            button.title = ""
+            lastUpText = nil
+            lastDownText = nil
+            if statusItem.length != Self.iconOnlyLength {
+                statusItem.length = Self.iconOnlyLength
+            }
+            return
+        }
+        let font = NSFont.monospacedDigitSystemFont(
+            ofSize: min(StatusItemTool.font.pointSize, 8), weight: .regular)
+        let upText = "↑\(SpeedUtils.getSpeedString(for: up))"
+        let downText = "↓\(SpeedUtils.getSpeedString(for: down))"
+        guard upText != lastUpText || downText != lastDownText else { return }
+        lastUpText = upText
+        lastDownText = downText
+        let image = Self.stackedDisplayImage(
+            icon: StatusItemTool.menuImage, lines: [upText, downText], font: font)
+        button.image = image
+        button.title = ""
+        let targetLength = ceil(image.size.width) + Self.buttonPadding
+        if statusItem.length != targetLength {
+            statusItem.length = targetLength
+        }
+    }
+
+    /// Icon at the left, the given text lines stacked at the right, drawn at
+    /// 2x backing resolution so text stays crisp on Retina. Rendered black
+    /// with `isTemplate = true` so the menu bar tints it for dark/light mode.
+    private static func stackedDisplayImage(
+        icon: NSImage, lines: [String], font: NSFont) -> NSImage {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: NSColor.black,
+        ]
+        let attributed = lines.map { NSAttributedString(string: $0, attributes: attributes) }
+        let lineHeight = ceil(font.ascender - font.descender)
+        let textWidth = attributed.map { ceil($0.size().width) }.max() ?? 0
+        let width = iconLength + iconTextGap + textWidth
+        let height = max(displayHeight, lineHeight * CGFloat(lines.count))
+
+        guard let rep = NSBitmapImageRep(
+            bitmapDataPlanes: nil,
+            pixelsWide: Int(width * 2), pixelsHigh: Int(height * 2),
+            bitsPerSample: 8, samplesPerPixel: 4,
+            hasAlpha: true, isPlanar: false,
+            colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0) else {
+            fatalError("unable to build status item bitmap")
+        }
+        rep.size = NSSize(width: width, height: height)
+
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+        let textBlockHeight = lineHeight * CGFloat(lines.count)
+        let top = (height + textBlockHeight) / 2 - font.ascender
+        for (index, line) in attributed.enumerated() {
+            line.draw(at: NSPoint(
+                x: iconLength + iconTextGap,
+                y: top - lineHeight * CGFloat(index)))
+        }
+        let iconRect = NSRect(
+            x: 0, y: (height - iconLength) / 2, width: iconLength, height: iconLength)
+        icon.draw(in: iconRect)
+        NSGraphicsContext.restoreGraphicsState()
+
+        let image = NSImage(size: NSSize(width: width, height: height))
+        image.addRepresentation(rep)
+        image.isTemplate = true
+        return image
     }
 }
