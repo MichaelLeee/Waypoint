@@ -97,7 +97,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // no-op so speed/status call sites remain safe.
         statusItemView = NullStatusItemView()
         if !Settings.useSwiftUIMenu {
-            statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItemVariableLength)
+            // Initial icon-only length; StatusItemView sets the real length in init.
+            statusItem = NSStatusBar.system.statusItem(withLength: 25)
             statusItemView = StatusItemView.create(statusItem: statusItem)
         }
         setupStatusMenuItemData()
