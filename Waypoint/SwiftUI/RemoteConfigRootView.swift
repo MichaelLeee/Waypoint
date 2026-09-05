@@ -16,6 +16,10 @@ final class RemoteConfigStore {
     var alertMessage = ""
 
     private var latestAdded: RemoteConfigModel?
+    // The notifications async sequence only re-evaluates `guard let self`
+    // when the next notification arrives, so the store must cancel the task
+    // on deinit or the suspended loop pins the observer forever.
+    private var observerTask: Task<Void, Never>?
 
     var selectedModel: RemoteConfigModel? {
         rows.first { $0.id == selectionID }?.model
@@ -23,9 +27,9 @@ final class RemoteConfigStore {
 
     init() {
         reload()
-        Task { [weak self] in
+        observerTask = Task { [weak self] in
             for await note in NotificationCenter.default.notifications(named: Notification.Name("didGetUrl")) {
-                guard let self else { break }
+                guard let self, !Task.isCancelled else { break }
                 guard let url = note.userInfo?["url"] as? String else { continue }
                 self.showAdd(defaultUrl: url,
                              defaultName: nil,
@@ -33,6 +37,10 @@ final class RemoteConfigStore {
                              allowAlt: true)
             }
         }
+    }
+
+    deinit {
+        observerTask?.cancel()
     }
 
     func reload() {
