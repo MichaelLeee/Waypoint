@@ -17,10 +17,8 @@ import Foundation
         }
         // Script commands are dispatched on the main thread; hop explicitly
         // because NSScriptCommand is not MainActor-annotated in the SDK.
-        // Error state is written back outside the closure so `self` (non-
-        // Sendable) is never sent across the isolation boundary.
-        let errorCode = 0
-        let errorMessage: String?
+        // Error state would be written back outside the closure so `self`
+        // (non-Sendable) is never sent across the isolation boundary.
         MainActor.assumeIsolated {
             let delegate = AppDelegate.shared
             let menuItem: NSMenuItem
@@ -37,10 +35,6 @@ import Foundation
             #endif
             }
             delegate.actionSwitchProxyMode(menuItem)
-        }
-        if let errorMessage {
-            scriptErrorNumber = errorCode
-            scriptErrorString = errorMessage
         }
         return nil
     }
