@@ -19,7 +19,9 @@ final class RemoteConfigStore {
     // The notifications async sequence only re-evaluates `guard let self`
     // when the next notification arrives, so the store must cancel the task
     // on deinit or the suspended loop pins the observer forever.
-    private var observerTask: Task<Void, Never>?
+    // nonisolated(unsafe): deinit is nonisolated, and cancelling a Task
+    // reference there is safe.
+    private nonisolated(unsafe) var observerTask: Task<Void, Never>?
 
     var selectedModel: RemoteConfigModel? {
         rows.first { $0.id == selectionID }?.model
