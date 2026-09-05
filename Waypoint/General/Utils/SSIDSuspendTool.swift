@@ -52,7 +52,7 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
         NotificationCenter.default
             .publisher(for: .waypointProxyStatusDidChange)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
+            .sink { _ in
                 MainActor.assumeIsolated {
                     guard ConfigManager.shared.proxyPortAutoSet else { return }
                     if ConfigManager.shared.proxyShouldPaused {
