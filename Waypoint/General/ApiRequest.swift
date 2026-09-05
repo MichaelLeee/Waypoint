@@ -52,6 +52,18 @@ extension ApiRequest {
             Logger.log(error.localizedDescription)
             throw error
         }
+        // A file reload resets every runtime PATCH (mode, log level,
+        // allow-lan, IPv6, port) back to the values stored in the file;
+        // re-apply the app's runtime state on top of it.
+        let mode = await ConfigManager.selectOutBoundMode
+        _ = await updateOutBoundMode(mode)
+        _ = await updateLogLevel(ConfigManager.selectLoggingApiLevel)
+        let allowLan = await ConfigManager.allowConnectFromLan
+        _ = await updateAllowLan(allowLan)
+        _ = await updateIPv6(Settings.enableIPV6)
+        if Settings.proxyPort > 0 {
+            _ = await updateProxyPort(Settings.proxyPort)
+        }
     }
 
     static func updateOutBoundMode(_ mode: WaypointProxyMode) async -> Bool {
