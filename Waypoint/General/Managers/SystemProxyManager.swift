@@ -21,8 +21,12 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
 
     func saveProxy() {
         guard !Settings.disableRestoreProxy else { return }
+        guard let helper = helper else {
+            Logger.log("saveProxy skipped: privileged helper is not installed", level: .error)
+            return
+        }
         Logger.log("saveProxy", level: .debug)
-        helper?.getCurrentProxySetting { [weak self] info in
+        helper.getCurrentProxySetting { [weak self] info in
             Logger.log("saveProxy done", level: .debug)
             if let info = info as? [String: Any] {
                 self?.savedProxyInfo = info
@@ -37,9 +41,30 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
         enableProxy(port: port, socksPort: socketPort)
     }
 
+    // Callers of enable/disableProxy are all main-thread paths (menu actions,
+    // observers); this guard mirrors that contract.
+    private var didNoticeHelperMissing = false
+
+    private func notifyHelperMissing() {
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard !didNoticeHelperMissing else { return }
+        didNoticeHelperMissing = true
+        MainActor.assumeIsolated {
+            WaypointNotifier.postConfigErrorNotice(
+                msg: NSLocalizedString(
+                    "The Waypoint helper is not installed, so the system proxy cannot be set. Reinstall the helper from the app and approve it in Login Items.",
+                    comment: ""))
+        }
+    }
+
     func enableProxy(port: Int, socksPort: Int) {
         guard port > 0 && socksPort > 0 else {
             Logger.log("enableProxy fail: \(port) \(socksPort)", level: .error)
+            return
+        }
+        guard let helper else {
+            Logger.log("enableProxy skipped: privileged helper is not installed", level: .error)
+            notifyHelperMissing()
             return
         }
         if SSIDSuspendTool.shared.shouldSuspend() {
@@ -47,7 +72,7 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
             return
         }
         Logger.log("enableProxy", level: .debug)
-        helper?.enableProxy(withPort: Int32(port),
+        helper.enableProxy(withPort: Int32(port),
                             socksPort: Int32(socksPort),
                             pac: nil,
                             filterInterface: Settings.filterInterface,
@@ -72,8 +97,14 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
         // Escaped into the helper's XPC reply closures; call-once by contract.
         nonisolated(unsafe) let complete = complete
 
+        guard let helper else {
+            Logger.log("disableProxy skipped: privileged helper is not installed", level: .error)
+            complete?()
+            return
+        }
+
         if Settings.disableRestoreProxy || forceDisable {
-            helper?.disableProxy(withFilterInterface: Settings.filterInterface) { error in
+            helper.disableProxy(withFilterInterface: Settings.filterInterface) { error in
                 if let error = error {
                     Logger.log("disableProxy \(error)", level: .error)
                 }
@@ -82,7 +113,7 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
             return
         }
 
-        helper?.restoreProxy(withCurrentPort: Int32(port), socksPort: Int32(socksPort), info: savedProxyInfo, filterInterface: Settings.filterInterface, error: { error in
+        helper.restoreProxy(withCurrentPort: Int32(port), socksPort: Int32(socksPort), info: savedProxyInfo, filterInterface: Settings.filterInterface, error: { error in
             if let error = error {
                 Logger.log("restoreProxy \(error)", level: .error)
             }
