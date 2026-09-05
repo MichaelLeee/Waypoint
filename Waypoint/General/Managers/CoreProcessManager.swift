@@ -108,9 +108,13 @@ final class CoreProcessManager {
         let proc = Process()
         proc.executableURL = URL(fileURLWithPath: binaryPath)
         proc.arguments = args
-        if let nullHandle = FileHandle(forWritingAtPath: "/dev/null") {
-            proc.standardOutput = nullHandle
-            proc.standardError = nullHandle
+        // Capture the core's own output (bind failures, port errors) next to
+        // the app logs; sending it to /dev/null made launch failures like
+        // "0 ports" undiagnosable. Truncated per start, so it holds the
+        // latest run only.
+        if let coreLog = Self.coreLogHandle() {
+            proc.standardOutput = coreLog
+            proc.standardError = coreLog
         }
         proc.terminationHandler = { [weak self] finishedProc in
             Task { @MainActor in
@@ -260,6 +264,19 @@ final class CoreProcessManager {
     }
 
     // MARK: - Binary location
+
+    private static func coreLogHandle() -> FileHandle? {
+        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("Waypoint/Logs", isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let path = dir.appendingPathComponent("core.log").path
+        if !FileManager.default.fileExists(atPath: path) {
+            FileManager.default.createFile(atPath: path, contents: nil)
+        }
+        guard let handle = try? FileHandle(forWritingTo: URL(fileURLWithPath: path)) else { return nil }
+        try? handle.truncate(atOffset: 0)
+        return handle
+    }
 
     nonisolated static func binaryPath() -> String? {
         return Bundle.main.path(forResource: "mihomo", ofType: nil)
