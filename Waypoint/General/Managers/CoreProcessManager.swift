@@ -37,8 +37,8 @@ final class CoreProcessManager {
     // Helper-spawned cores have no Process handle in this app, so exit is
     // detected by polling the core's API.
     private var livenessMonitorTask: Task<Void, Never>?
-    private let livenessCheckIntervalNanos: UInt64 = 3_000_000_000
-    private let maxLivenessFailures = 3
+    private static let livenessCheckIntervalNanos: UInt64 = 3_000_000_000
+    private static let maxLivenessFailures = 3
 
     private(set) var isRunning = false
 
