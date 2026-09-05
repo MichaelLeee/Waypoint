@@ -16,6 +16,10 @@ class PrivilegedHelperManager: @unchecked Sendable {
     private(set) var lastHelperStatus: HelperStatus?
     private var cancelInstallCheck = false
     private var useLegacyInstall = false
+    // notifyInstall → checkInstall can recurse forever when a stale daemon
+    // keeps reporting an old version; bound the prompt/install cycle.
+    private var installAttempts = 0
+    private let maxInstallAttempts = 2
 
     private var connection: NSXPCConnection?
     private var _helper: ProxyConfigRemoteProcessProtocol?
@@ -54,6 +58,7 @@ class PrivilegedHelperManager: @unchecked Sendable {
             Logger.log("need to install helper", level: .debug)
             notifyInstall()
         case .installed:
+            installAttempts = 0
             isHelperCheckFinished.send(true)
         case .needsApproval:
             promptLoginItemsApproval()
@@ -184,6 +189,14 @@ class PrivilegedHelperManager: @unchecked Sendable {
 
 extension PrivilegedHelperManager {
     @MainActor private func notifyInstall() {
+        guard installAttempts < maxInstallAttempts else {
+            installAttempts = 0
+            Logger.log("helper install failed after \(maxInstallAttempts) attempts; stopping for this session", level: .error)
+            NSAlert.alert(with: NSLocalizedString("Failed to install the proxy helper after several attempts. Please check Login Items in System Settings or reinstall Waypoint.", comment: ""))
+            isHelperCheckFinished.send(true)
+            return
+        }
+        installAttempts += 1
         guard showInstallHelperAlert() else { exit(0) }
 
         if cancelInstallCheck {
@@ -242,6 +255,10 @@ extension PrivilegedHelperManager {
             SMAppService.openSystemSettingsLoginItems()
         } else {
             removeInstallHelper()
+            // Re-run the check so the install prompt returns and the
+            // isHelperCheckFinished gates (system proxy, menu target) unblock.
+            cancelInstallCheck = false
+            checkInstall()
         }
     }
 
@@ -258,6 +275,8 @@ extension PrivilegedHelperManager {
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
         switch alert.runModal() {
         case .alertFirstButtonReturn:
+            // Picking Install after an earlier Cancel resumes the flow.
+            cancelInstallCheck = false
             return true
         case .alertThirdButtonReturn:
             cancelInstallCheck = true
