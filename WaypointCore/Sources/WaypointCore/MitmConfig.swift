@@ -25,8 +25,11 @@ public enum MitmConfig {
             let host = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             guard !host.isEmpty, !seen.contains(host) else { continue }
             seen.insert(host)
-            if host.hasPrefix(".") {
-                let domain = String(host.dropFirst())
+            // Wildcard form "*.example.com" must not reach mihomo as
+            // "DOMAIN,*.example.com" (an invalid rule); expand it the same
+            // way the ".example.com" suffix form is handled.
+            if host.hasPrefix(".") || host.hasPrefix("*.") {
+                let domain = String(host.dropFirst(host.hasPrefix("*.") ? 2 : 1))
                 guard !domain.isEmpty else { continue }
                 lines.append("DOMAIN,\(domain)")
                 lines.append("DOMAIN-SUFFIX,\(domain)")

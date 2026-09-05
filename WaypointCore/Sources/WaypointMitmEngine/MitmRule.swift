@@ -28,14 +28,27 @@ public struct MitmRule: Sendable, Equatable {
         self.headerValue = headerValue
     }
 
-    /// ".example.com" matches the domain itself and every subdomain;
-    /// anything else is an exact (case-insensitive) host match.
+    /// ".example.com" (or the equivalent "*.example.com") matches the domain
+    /// itself and every subdomain; anything else is an exact (case-insensitive)
+    /// host match.
     public func matches(host candidate: String) -> Bool {
         let lowered = candidate.lowercased()
-        if host.hasPrefix(".") {
-            let domain = String(host.dropFirst()).lowercased()
+        if let domain = Self.suffixDomain(of: host)?.lowercased() {
             return lowered == domain || lowered.hasSuffix("." + domain)
         }
         return lowered == host.lowercased()
+    }
+
+    /// "*.example.com" and ".example.com" both yield "example.com" for suffix
+    /// matching; nil means exact match.
+    public static func suffixDomain(of host: String) -> String? {
+        let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if trimmed.hasPrefix(".") {
+            return String(trimmed.dropFirst())
+        }
+        if trimmed.hasPrefix("*.") {
+            return String(trimmed.dropFirst(2))
+        }
+        return nil
     }
 }

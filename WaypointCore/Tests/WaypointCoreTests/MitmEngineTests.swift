@@ -33,6 +33,15 @@ struct MitmRuleTests {
         #expect(rule.matches(host: "WWW.EXAMPLE.COM"))
         #expect(rule.matches(host: "example.com"))
     }
+
+    @Test("Star wildcard form matches like the dot-prefixed suffix form")
+    func starWildcardHost() {
+        let rule = MitmRule(kind: .requestHeader, host: "*.example.com", headerKey: "X-Test", headerValue: "1")
+        #expect(rule.matches(host: "a.example.com"))
+        #expect(rule.matches(host: "example.com"))
+        #expect(!rule.matches(host: "badexample.com"))
+        #expect(!rule.matches(host: "other.org"))
+    }
 }
 
 @Suite("HTTP wire helpers")
