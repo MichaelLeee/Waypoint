@@ -34,6 +34,11 @@ final class CoreProcessManager {
     private var terminatingProcesses = [Process]()
     private var spawnedViaHelper = false
     private let maxReadinessAttempts = 50 // 50 * 0.2s = up to 10s
+    // Helper-spawned cores have no Process handle in this app, so exit is
+    // detected by polling the core's API.
+    private var livenessMonitorTask: Task<Void, Never>?
+    private let livenessCheckIntervalNanos: UInt64 = 3_000_000_000
+    private let maxLivenessFailures = 3
 
     private(set) var isRunning = false
 
@@ -85,6 +90,7 @@ final class CoreProcessManager {
                                    externalUI: externalUI)
         }
         try await waitForReadiness(externalController: externalController, secret: secret)
+        startLivenessMonitor(externalController: externalController, secret: secret)
     }
 
     /// Spawns mihomo as the current user. Used for system-proxy mode (no TUN).
@@ -175,6 +181,8 @@ final class CoreProcessManager {
     }
 
     func stop() {
+        livenessMonitorTask?.cancel()
+        livenessMonitorTask = nil
         if spawnedViaHelper {
             if let helper = PrivilegedHelperManager.shared.helper() {
                 helper.stopCore { _ in }
@@ -197,6 +205,33 @@ final class CoreProcessManager {
     }
 
     // MARK: - Readiness
+
+    /// Local cores report exit through their termination handler; helper
+    /// cores are invisible to this process, so poll the API instead and
+    /// surface a sustained outage as an unexpected exit (which also drops
+    /// the kill switch before the dead core strands the network).
+    private func startLivenessMonitor(externalController: String, secret: String) {
+        livenessMonitorTask?.cancel()
+        guard spawnedViaHelper else { return }
+        livenessMonitorTask = Task { [weak self] in
+            var failures = 0
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: Self.livenessCheckIntervalNanos)
+                guard let self, !Task.isCancelled else { return }
+                if await self.isReady(externalController: externalController, secret: secret) {
+                    failures = 0
+                    continue
+                }
+                failures += 1
+                guard failures >= Self.maxLivenessFailures else { continue }
+                Logger.log("helper-spawned core stopped answering the API; treating it as exited", level: .error)
+                self.isRunning = false
+                self.livenessMonitorTask = nil
+                self.onUnexpectedExit?()
+                return
+            }
+        }
+    }
 
     private func waitForReadiness(externalController: String, secret: String) async throws {
         for _ in 0 ..< maxReadinessAttempts {
