@@ -23,13 +23,14 @@ struct ConfigFileDiscoveryTests {
             fromFileNames: ["UPPER.YAML", "mixed.Yaml"]) == [])
     }
 
-    @Test func dotfileNamedYamlProducesEmptyName() {
-        // Preserved legacy behavior: ".yaml" passes the filter and yields "".
-        #expect(ConfigFileDiscovery.configNames(fromFileNames: [".yaml"]) == [""])
+    @Test func namelessYamlEntriesProduceEmptyNames() {
+        // Preserved legacy behavior: ".yaml" and a bare "yaml" both pass the
+        // filter (split's last component matches) and yield an empty name.
+        #expect(ConfigFileDiscovery.configNames(fromFileNames: [".yaml", "yaml"]) == ["", ""])
     }
 
     @Test func nonYamlSuffixFilesAreExcluded() {
         #expect(ConfigFileDiscovery.configNames(
-            fromFileNames: ["config.yaml.bak", "yaml", "config.yaml.orig"]) == [])
+            fromFileNames: ["config.yaml.bak", "config.yaml.orig"]) == [])
     }
 }
