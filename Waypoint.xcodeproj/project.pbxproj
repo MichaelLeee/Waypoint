@@ -19,7 +19,7 @@
 		49722FF1211F338B00650A41 /* Witness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEC211F338B00650A41 /* Witness.swift */; };
 		49761DA721C9497000AE13EF /* dashboard in Resources */ = {isa = PBXBuildFile; fileRef = 49761DA621C9497000AE13EF /* dashboard */; };
 		A1B2C3D4E5F6000100000003 /* mihomo in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000100000004 /* mihomo */; };
-		4981C88B216BAE4A008CC14A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4981C88D216BAE4A008CC14A /* Localizable.strings */; };
+		E1E100000000000000000D54 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D53 /* Localizable.xcstrings */; };
 		4989F98E20D0AE990001E564 /* sampleConfig.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 4989F98D20D0AE990001E564 /* sampleConfig.yaml */; };
 		49CF3B2120CD7463001EBF94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CF3B2020CD7463001EBF94 /* AppDelegate.swift */; };
 		D2D20000000000000000AA01 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB01 /* Sparkle */; };
@@ -98,7 +98,7 @@
 		49722FED211F338B00650A41 /* Witness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Witness.h; sourceTree = "<group>"; };
 		49761DA621C9497000AE13EF /* dashboard */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dashboard; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000100000004 /* mihomo */ = {isa = PBXFileReference; lastKnownFileType = file; path = mihomo; sourceTree = "<group>"; };
-		4981C88C216BAE4A008CC14A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E1E100000000000000000D53 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		498960722340F21C00AFB7EC /* org.waypnt.waypoint.ProxyConfigHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = org.waypnt.waypoint.ProxyConfigHelper.entitlements; sourceTree = "<group>"; };
 		4989F98D20D0AE990001E564 /* sampleConfig.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = sampleConfig.yaml; sourceTree = "<group>"; };
 		49CF3B1D20CD7463001EBF94 /* Waypoint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Waypoint.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -303,7 +303,7 @@
 		49CF3B3A20CD783A001EBF94 /* Support Files */ = {
 				isa = PBXGroup;
 				children = (
-					4981C88D216BAE4A008CC14A /* Localizable.strings */,
+					E1E100000000000000000D53 /* Localizable.xcstrings */,
 			);
 			path = "Support Files";
 			sourceTree = "<group>";
@@ -480,7 +480,7 @@
 				49761DA721C9497000AE13EF /* dashboard in Resources */,
 				A1B2C3D4E5F6000100000003 /* mihomo in Resources */,
 				4929F677258CD89B00A435F6 /* Country.mmdb.gz in Resources */,
-				4981C88B216BAE4A008CC14A /* Localizable.strings in Resources */,
+				E1E100000000000000000D54 /* Localizable.xcstrings in Resources */,
 				F9FAB31E262BE04800DE02A6 /* Images.xcassets in Resources */,
 				4989F98E20D0AE990001E564 /* sampleConfig.yaml in Resources */,
 			);
@@ -548,16 +548,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		4981C88D216BAE4A008CC14A /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4981C88C216BAE4A008CC14A /* en */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		49CF3B2B20CD7465001EBF94 /* Debug */ = {

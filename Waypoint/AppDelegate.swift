@@ -97,6 +97,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // no-op so speed/status call sites remain safe.
         statusItemView = NullStatusItemView()
         if !Settings.useSwiftUIMenu {
+            // AppKit NSStatusItem is the primary menu UI on purpose, not a
+            // legacy leftover. SwiftUI's MenuBarExtra(.menu) cannot host live
+            // per-row views: MenuItemFactory's proxy rows embed speed-test
+            // buttons and delay values that refresh in place while the menu is
+            // open, and the status item shows the composited ↑/↓ template
+            // image updated by StatusItemView (custom subviews in the button
+            // are broken on macOS 26 — see StatusItemView). The MenuBarExtra
+            // path behind Settings.useSwiftUIMenu exists only as a
+            // comparison UI; see MenuBarMenuView.
             // Initial icon-only length; StatusItemView sets the real length in init.
             statusItem = NSStatusBar.system.statusItem(withLength: 25)
             statusItemView = StatusItemView.create(statusItem: statusItem)

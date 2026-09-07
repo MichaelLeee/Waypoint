@@ -1,0 +1,2546 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%d connections": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d connections"
+          }
+        }
+      }
+    },
+    "0 means using the port from the config file.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 means using the port from the config file."
+          }
+        }
+      }
+    },
+    "Active only": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active only"
+          }
+        }
+      }
+    },
+    "Ad & Tracker Blocking": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ad & Tracker Blocking"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
+    "Add Rule": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Rule"
+          }
+        }
+      }
+    },
+    "Add a remote config": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a remote config"
+          }
+        }
+      }
+    },
+    "Add a remote controller": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a remote controller"
+          }
+        }
+      }
+    },
+    "Allow LAN connections to API": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow LAN connections to API"
+          }
+        }
+      }
+    },
+    "Allow connect from Lan": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow connect from Lan"
+          }
+        }
+      }
+    },
+    "Applied to the running core immediately.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applied to the running core immediately."
+          }
+        }
+      }
+    },
+    "Apply": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply"
+          }
+        }
+      }
+    },
+    "Automatic trust setup failed. A certificate file was exported â double-click it and choose \"Always Trust\".": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatic trust setup failed. A certificate file was exported â double-click it and choose \"Always Trust\"."
+          }
+        }
+      }
+    },
+    "Awaiting approval in Login Items": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Awaiting approval in Login Items"
+          }
+        }
+      }
+    },
+    "Benchmark": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benchmark"
+          }
+        }
+      }
+    },
+    "Benchmark Finished!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benchmark Finished!"
+          }
+        }
+      }
+    },
+    "Benchmark URL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benchmark URL"
+          }
+        }
+      }
+    },
+    "Benchmark has begun, please wait.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benchmark has begun, please wait."
+          }
+        }
+      }
+    },
+    "Benchmark is processing, please wait.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benchmark is processing, please wait."
+          }
+        }
+      }
+    },
+    "Blocking rule data (geosite.dat) is downloaded by the core on first use and refreshed with it.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blocking rule data (geosite.dat) is downloaded by the core on first use and refreshed with it."
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Certificate exported.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Certificate exported."
+          }
+        }
+      }
+    },
+    "Chains": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chains"
+          }
+        }
+      }
+    },
+    "Clears cached Fake-IP mappings if domains resolve oddly after toggling.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clears cached Fake-IP mappings if domains resolve oddly after toggling."
+          }
+        }
+      }
+    },
+    "Click OK to quit the app and apply change.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click OK to quit the app and apply change."
+          }
+        }
+      }
+    },
+    "Clipboard is empty.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clipboard is empty."
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "Close %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close %@"
+          }
+        }
+      }
+    },
+    "Close All Connections": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close All Connections"
+          }
+        }
+      }
+    },
+    "Comma-separated Wi-Fi SSIDs where Waypoint pauses automatically.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comma-separated Wi-Fi SSIDs where Waypoint pauses automatically."
+          }
+        }
+      }
+    },
+    "Comma-separated hosts/CIDRs that bypass the system proxy.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comma-separated hosts/CIDRs that bypass the system proxy."
+          }
+        }
+      }
+    },
+    "Config file have been changed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Config file have been changed"
+          }
+        }
+      }
+    },
+    "Config loading Fail!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Config loading Fail!"
+          }
+        }
+      }
+    },
+    "Configs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configs"
+          }
+        }
+      }
+    },
+    "Configuration reloaded.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configuration reloaded."
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected"
+          }
+        }
+      }
+    },
+    "Connecting": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting"
+          }
+        }
+      }
+    },
+    "Connection Details": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connection Details"
+          }
+        }
+      }
+    },
+    "Content Blocking": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Content Blocking"
+          }
+        }
+      }
+    },
+    "Copy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        }
+      }
+    },
+    "Copy Shell Command": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Shell Command"
+          }
+        }
+      }
+    },
+    "Copy Shell Command (External)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Shell Command (External)"
+          }
+        }
+      }
+    },
+    "Copy shell command": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy shell command"
+          }
+        }
+      }
+    },
+    "Could not capture the screen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not capture the screen."
+          }
+        }
+      }
+    },
+    "Custom your GEOIP MMDB download address.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom your GEOIP MMDB download address."
+          }
+        }
+      }
+    },
+    "Cut": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cut"
+          }
+        }
+      }
+    },
+    "Dashboard": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dashboard"
+          }
+        }
+      }
+    },
+    "Debug": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Debug"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "Details": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Details"
+          }
+        }
+      }
+    },
+    "Direct": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct"
+          }
+        }
+      }
+    },
+    "Direct Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct Mode"
+          }
+        }
+      }
+    },
+    "Disable System Proxy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disable System Proxy"
+          }
+        }
+      }
+    },
+    "Disable restoring proxy state on quit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disable restoring proxy state on quit"
+          }
+        }
+      }
+    },
+    "Disconnected": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disconnected"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Downlink": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downlink"
+          }
+        }
+      }
+    },
+    "Download": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download"
+          }
+        }
+      }
+    },
+    "Download & Import": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download & Import"
+          }
+        }
+      }
+    },
+    "Download fail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download fail"
+          }
+        }
+      }
+    },
+    "Duration": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duration"
+          }
+        }
+      }
+    },
+    "Edit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit"
+          }
+        }
+      }
+    },
+    "Edit in Text Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit in Text Mode"
+          }
+        }
+      }
+    },
+    "Enable System Proxy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable System Proxy"
+          }
+        }
+      }
+    },
+    "Enhanced Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enhanced Mode"
+          }
+        }
+      }
+    },
+    "Enhanced Mode Failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enhanced Mode Failed"
+          }
+        }
+      }
+    },
+    "Enhanced mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enhanced mode"
+          }
+        }
+      }
+    },
+    "Export Certificateâ¦": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Certificateâ¦"
+          }
+        }
+      }
+    },
+    "External Controller": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "External Controller"
+          }
+        }
+      }
+    },
+    "Fail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fail"
+          }
+        }
+      }
+    },
+    "Fail Safety": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fail Safety"
+          }
+        }
+      }
+    },
+    "Fail:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fail:"
+          }
+        }
+      }
+    },
+    "Failed to apply Enhanced Mode. Please install the helper tool first.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to apply Enhanced Mode. Please install the helper tool first."
+          }
+        }
+      }
+    },
+    "Failed to install the proxy helper after several attempts. Please check Login Items in System Settings or reinstall Waypoint.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to install the proxy helper after several attempts. Please check Login Items in System Settings or reinstall Waypoint."
+          }
+        }
+      }
+    },
+    "Failed to reload the config after the MITM change.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to reload the config after the MITM change."
+          }
+        }
+      }
+    },
+    "Failed to update IPv6 on the core.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to update IPv6 on the core."
+          }
+        }
+      }
+    },
+    "Failed to update the proxy port on the core.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to update the proxy port on the core."
+          }
+        }
+      }
+    },
+    "Fake-IP range 198.18.0.1/16 for near-zero DNS latency and accurate rules.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fake-IP range 198.18.0.1/16 for near-zero DNS latency and accurate rules."
+          }
+        }
+      }
+    },
+    "Files": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files"
+          }
+        }
+      }
+    },
+    "Filter host, rule, chain, processâ¦": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter host, rule, chain, processâ¦"
+          }
+        }
+      }
+    },
+    "Find": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find"
+          }
+        }
+      }
+    },
+    "Find Next": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find Next"
+          }
+        }
+      }
+    },
+    "Find Previous": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find Previous"
+          }
+        }
+      }
+    },
+    "Find and Replaceâ¦": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find and Replaceâ¦"
+          }
+        }
+      }
+    },
+    "Findâ¦": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Findâ¦"
+          }
+        }
+      }
+    },
+    "Firewall-level guard: drops any traffic that tries to bypass Waypoint while the proxy is running.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firewall-level guard: drops any traffic that tries to bypass Waypoint while the proxy is running."
+          }
+        }
+      }
+    },
+    "Flush Fake-IP Cache": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flush Fake-IP Cache"
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        }
+      }
+    },
+    "Get Started": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get Started"
+          }
+        }
+      }
+    },
+    "Global": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Global"
+          }
+        }
+      }
+    },
+    "Global Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Global Mode"
+          }
+        }
+      }
+    },
+    "Grant Screen Recording permission to read QR codes from the screen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grant Screen Recording permission to read QR codes from the screen."
+          }
+        }
+      }
+    },
+    "Header Name": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Header Name"
+          }
+        }
+      }
+    },
+    "Header Value": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Header Value"
+          }
+        }
+      }
+    },
+    "Header Value (empty removes it)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Header Value (empty removes it)"
+          }
+        }
+      }
+    },
+    "Host": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Host"
+          }
+        }
+      }
+    },
+    "Host (e.g. api.example.com or .example.com)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Host (e.g. api.example.com or .example.com)"
+          }
+        }
+      }
+    },
+    "Hosts accept exact (api.example.com) or suffix (.example.com) forms. Reject drops connections before any data is sent. Header rules replace the named header; an empty value removes it from responses. Changes reload the running core automatically.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hosts accept exact (api.example.com) or suffix (.example.com) forms. Reject drops connections before any data is sent. Header rules replace the named header; an empty value removes it from responses. Changes reload the running core automatically."
+          }
+        }
+      }
+    },
+    "If you can not find Waypoint in the settings, you can try reset daemon": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you can not find Waypoint in the settings, you can try reset daemon"
+          }
+        }
+      }
+    },
+    "Ignore Lists": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignore Lists"
+          }
+        }
+      }
+    },
+    "Import a Subscription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import a Subscription"
+          }
+        }
+      }
+    },
+    "Imported â%@â and switched to it.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported â%@â and switched to it."
+          }
+        }
+      }
+    },
+    "Install": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install"
+          }
+        }
+      }
+    },
+    "Install Trusted Certificate": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install Trusted Certificate"
+          }
+        }
+      }
+    },
+    "Installed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed"
+          }
+        }
+      }
+    },
+    "Interception": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interception"
+          }
+        }
+      }
+    },
+    "Intercepts matching hosts through a local certificate and rewrites HTTP headers.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intercepts matching hosts through a local certificate and rewrites HTTP headers."
+          }
+        }
+      }
+    },
+    "Interface (Experimental)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interface (Experimental)"
+          }
+        }
+      }
+    },
+    "Invalid input": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid input"
+          }
+        }
+      }
+    },
+    "Jump to Selection": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jump to Selection"
+          }
+        }
+      }
+    },
+    "Kill Switch": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kill Switch"
+          }
+        }
+      }
+    },
+    "Launch at Login": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch at Login"
+          }
+        }
+      }
+    },
+    "Legacy Install": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legacy Install"
+          }
+        }
+      }
+    },
+    "Load Balance": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load Balance"
+          }
+        }
+      }
+    },
+    "Log level": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log level"
+          }
+        }
+      }
+    },
+    "MITM & Rewrite": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MITM & Rewrite"
+          }
+        }
+      }
+    },
+    "Maintenance": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenance"
+          }
+        }
+      }
+    },
+    "Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        }
+      }
+    },
+    "Name (optional)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name (optional)"
+          }
+        }
+      }
+    },
+    "Needs update": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs update"
+          }
+        }
+      }
+    },
+    "Network & API": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network & API"
+          }
+        }
+      }
+    },
+    "Never": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never"
+          }
+        }
+      }
+    },
+    "Never show again": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never show again"
+          }
+        }
+      }
+    },
+    "No QR code found on screen. Open the QR code, then try again.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No QR code found on screen. Open the QR code, then try again."
+          }
+        }
+      }
+    },
+    "Not installed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not installed"
+          }
+        }
+      }
+    },
+    "Notifications": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "One-Click System Proxy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-Click System Proxy"
+          }
+        }
+      }
+    },
+    "Open Connection Details": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Connection Details"
+          }
+        }
+      }
+    },
+    "Open Crash Reports": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Crash Reports"
+          }
+        }
+      }
+    },
+    "Open Dashboard": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Dashboard"
+          }
+        }
+      }
+    },
+    "Open Local Config Folder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Local Config Folder"
+          }
+        }
+      }
+    },
+    "Open Log": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Log"
+          }
+        }
+      }
+    },
+    "Open Log Folder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Log Folder"
+          }
+        }
+      }
+    },
+    "Open Menu": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Menu"
+          }
+        }
+      }
+    },
+    "Open System Login Item Setting": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open System Login Item Setting"
+          }
+        }
+      }
+    },
+    "Open iCloud Config Folder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open iCloud Config Folder"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "Paste": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste"
+          }
+        }
+      }
+    },
+    "Please enable the location service for Waypoint to detect your current WiFi network's SSID name and provide the auto-suspend services.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please enable the location service for Waypoint to detect your current WiFi network's SSID name and provide the auto-suspend services."
+          }
+        }
+      }
+    },
+    "Please enter a valid subscription URL.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please enter a valid subscription URL."
+          }
+        }
+      }
+    },
+    "Port": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
+          }
+        }
+      }
+    },
+    "Ports Open Fail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ports Open Fail"
+          }
+        }
+      }
+    },
+    "Prelease": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prelease"
+          }
+        }
+      }
+    },
+    "Process": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Process"
+          }
+        }
+      }
+    },
+    "Proxy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy"
+          }
+        }
+      }
+    },
+    "Proxy Groups": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy Groups"
+          }
+        }
+      }
+    },
+    "Proxy Helper": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy Helper"
+          }
+        }
+      }
+    },
+    "Proxy Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy Mode"
+          }
+        }
+      }
+    },
+    "Proxy Port (mixed)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy Port (mixed)"
+          }
+        }
+      }
+    },
+    "Proxy Restore": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy Restore"
+          }
+        }
+      }
+    },
+    "Proxy core is not running. Check the log for details.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy core is not running. Check the log for details."
+          }
+        }
+      }
+    },
+    "Proxy settings are changed by another process. Waypoint is no longer the default system proxy.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy settings are changed by another process. Waypoint is no longer the default system proxy."
+          }
+        }
+      }
+    },
+    "Quit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit"
+          }
+        }
+      }
+    },
+    "Quit Waypoint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit Waypoint"
+          }
+        }
+      }
+    },
+    "Quit Waypoint?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit Waypoint?"
+          }
+        }
+      }
+    },
+    "ReTest": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ReTest"
+          }
+        }
+      }
+    },
+    "Ready": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready"
+          }
+        }
+      }
+    },
+    "Redo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redo"
+          }
+        }
+      }
+    },
+    "Reduce alerts if notification permission is disabled": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduce alerts if notification permission is disabled"
+          }
+        }
+      }
+    },
+    "Reject": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reject"
+          }
+        }
+      }
+    },
+    "Rejects ad and tracker domains via geosite categories before any connection is made.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rejects ad and tracker domains via geosite categories before any connection is made."
+          }
+        }
+      }
+    },
+    "Reload Config Fail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload Config Fail"
+          }
+        }
+      }
+    },
+    "Reload Config Now": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload Config Now"
+          }
+        }
+      }
+    },
+    "Reload Config Succeed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload Config Succeed"
+          }
+        }
+      }
+    },
+    "Reload config": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload config"
+          }
+        }
+      }
+    },
+    "Reload failed â is the core running?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload failed â is the core running?"
+          }
+        }
+      }
+    },
+    "Remote Config Format Error": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remote Config Format Error"
+          }
+        }
+      }
+    },
+    "Remote Config Update": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remote Config Update"
+          }
+        }
+      }
+    },
+    "Remote Config Update Fail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remote Config Update Fail"
+          }
+        }
+      }
+    },
+    "Remote config": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remote config"
+          }
+        }
+      }
+    },
+    "Remote controller": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remote controller"
+          }
+        }
+      }
+    },
+    "Requires the privileged helper. The block is lifted automatically whenever Waypoint quits or the switch is turned off.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requires the privileged helper. The block is lifted automatically whenever Waypoint quits or the switch is turned off."
+          }
+        }
+      }
+    },
+    "Reset All Settingsâ¦": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset All Settingsâ¦"
+          }
+        }
+      }
+    },
+    "Reset Daemon": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset Daemon"
+          }
+        }
+      }
+    },
+    "Reset all settings?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset all settings?"
+          }
+        }
+      }
+    },
+    "Reset and Quit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset and Quit"
+          }
+        }
+      }
+    },
+    "Restart App": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart App"
+          }
+        }
+      }
+    },
+    "Restore Default Ignore List": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Default Ignore List"
+          }
+        }
+      }
+    },
+    "Rewrite": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewrite"
+          }
+        }
+      }
+    },
+    "Rewrite Rules": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewrite Rules"
+          }
+        }
+      }
+    },
+    "Root TUN stack captures all traffic; no system proxy needed.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Root TUN stack captures all traffic; no system proxy needed."
+          }
+        }
+      }
+    },
+    "Route macOS traffic through Waypoint automatically. TUN mode in Settings captures everything without this.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Route macOS traffic through Waypoint automatically. TUN mode in Settings captures everything without this."
+          }
+        }
+      }
+    },
+    "Rule": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rule"
+          }
+        }
+      }
+    },
+    "Rule Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rule Mode"
+          }
+        }
+      }
+    },
+    "Scan QR": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan QR"
+          }
+        }
+      }
+    },
+    "Script": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Script"
+          }
+        }
+      }
+    },
+    "Secret": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret"
+          }
+        }
+      }
+    },
+    "Select All": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select All"
+          }
+        }
+      }
+    },
+    "Set Request Header": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set Request Header"
+          }
+        }
+      }
+    },
+    "Set Response Header": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set Response Header"
+          }
+        }
+      }
+    },
+    "Set as system proxy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set as system proxy"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "Shortcuts": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shortcuts"
+          }
+        }
+      }
+    },
+    "Should be a least 1 hour": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Should be a least 1 hour"
+          }
+        }
+      }
+    },
+    "Show Log": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Log"
+          }
+        }
+      }
+    },
+    "Show network indicator": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show network indicator"
+          }
+        }
+      }
+    },
+    "Speed Test": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speed Test"
+          }
+        }
+      }
+    },
+    "Stable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stable"
+          }
+        }
+      }
+    },
+    "Start at login": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start at login"
+          }
+        }
+      }
+    },
+    "Startup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startup"
+          }
+        }
+      }
+    },
+    "Succeed!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Succeed!"
+          }
+        }
+      }
+    },
+    "Success": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Success"
+          }
+        }
+      }
+    },
+    "Success!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Success!"
+          }
+        }
+      }
+    },
+    "Switches between the AppKit status menu and the SwiftUI MenuBarExtra comparison UI. Restart the app to apply.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switches between the AppKit status menu and the SwiftUI MenuBarExtra comparison UI. Restart the app to apply."
+          }
+        }
+      }
+    },
+    "Sync": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync"
+          }
+        }
+      }
+    },
+    "Sync configs with iCloud": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync configs with iCloud"
+          }
+        }
+      }
+    },
+    "System Proxy Changed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System Proxy Changed"
+          }
+        }
+      }
+    },
+    "TUN & DNS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TUN & DNS"
+          }
+        }
+      }
+    },
+    "Tap to reload config": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap to reload config"
+          }
+        }
+      }
+    },
+    "Testing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testing"
+          }
+        }
+      }
+    },
+    "The Waypoint helper is not installed, so the system proxy cannot be set. Reinstall the helper from the app and approve it in Login Items.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Waypoint helper is not installed, so the system proxy cannot be set. Reinstall the helper from the app and approve it in Login Items."
+          }
+        }
+      }
+    },
+    "The active connections will be interrupted.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active connections will be interrupted."
+          }
+        }
+      }
+    },
+    "The generated root certificate is kept in your keychain; trust it once to make interception work in browsers. Rewrites apply to request and response headers of HTTP/1.1 traffic.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The generated root certificate is kept in your keychain; trust it once to make interception work in browsers. Rewrites apply to request and response headers of HTTP/1.1 traffic."
+          }
+        }
+      }
+    },
+    "The proxy core reports no open ports, so the system proxy cannot be set. Edit your config to add a mixed-port (or enable Enhanced Mode), then reload the config.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The proxy core reports no open ports, so the system proxy cannot be set. Edit your config to add a mixed-port (or enable Enhanced Mode), then reload the config."
+          }
+        }
+      }
+    },
+    "The remote config name is duplicated": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The remote config name is duplicated"
+          }
+        }
+      }
+    },
+    "The status icon is coverd or hide by other app.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The status icon is coverd or hide by other app."
+          }
+        }
+      }
+    },
+    "This version of Waypoint contains a break change due to waypoint core 1.0 released. Check if your config is not working properly.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This version of Waypoint contains a break change due to waypoint core 1.0 released. Check if your config is not working properly."
+          }
+        }
+      }
+    },
+    "Throughput (per second)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Throughput (per second)"
+          }
+        }
+      }
+    },
+    "Toggle System Proxy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle System Proxy"
+          }
+        }
+      }
+    },
+    "Toggle changes take effect on config reload or app restart.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle changes take effect on config reload or app restart."
+          }
+        }
+      }
+    },
+    "Total downloaded": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total downloaded"
+          }
+        }
+      }
+    },
+    "Total uploaded": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total uploaded"
+          }
+        }
+      }
+    },
+    "Two steps to start: bring in your subscription, then switch on the proxy.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two steps to start: bring in your subscription, then switch on the proxy."
+          }
+        }
+      }
+    },
+    "URL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        }
+      }
+    },
+    "Undo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
+          }
+        }
+      }
+    },
+    "Uninstall Proxy Helper": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uninstall Proxy Helper"
+          }
+        }
+      }
+    },
+    "Unknown": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown"
+          }
+        }
+      }
+    },
+    "Update": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update"
+          }
+        }
+      }
+    },
+    "Update Channel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update Channel"
+          }
+        }
+      }
+    },
+    "Update GEOIP Database": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update GEOIP Database"
+          }
+        }
+      }
+    },
+    "Update GeoIP Database": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update GeoIP Database"
+          }
+        }
+      }
+    },
+    "Update external resource complete": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update external resource complete"
+          }
+        }
+      }
+    },
+    "Update remote config update interval": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update remote config update interval"
+          }
+        }
+      }
+    },
+    "Updating": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updating"
+          }
+        }
+      }
+    },
+    "Uplink": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uplink"
+          }
+        }
+      }
+    },
+    "Upload": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload"
+          }
+        }
+      }
+    },
+    "Use Selection for Find": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use Selection for Find"
+          }
+        }
+      }
+    },
+    "Use SwiftUI status menu (MenuBarExtra)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use SwiftUI status menu (MenuBarExtra)"
+          }
+        }
+      }
+    },
+    "Use reload config to try reconnect.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use reload config to try reconnect."
+          }
+        }
+      }
+    },
+    "Use this secret even if the config defines one": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use this secret even if the config defines one"
+          }
+        }
+      }
+    },
+    "Waypoint fail to create ~/.config/waypoint folder. Please check privileges or manually create folder and restart Waypoint.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waypoint fail to create ~/.config/waypoint folder. Please check privileges or manually create folder and restart Waypoint."
+          }
+        }
+      }
+    },
+    "Waypoint needs to install/update a helper tool with administrator privileges, otherwise Waypoint won't be able to configure system proxy.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waypoint needs to install/update a helper tool with administrator privileges, otherwise Waypoint won't be able to configure system proxy."
+          }
+        }
+      }
+    },
+    "Waypoint use a daemon helper to setup your system proxy. Please enable Waypoint in the Login Items under the Allow in the Background section and relaunch the app": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waypoint use a daemon helper to setup your system proxy. Please enable Waypoint in the Login Items under the Allow in the Background section and relaunch the app"
+          }
+        }
+      }
+    },
+    "Welcome to Waypoint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome to Waypoint"
+          }
+        }
+      }
+    },
+    "ago": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ago"
+          }
+        }
+      }
+    },
+    "fail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fail"
+          }
+        }
+      }
+    },
+    "fails: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fails: %@"
+          }
+        }
+      }
+    },
+    "hours": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hours"
+          }
+        }
+      }
+    },
+    "https://your-provider/subscription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://your-provider/subscription"
+          }
+        }
+      }
+    },
+    "iCloud not available": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud not available"
+          }
+        }
+      }
+    },
+    "just now": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "just now"
+          }
+        }
+      }
+    },
+    "total: %d, success: %d": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "total: %d, success: %d"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
