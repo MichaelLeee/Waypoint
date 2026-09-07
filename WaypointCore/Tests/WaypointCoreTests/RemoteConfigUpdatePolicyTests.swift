@@ -40,7 +40,10 @@ struct RemoteConfigUpdatePolicyTests {
 
 struct RemoteConfigFetchTests {
     @Test func requestRejectsMalformedURL() {
-        #expect(RemoteConfigFetch.request(urlString: "not a url") == nil)
+        // Foundation's URL(string:) is lenient (spaces get percent-encoded),
+        // but an empty string and a malformed IPv6 literal are rejected.
+        #expect(RemoteConfigFetch.request(urlString: "") == nil)
+        #expect(RemoteConfigFetch.request(urlString: "http://[::1") == nil)
     }
 
     @Test func requestUsesReloadIgnoringCacheData() {
