@@ -85,13 +85,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Self.sharedRef = self
     }
 
+    /// Xcode preview hosts run the full app lifecycle, so the launch path
+    /// below does real-world work inside the preview process (Sparkle
+    /// updater, move-to-Applications and helper-install modals, core API
+    /// calls) that hangs or crashes every #Preview canvas at once.
+    private static let isPreviewProcess =
+        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+
     func applicationWillFinishLaunching(_ notification: Notification) {
         Logger.log("applicationWillFinishLaunching")
         signal(SIGPIPE, SIG_IGN)
-        // crash recorder
-        failLaunchProtect()
+        if !Self.isPreviewProcess {
+            failLaunchProtect()
+        }
         setupMenus()
-        setupEditShortcutMonitor()
+        if !Self.isPreviewProcess {
+            setupEditShortcutMonitor()
+        }
         NSAppleEventManager.shared()
             .setEventHandler(self,
                              andSelector: #selector(handleURL(event:reply:)),
@@ -107,6 +117,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // flag is on, no NSStatusItem is created and statusItemView stays a
         // no-op so speed/status call sites remain safe.
         statusItemView = NullStatusItemView()
+        if Self.isPreviewProcess { return }
         if !Settings.useSwiftUIMenu {
             // AppKit NSStatusItem is the primary menu UI on purpose, not a
             // legacy leftover. SwiftUI's MenuBarExtra(.menu) cannot host live
