@@ -63,7 +63,7 @@ public enum WaypointProxyType: String, Codable, Sendable {
 public typealias WaypointProxyName = String
 public typealias WaypointProviderName = String
 
-public struct WaypointProxySpeedHistory: Codable, Sendable {
+public struct WaypointProxySpeedHistory: Codable, Equatable, Sendable {
     public let time: Date
     public let delay: Int
     public let meanDelay: Int?
