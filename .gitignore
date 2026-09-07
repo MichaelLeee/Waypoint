@@ -21,3 +21,8 @@ Waypoint.app.dSYM.zip
 build_derived_data
 gitupdate.bat
 Waypoint/goWaypoint/.mihomo-build/
+
+# SwiftPM local build artifacts
+.build/
+WaypointCore/Package.resolved
+WaypointNetworking/Package.resolved
