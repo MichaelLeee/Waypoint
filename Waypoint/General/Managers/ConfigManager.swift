@@ -8,6 +8,7 @@
 import Cocoa
 import Observation
 import WaypointCore
+import WaypointNetworking
 
 // AppKit-side observers (menu bar UI) watch these instead of the old
 // CurrentValueSubject bridge; SwiftUI reads the @Observable properties.
@@ -87,22 +88,11 @@ final class ConfigManager {
     }
 
     static var apiUrl: String {
-        if let override = shared.overrideApiURL {
-            return override.absoluteString
-        }
-        return "http://127.0.0.1:\(shared.apiPort)"
+        WaypointApiURL.httpURL(overrideApiURL: shared.overrideApiURL, apiPort: shared.apiPort)
     }
 
     static var webSocketUrl: String {
-        if let override = shared.overrideApiURL, var comp = URLComponents(url: override, resolvingAgainstBaseURL: true) {
-            if comp.scheme == "https" {
-                comp.scheme = "wss"
-            } else {
-                comp.scheme = "ws"
-            }
-            return comp.url?.absoluteString ?? ""
-        }
-        return "ws://127.0.0.1:\(shared.apiPort)"
+        WaypointApiURL.webSocketURL(overrideApiURL: shared.overrideApiURL, apiPort: shared.apiPort)
     }
 
     static var selectedProxyRecords = SavedProxyModel.loadsFromUserDefault() {

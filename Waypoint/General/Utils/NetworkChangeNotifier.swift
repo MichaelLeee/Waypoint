@@ -6,6 +6,7 @@
 import Cocoa
 import CoreWLAN
 import SystemConfiguration
+import WaypointCore
 
 class NetworkChangeNotifier {
     static func start() {
@@ -81,14 +82,10 @@ class NetworkChangeNotifier {
         let (http, https, socks) = NetworkChangeNotifier.currentSystemProxySetting()
         let currentPort = ConfigManager.shared.currentConfig?.usedHttpPort ?? 0
         let currentSocks = ConfigManager.shared.currentConfig?.usedSocksPort ?? 0
-        if currentPort == currentSocks, currentPort == 0 {
-            return false
-        }
-        if looser {
-            return http == currentPort || https == currentPort || socks == currentSocks
-        } else {
-            return http == currentPort && https == currentPort && socks == currentSocks
-        }
+        return SystemProxyMatch.isSetToWaypoint(
+            http: Int(http), https: Int(https), socks: Int(socks),
+            expectedHttpPort: currentPort, expectedSocksPort: currentSocks,
+            looser: looser)
     }
 
     // Reads ConfigManager (MainActor); all callers are main-thread UI paths.
