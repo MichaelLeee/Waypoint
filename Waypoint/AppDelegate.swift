@@ -67,9 +67,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var editShortcutMonitor: Any?
 
+    // Composition-root dependencies. Concrete managers conform to the
+    // protocols in General/Protocols/ManagerProtocols.swift; call sites in
+    // the AppDelegate extensions go through these instead of .shared so the
+    // wiring point (and any future test double) stays in one place.
+    let core: any ProxyCoreControlling
+    let systemProxy: any SystemProxyManaging
+    let helperInstaller: any HelperInstalling
+
     // The SwiftUI adaptor instantiates us on the main thread; the shared
     // reference is captured here because NSApp.delegate is SwiftUI's wrapper.
     override init() {
+        core = CoreProcessManager.shared
+        systemProxy = SystemProxyManager.shared
+        helperInstaller = PrivilegedHelperManager.shared
         super.init()
         Self.sharedRef = self
     }
@@ -141,7 +152,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         AutoUpgardeManager.shared.setupCheckForUpdatesMenuItem(checkForUpdateMenuItem)
         // install proxy helper
         _ = WaypointResourceManager.check()
-        PrivilegedHelperManager.shared.checkInstall()
+        helperInstaller.checkInstall()
         ConfigFileManager.copySampleConfigIfNeed()
 
         PFMoveToApplicationsFolderIfNecessary()
@@ -189,12 +200,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Stop the core before the process dies so a root-spawned mihomo is
         // not orphaned; the helper tears down its own children on exit, but a
         // local (non-TUN) child would survive.
-        CoreProcessManager.shared.stop()
+        core.stop()
         MitmProxyServer.shared.stop()
         if NetworkChangeNotifier.isCurrentSystemSetToWaypoint(looser: true) ||
             NetworkChangeNotifier.hasInterfaceProxySetToWaypoint() {
             Logger.log("Need Reset Proxy Setting again", level: .error)
-            SystemProxyManager.shared.disableProxy()
+            systemProxy.disableProxy(forceDisable: false, complete: nil)
         }
     }
 

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import WaypointCore
 
 @MainActor
 final class CoreProcessManager {
@@ -214,16 +215,15 @@ final class CoreProcessManager {
         livenessMonitorTask?.cancel()
         guard spawnedViaHelper else { return }
         livenessMonitorTask = Task { [weak self] in
-            var failures = 0
+            var tracker = LivenessTracker(maxConsecutiveFailures: Self.maxLivenessFailures)
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: Self.livenessCheckIntervalNanos)
                 guard let self, !Task.isCancelled else { return }
                 if await self.isReady(externalController: externalController, secret: secret) {
-                    failures = 0
+                    tracker.registerSuccess()
                     continue
                 }
-                failures += 1
-                guard failures >= Self.maxLivenessFailures else { continue }
+                guard tracker.registerFailure() else { continue }
                 Logger.log("helper-spawned core stopped answering the API; treating it as exited", level: .error)
                 self.isRunning = false
                 self.livenessMonitorTask = nil

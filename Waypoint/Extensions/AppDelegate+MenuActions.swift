@@ -58,7 +58,7 @@ extension AppDelegate {
             }
             // The tun block is injected at config-derivation time, so the core
             // must fully restart; a hot reload is not enough.
-            CoreProcessManager.shared.stop()
+            core.stop()
             ConfigManager.shared.isRunning = false
             self.startProxy()
             // CoreProcessManager probes readiness for up to 10s before
@@ -128,18 +128,18 @@ extension AppDelegate {
             ConfigManager.shared.proxyPortAutoSet = true
             // clear then reset.
             canSaveProxy = false
-            SystemProxyManager.shared.disableProxy(port: 0, socksPort: 0, forceDisable: true)
+            systemProxy.disableProxy(port: 0, socksPort: 0, forceDisable: true, complete: nil)
         } else {
             ConfigManager.shared.proxyPortAutoSet = !ConfigManager.shared.proxyPortAutoSet
         }
 
         if ConfigManager.shared.proxyPortAutoSet {
             if canSaveProxy {
-                SystemProxyManager.shared.saveProxy()
+                systemProxy.saveProxy()
             }
-            SystemProxyManager.shared.enableProxy()
+            systemProxy.enableProxy()
         } else {
-            SystemProxyManager.shared.disableProxy()
+            systemProxy.disableProxy(forceDisable: false, complete: nil)
         }
     }
 

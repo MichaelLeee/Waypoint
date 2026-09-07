@@ -88,7 +88,7 @@ extension AppDelegate {
                 }
             }
 
-            CoreProcessManager.shared.onUnexpectedExit = { [weak self] in
+            core.onUnexpectedExit = { [weak self] in
                 ConfigManager.shared.isRunning = false
                 MitmProxyServer.shared.stop()
                 // The core held the pf anchor's pass rules; drop the lockout
@@ -100,7 +100,7 @@ extension AppDelegate {
             }
 
             do {
-                try await CoreProcessManager.shared.start(configPath: configPath,
+                try await core.start(configPath: configPath,
                                                           homeDir: kConfigFolderPath,
                                                           externalController: apiAddr,
                                                           secret: secret,
@@ -228,8 +228,8 @@ extension AppDelegate {
         if !NetworkChangeNotifier.isCurrentSystemSetToWaypoint() {
             let rawProxy = NetworkChangeNotifier.getRawProxySetting()
             Logger.log("Resting proxy setting, current:\(rawProxy)", level: .warning)
-            SystemProxyManager.shared.disableProxy()
-            SystemProxyManager.shared.enableProxy()
+            systemProxy.disableProxy(forceDisable: false, complete: nil)
+            systemProxy.enableProxy()
         }
 
         if RemoteControlManager.selectConfig != nil {

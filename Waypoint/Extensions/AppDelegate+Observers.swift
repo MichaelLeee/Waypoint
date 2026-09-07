@@ -94,7 +94,7 @@ extension AppDelegate {
                     if old?.usedHttpPort != config.usedHttpPort || old?.usedSocksPort != config.usedSocksPort {
                         Logger.log("port config updated,new: \(config.usedHttpPort),\(config.usedSocksPort)")
                         if ConfigManager.shared.proxyPortAutoSet {
-                            SystemProxyManager.shared.enableProxy(port: config.usedHttpPort, socksPort: config.usedSocksPort)
+                            systemProxy.enableProxy(port: config.usedHttpPort, socksPort: config.usedSocksPort)
                         }
                     }
 
@@ -109,20 +109,20 @@ extension AppDelegate {
                 }
             }.store(in: &cancellables)
 
-        if !PrivilegedHelperManager.shared.isHelperCheckFinished.value &&
+        if !helperInstaller.isHelperCheckFinished.value &&
             ConfigManager.shared.proxyPortAutoSet {
-            PrivilegedHelperManager.shared.isHelperCheckFinished
+            helperInstaller.isHelperCheckFinished
                 .first { $0 }
                 .receive(on: DispatchQueue.main)
                 .sink { _ in
                     MainActor.assumeIsolated {
                         if ConfigManager.shared.proxyPortAutoSet {
-                            SystemProxyManager.shared.enableProxy()
+                            systemProxy.enableProxy()
                         }
                     }
                 }.store(in: &cancellables)
         } else if ConfigManager.shared.proxyPortAutoSet {
-            SystemProxyManager.shared.enableProxy()
+            systemProxy.enableProxy()
         }
 
         LaunchAtLogin.shared
@@ -136,9 +136,9 @@ extension AppDelegate {
 
         remoteConfigAutoupdateMenuItem.state = RemoteConfigManager.autoUpdateEnable ? .on : .off
 
-        if !PrivilegedHelperManager.shared.isHelperCheckFinished.value {
+        if !helperInstaller.isHelperCheckFinished.value {
             proxySettingMenuItem.target = nil
-            PrivilegedHelperManager.shared.isHelperCheckFinished
+            helperInstaller.isHelperCheckFinished
                 .first { $0 }
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
