@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import WaypointCore
 
 @MainActor
 final class RemoteConfigManager {
@@ -77,10 +78,11 @@ final class RemoteConfigManager {
         let group = DispatchGroup()
 
         for config in configs {
-            if config.updating { continue }
-            let timeLimitNoMantians = Date().timeIntervalSince(config.updateTime ?? Date(timeIntervalSince1970: 0)) < Settings.configAutoUpdateInterval
-
-            if timeLimitNoMantians && !ignoreTimeLimit {
+            guard RemoteConfigUpdatePolicy.isDueForUpdate(updating: config.updating,
+                                                          updateTime: config.updateTime,
+                                                          now: Date(),
+                                                          interval: Settings.configAutoUpdateInterval,
+                                                          ignoreTimeLimit: ignoreTimeLimit) else {
                 Logger.log("[Auto Upgrade] Bypassing \(config.name) due to time check")
                 continue
             }
@@ -134,19 +136,18 @@ final class RemoteConfigManager {
 
     /// Downloads a remote config. Returns (config text or nil, suggested filename).
     nonisolated static func getRemoteConfigData(config: RemoteConfigModel) async -> (String?, String?) {
-        guard let url = URL(string: config.url) else {
+        guard let urlRequest = RemoteConfigFetch.request(urlString: config.url) else {
             assertionFailure()
             Logger.log("[getRemoteConfigData] url incorrect,\(config.name) \(config.url)")
             return (nil, nil)
         }
-        var urlRequest = URLRequest(url: url)
-        urlRequest.cachePolicy = .reloadIgnoringCacheData
         do {
             let (data, response) = try await URLSession.shared.data(for: urlRequest)
-            guard let http = response as? HTTPURLResponse, (200 ... 299).contains(http.statusCode) else {
+            guard let http = response as? HTTPURLResponse,
+                  let text = RemoteConfigFetch.decodeResponse(statusCode: http.statusCode, data: data) else {
                 return (nil, nil)
             }
-            return (String(data: data, encoding: .utf8), response.suggestedFilename)
+            return (text, response.suggestedFilename)
         } catch {
             Logger.log(error.localizedDescription, level: .warning)
             return (nil, nil)
