@@ -3,6 +3,7 @@
 //  Waypoint
 //
 
+import WaypointCore
 import AppKit
 import ScreenCaptureKit
 import SwiftUI
@@ -75,7 +76,7 @@ final class OnboardingStore {
 
     func importSubscription() async {
         let urlString = urlText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard urlString.isUrlVaild() else {
+        guard urlString.isValidHttpUrl() else {
             setMessage(NSLocalizedString("Please enter a valid subscription URL.", comment: ""), isError: true)
             return
         }
@@ -271,7 +272,7 @@ struct OnboardingRootView: View {
             if store.urlText.isEmpty,
                let clipboard = NSPasteboard.general.string(forType: .string)?
                .trimmingCharacters(in: .whitespacesAndNewlines),
-               clipboard.isUrlVaild() {
+               clipboard.isValidHttpUrl() {
                 store.urlText = clipboard
             }
         }

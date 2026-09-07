@@ -5,6 +5,7 @@
 //
 
 import SwiftUI
+import WaypointCore
 
 @MainActor
 @Observable
@@ -69,7 +70,7 @@ final class RemoteConfigStore {
 
     func submit(url: String, nameInput: String, context: RemoteConfigAddContext) {
         let urlString = url.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard urlString.isUrlVaild() else {
+        guard urlString.isValidHttpUrl() else {
             alertMessage = NSLocalizedString("Invalid input", comment: "")
             showAlert = true
             return

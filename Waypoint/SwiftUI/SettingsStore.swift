@@ -4,6 +4,7 @@
 //
 
 import WaypointNetworking
+import WaypointCore
 import AppKit
 import Observation
 import Foundation
@@ -22,7 +23,7 @@ final class SettingsStore {
         didSet { Settings.disableNoti = reduceNotifications }
     }
     var benchmarkUrl = Settings.benchMarkUrl {
-        didSet { if benchmarkUrl.isUrlVaild() || benchmarkUrl.isEmpty { Settings.benchMarkUrl = benchmarkUrl } }
+        didSet { if benchmarkUrl.isValidHttpUrl() || benchmarkUrl.isEmpty { Settings.benchMarkUrl = benchmarkUrl } }
     }
     var useSwiftUIMenu = Settings.useSwiftUIMenu {
         didSet { Settings.useSwiftUIMenu = useSwiftUIMenu }

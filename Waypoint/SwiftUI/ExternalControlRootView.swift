@@ -5,6 +5,7 @@
 //
 
 import SwiftUI
+import WaypointCore
 
 @MainActor
 @Observable
@@ -30,7 +31,7 @@ final class ExternalControlStore {
     func submit(url: String, name: String, secret: String) {
         let urlString = url.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard urlString.isUrlVaild(), !trimmedName.isEmpty else {
+        guard urlString.isValidHttpUrl(), !trimmedName.isEmpty else {
             alertMessage = NSLocalizedString("Invalid input", comment: "")
             showAlert = true
             return
