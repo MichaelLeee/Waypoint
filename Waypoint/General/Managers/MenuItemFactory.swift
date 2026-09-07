@@ -15,7 +15,7 @@ final class MenuItemFactory {
 
     static func refreshExistingMenuItems() {
         Task {
-            let info = await ApiRequest.getMergedProxyData()
+            let info = await ApiClient.shared.getMergedProxyData()
             if info?.proxiesMap.keys != cachedProxyData?.proxiesMap.keys {
                 // force update menu
                 refreshMenuItems(mergedData: info)
@@ -30,7 +30,7 @@ final class MenuItemFactory {
 
     static func recreateProxyMenuItems() {
         Task {
-            let proxyInfo = await ApiRequest.getMergedProxyData()
+            let proxyInfo = await ApiClient.shared.getMergedProxyData()
             cachedProxyData = proxyInfo
             refreshMenuItems(mergedData: proxyInfo)
         }
@@ -238,7 +238,7 @@ extension MenuItemFactory {
         let proxyName = sender.proxyName
 
         Task {
-            let success = await ApiRequest.updateProxyGroup(group: proxyGroup, selectProxy: proxyName)
+            let success = await ApiClient.shared.updateProxyGroup(group: proxyGroup, selectProxy: proxyName)
             guard success else { return }
             for items in sender.menu?.items ?? [NSMenuItem]() {
                 items.state = .off

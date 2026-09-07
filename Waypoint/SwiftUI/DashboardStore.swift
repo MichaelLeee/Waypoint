@@ -33,7 +33,7 @@ final class DashboardStore {
     private nonisolated(unsafe) var tasks = [Task<Void, Never>]()
 
     init() {
-        let api = ApiRequest.client
+        let api = ApiClient.shared
         tasks.append(Task { [weak self] in
             for await traffic in await api.trafficStream() {
                 self?.apply(traffic: traffic)

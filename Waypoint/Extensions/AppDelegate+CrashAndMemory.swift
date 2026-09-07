@@ -45,7 +45,7 @@ extension AppDelegate {
             guard item.config == ConfigManager.selectConfigName else { continue }
             Logger.log("Auto selecting \(item.group) \(item.selected)", level: .debug)
             Task {
-                let success = await ApiRequest.updateProxyGroup(group: item.group, selectProxy: item.selected)
+                let success = await ApiClient.shared.updateProxyGroup(group: item.group, selectProxy: item.selected)
                 if !success {
                     ConfigManager.selectedProxyRecords.removeAll { model -> Bool in
                         return model.key == item.key
@@ -79,13 +79,13 @@ extension AppDelegate {
     }
 
     func selectOutBoundModeWithMenory() async {
-        _ = await ApiRequest.updateOutBoundMode(ConfigManager.selectOutBoundMode)
+        _ = await ApiClient.shared.updateOutBoundMode(ConfigManager.selectOutBoundMode)
         ConnectionManager.closeAllConnection()
         syncConfig()
     }
 
     func selectAllowLanWithMenory() async {
-        _ = await ApiRequest.updateAllowLan(ConfigManager.allowConnectFromLan)
+        _ = await ApiClient.shared.updateAllowLan(ConfigManager.allowConnectFromLan)
         syncConfig()
     }
 

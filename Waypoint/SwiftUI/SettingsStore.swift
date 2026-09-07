@@ -40,7 +40,7 @@ final class SettingsStore {
             guard let port = Int(proxyPortText), port != Settings.proxyPort else { return }
             Settings.proxyPort = port
             Task {
-                if await ApiRequest.updateProxyPort(port) {
+                if await ApiClient.shared.updateProxyPort(port) {
                     // Refresh currentConfig so the port-change observer
                     // re-applies the system proxy with the new port.
                     AppDelegate.shared.syncConfig()
@@ -70,7 +70,7 @@ final class SettingsStore {
         didSet {
             Settings.enableIPV6 = enableIPv6
             Task {
-                if !(await ApiRequest.updateIPv6(enableIPv6)) {
+                if !(await ApiClient.shared.updateIPv6(enableIPv6)) {
                     WaypointNotifier.postConfigErrorNotice(
                         msg: NSLocalizedString("Failed to update IPv6 on the core.", comment: ""))
                 }
@@ -201,7 +201,9 @@ final class SettingsStore {
     func reloadConfig() async -> Bool {
         MitmProxyServer.ensureRunning()
         do {
-            try await ApiRequest.requestConfigUpdate(configName: ConfigManager.selectConfigName)
+            try await ApiClient.shared.requestConfigUpdate(configName: ConfigManager.selectConfigName)
+            ConfigManager.shared.isRunning = true
+            await ApiClient.shared.reapplyRuntimeSettings()
             return true
         } catch {
             Logger.log("reload config failed: \(error.localizedDescription)", level: .error)
@@ -210,6 +212,6 @@ final class SettingsStore {
     }
 
     func flushFakeIPCache() async {
-        await ApiRequest.resetFakeIpCache()
+        await ApiClient.shared.resetFakeIpCache()
     }
 }

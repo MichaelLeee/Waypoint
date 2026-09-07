@@ -160,7 +160,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // claer not existed selected model
         removeUnExistProxyGroups()
 
-        // Core logs/traffic are streamed over the REST API WebSocket (ApiRequest),
+        // Core logs/traffic are streamed over the REST API WebSocket (ApiClient),
         // so no in-process logger setup is needed.
         setupData()
         runAfterConfigReload = { [weak self] in

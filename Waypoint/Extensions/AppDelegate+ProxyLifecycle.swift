@@ -37,7 +37,7 @@ extension AppDelegate {
 
     func updateLoggingLevel() {
         Task {
-            if !(await ApiRequest.updateLogLevel(ConfigManager.selectLoggingApiLevel)) {
+            if !(await ApiClient.shared.updateLogLevel(ConfigManager.selectLoggingApiLevel)) {
                 Logger.log("failed to update core log level", level: .error)
             }
         }
@@ -129,22 +129,22 @@ extension AppDelegate {
 
     func applyRuntimeGeneralSettings() async {
         await selectAllowLanWithMenory()
-        _ = await ApiRequest.updateIPv6(Settings.enableIPV6)
+        _ = await ApiClient.shared.updateIPv6(Settings.enableIPV6)
         if Settings.proxyPort > 0 {
-            _ = await ApiRequest.updateProxyPort(Settings.proxyPort)
+            _ = await ApiClient.shared.updateProxyPort(Settings.proxyPort)
         }
     }
 
     func syncConfig() {
         Task {
-            ConfigManager.shared.currentConfig = await ApiRequest.requestConfig()
+            ConfigManager.shared.currentConfig = await ApiClient.shared.requestConfig()
         }
     }
 
     func resetStreamApi() {
         trafficStreamTask?.cancel()
         logStreamTask?.cancel()
-        let apiRequest = ApiRequest.client
+        let apiRequest = ApiClient.shared
         trafficStreamTask = Task { [weak self] in
             for await traffic in await apiRequest.trafficStream() {
                 self?.statusItemView.updateSpeedLabel(up: traffic.up, down: traffic.down)
@@ -188,7 +188,11 @@ extension AppDelegate {
             }
             var err: ErrorString?
             do {
-                try await ApiRequest.requestConfigUpdate(configName: config)
+                try await ApiClient.shared.requestConfigUpdate(configName: config)
+                ConfigManager.shared.isRunning = true
+                // A file reload resets every runtime PATCH; re-apply the
+                // app's runtime state on top of the file's values.
+                await ApiClient.shared.reapplyRuntimeSettings()
             } catch {
                 err = error.localizedDescription
             }
@@ -239,7 +243,7 @@ extension AppDelegate {
 
     @objc func healthCheckOnNetworkChange() {
         Task {
-            guard let proxyResp = await ApiRequest.getMergedProxyData() else { return }
+            guard let proxyResp = await ApiClient.shared.getMergedProxyData() else { return }
 
             var providers = Set<WaypointProxyName>()
 
@@ -263,10 +267,10 @@ extension AppDelegate {
                 for group in groups {
                     // Capture the Sendable name, not the non-Sendable group.
                     let name = group.name
-                    taskGroup.addTask { await ApiRequest.healthCheck(proxy: name) }
+                    taskGroup.addTask { await ApiClient.shared.healthCheck(proxy: name) }
                 }
                 for provider in providers {
-                    taskGroup.addTask { await ApiRequest.healthCheck(proxy: provider) }
+                    taskGroup.addTask { await ApiClient.shared.healthCheck(proxy: provider) }
                 }
             }
         }

@@ -45,8 +45,8 @@ final class ProxyGroupSpeedTestMenuItem: NSMenuItem, @unchecked Sendable {
     @objc func healthCheck() {
         guard testType == .reTest else { return }
         Task {
-            await ApiRequest.healthCheck(proxy: proxyGroup.name)
-            let proxyResp = await ApiRequest.getMergedProxyData()
+            await ApiClient.shared.healthCheck(proxy: proxyGroup.name)
+            let proxyResp = await ApiClient.shared.getMergedProxyData()
             var providers = Set<WaypointProxyName>()
             proxyGroup.all?.compactMap {
                 proxyResp?.providerNamesByProxy[$0]
@@ -55,7 +55,7 @@ final class ProxyGroupSpeedTestMenuItem: NSMenuItem, @unchecked Sendable {
             }
             await withTaskGroup(of: Void.self) { taskGroup in
                 for provider in providers {
-                    taskGroup.addTask { await ApiRequest.healthCheck(proxy: provider) }
+                    taskGroup.addTask { await ApiClient.shared.healthCheck(proxy: provider) }
                 }
             }
         }
@@ -126,13 +126,13 @@ private class ProxyGroupSpeedTestMenuItemView: MenuItemBaseView {
             await withTaskGroup(of: Void.self) { taskGroup in
                 for proxyName in proxies {
                     taskGroup.addTask {
-                        let delay = await ApiRequest.getProxyDelay(proxyName: proxyName)
+                        let delay = await ApiClient.shared.getProxyDelay(proxyName: proxyName)
                         let delayStr = delay == 0 ? NSLocalizedString("fail", comment: "") : "\(delay) ms"
                         await ProxyUpdateHub.shared.delayDidUpdate(name: proxyName, display: delayStr, value: delay)
                     }
                 }
                 for provider in providers {
-                    taskGroup.addTask { await ApiRequest.healthCheck(proxy: provider) }
+                    taskGroup.addTask { await ApiClient.shared.healthCheck(proxy: provider) }
                 }
             }
             guard let menu = enclosingMenuItem else { return }

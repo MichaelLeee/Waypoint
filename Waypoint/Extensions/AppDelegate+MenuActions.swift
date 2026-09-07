@@ -32,7 +32,7 @@ extension AppDelegate {
             // (e.g. an imported config with allow-lan: true), which made
             // unchecking re-send "allowed".
             let enable = !(ConfigManager.shared.currentConfig?.allowLan ?? false)
-            guard await ApiRequest.updateAllowLan(enable) else { return }
+            guard await ApiClient.shared.updateAllowLan(enable) else { return }
             guard let self else { return }
             self.syncConfig()
             ConfigManager.allowConnectFromLan = enable
@@ -105,7 +105,7 @@ extension AppDelegate {
         Task {
             // Only persist and propagate on API success; otherwise the menu
             // checkmark and the core's actual mode desync.
-            guard await ApiRequest.updateOutBoundMode(mode) else { return }
+            guard await ApiClient.shared.updateOutBoundMode(mode) else { return }
             ConfigManager.shared.currentConfig = config
             ConfigManager.selectOutBoundMode = mode
             MenuItemFactory.recreateProxyMenuItems()
@@ -165,13 +165,13 @@ extension AppDelegate {
         isSpeedTesting = true
 
         Task { [weak self] in
-            let resp = await ApiRequest.getMergedProxyData()
+            let resp = await ApiClient.shared.getMergedProxyData()
             let group = DispatchGroup()
 
             for (name, _) in resp?.enclosingProviderResp?.providers ?? [:] {
                 group.enter()
                 Task {
-                    await ApiRequest.healthCheck(proxy: name)
+                    await ApiClient.shared.healthCheck(proxy: name)
                     group.leave()
                 }
             }
@@ -179,7 +179,7 @@ extension AppDelegate {
             for p in resp?.proxiesMap["GLOBAL"]?.all ?? [] {
                 group.enter()
                 Task {
-                    _ = await ApiRequest.getProxyDelay(proxyName: p)
+                    _ = await ApiClient.shared.getProxyDelay(proxyName: p)
                     group.leave()
                 }
             }

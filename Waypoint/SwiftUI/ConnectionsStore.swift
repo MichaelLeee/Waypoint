@@ -59,7 +59,7 @@ final class ConnectionsStore {
 
     init() {
         streamTask = Task { [weak self] in
-            for await snapshot in await ApiRequest.client.connectionsStream() {
+            for await snapshot in await ApiClient.shared.connectionsStream() {
                 self?.apply(snapshot: snapshot)
             }
         }
@@ -84,13 +84,13 @@ final class ConnectionsStore {
     }
 
     func close(_ id: String) async {
-        await ApiRequest.closeConnection(id)
+        await ApiClient.shared.closeConnection(id)
         rowsByID[id] = nil
         publishRows()
     }
 
     func closeAll() async {
-        await ApiRequest.closeAllConnection()
+        await ApiClient.shared.closeAllConnection()
         for id in activeIDs {
             rowsByID[id] = nil
         }

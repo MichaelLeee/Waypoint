@@ -40,14 +40,14 @@ final class MenuBarMenuStore {
             configNames = ConfigManager.getConfigFilesList()
         }
         Task { [weak self] in
-            guard let resp = await ApiRequest.getMergedProxyData() else { return }
+            guard let resp = await ApiClient.shared.getMergedProxyData() else { return }
             self?.proxyGroups = resp.proxyGroups
         }
     }
 
     func selectProxy(group: WaypointProxy, proxy: String) {
         Task {
-            guard await ApiRequest.updateProxyGroup(group: group.name, selectProxy: proxy) else { return }
+            guard await ApiClient.shared.updateProxyGroup(group: group.name, selectProxy: proxy) else { return }
             let newModel = SavedProxyModel(group: group.name, selected: proxy, config: ConfigManager.selectConfigName)
             ConfigManager.selectedProxyRecords.removeAll { $0.key == newModel.key }
             ConfigManager.selectedProxyRecords.append(newModel)
@@ -63,7 +63,7 @@ final class MenuBarMenuStore {
         Task {
             // Only persist and propagate on API success; otherwise the picker
             // and the core's actual mode desync.
-            guard await ApiRequest.updateOutBoundMode(mode) else { return }
+            guard await ApiClient.shared.updateOutBoundMode(mode) else { return }
             ConfigManager.shared.currentConfig = config
             ConfigManager.selectOutBoundMode = mode
             MenuItemFactory.recreateProxyMenuItems()
