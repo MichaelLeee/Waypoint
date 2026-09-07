@@ -1,22 +1,21 @@
 //
 //  ProxyUpdateHub.swift
-//  Waypoint
+//  WaypointNetworking
+//  Typed in-process event flow for proxy data changes, replacing the
+//  stringly-typed `.proxyUpdate` / `.speedTestFinishForProxy` notifications.
+//
+//  All producers and consumers live on the main actor (menu rendering does),
+//  so events may carry the `WaypointProxy` model directly. Subscribers
+//  receive only events whose name matches the name they subscribed with.
 //
 
-import Cocoa
-import WaypointNetworking
+import Foundation
 
-/// Typed in-process event flow for proxy data changes, replacing the
-/// stringly-typed `.proxyUpdate` / `.speedTestFinishForProxy` notifications.
-///
-/// All producers and consumers live on the main actor (menu rendering does),
-/// so events may carry the `WaypointProxy` model directly. Subscribers
-/// receive only events whose name matches the name they subscribed with.
 @MainActor
-final class ProxyUpdateHub {
-    static let shared = ProxyUpdateHub()
+public final class ProxyUpdateHub {
+    public static let shared = ProxyUpdateHub()
 
-    enum Event {
+    public enum Event: Sendable {
         /// A full model refresh for a proxy or group.
         case snapshot(WaypointProxy)
         /// A speed-test result: name, display string ("42 ms"/"fail"), raw value.
@@ -30,7 +29,9 @@ final class ProxyUpdateHub {
 
     private var subscriptions: [UUID: Subscription] = [:]
 
-    func proxyEvents(for name: String) -> AsyncStream<Event> {
+    public init() {}
+
+    public func proxyEvents(for name: String) -> AsyncStream<Event> {
         AsyncStream { continuation in
             let id = UUID()
             subscriptions[id] = Subscription(name: name, continuation: continuation)
@@ -42,13 +43,15 @@ final class ProxyUpdateHub {
         }
     }
 
-    func proxyDidUpdate(_ proxy: WaypointProxy) {
+    public func proxyDidUpdate(_ proxy: WaypointProxy) {
         deliver(.snapshot(proxy), name: proxy.name)
     }
 
-    func delayDidUpdate(name: String, display: String, value: Int?) {
+    public func delayDidUpdate(name: String, display: String, value: Int?) {
         deliver(.delay(name: name, display: display, value: value), name: name)
     }
+
+    public var subscriptionCount: Int { subscriptions.count }
 
     private func deliver(_ event: Event, name: String) {
         for subscription in subscriptions.values where subscription.name == name {
