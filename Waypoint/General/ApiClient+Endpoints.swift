@@ -33,7 +33,9 @@ extension ApiClient {
 // MARK: - Configs
 
 extension ApiClient {
-    func requestConfig() async -> WaypointConfig? {
+    // nonisolated so the freshly decoded config can cross back to the
+    // caller's isolation domain without tripping the Sendable checker.
+    nonisolated func requestConfig() async -> WaypointConfig? {
         do {
             let data = try await send("/configs")
             return try JSONDecoder().decode(WaypointConfig.self, from: data)
