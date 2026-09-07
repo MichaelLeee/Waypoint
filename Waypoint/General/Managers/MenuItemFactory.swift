@@ -5,6 +5,7 @@
 
 import WaypointNetworking
 import Cocoa
+import WaypointCore
 
 @MainActor
 final class MenuItemFactory {

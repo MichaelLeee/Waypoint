@@ -156,9 +156,7 @@ extension ConfigManager {
     static func getConfigFilesList() -> [String] {
         do {
             let fileURLs = try FileManager.default.contentsOfDirectory(atPath: kConfigFolderPath)
-            return fileURLs
-                .filter { String($0.split(separator: ".").last ?? "") == "yaml" }
-                .map { $0.split(separator: ".").dropLast().joined(separator: ".") }
+            return ConfigFileDiscovery.configNames(fromFileNames: fileURLs)
         } catch {
             return ["config"]
         }

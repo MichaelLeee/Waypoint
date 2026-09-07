@@ -7,6 +7,7 @@
 
 import Cocoa
 import WaypointNetworking
+import WaypointCore
 
 // MARK: crash handler
 

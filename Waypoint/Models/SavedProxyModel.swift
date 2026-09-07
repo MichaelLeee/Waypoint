@@ -1,35 +1,22 @@
 //
 //  SavedProxyModel.swift
 //  Waypoint
+//  App-side storage for the model (which lives in WaypointCore): backed by
+//  Persistence/UserDefaults.
 //
 
-import Cocoa
+import WaypointCore
 
-struct SavedProxyModel: Codable {
-    let group: WaypointProxyName
-    let selected: WaypointProxyName
-    let config: String
-
-    var key: String {
-        return "\(group)_\(config)"
-    }
-
+extension SavedProxyModel {
     static func loadsFromUserDefault() -> [SavedProxyModel] {
         guard let models: [SavedProxyModel] = Persistence.loadCodable(
             [SavedProxyModel].self, forKey: Persistence.Key.savedProxyModels) else {
             return []
         }
-        var set = Set<String>()
-        return models.filter { model in
-            let pass = !set.contains(model.key)
-            set.insert(model.key)
-            return pass
-        }
+        return deduplicated(models)
     }
 
     static func save(_ models: [SavedProxyModel]) {
         Persistence.saveCodable(models, forKey: Persistence.Key.savedProxyModels)
     }
 }
-
-extension SavedProxyModel: Equatable {}
