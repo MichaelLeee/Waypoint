@@ -3,6 +3,7 @@
 //  Waypoint
 //  SwiftUI comparison version of the status menu (Settings.useSwiftUIMenu).
 //  Rendered via MenuBarExtra(.window) instead of NSStatusItem + NSMenu.
+import WaypointNetworking
 //
 
 import AppKit

@@ -3,6 +3,7 @@
 //  Waypoint
 //
 
+import WaypointNetworking
 import Foundation
 
 enum UpdateExternalResourceAction {

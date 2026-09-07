@@ -3,6 +3,7 @@
 //  Waypoint
 //
 
+import WaypointNetworking
 import Cocoa
 
 @MainActor
