@@ -119,8 +119,10 @@ extension ApiClient {
 
     private func effectiveConfigPath(for configName: String) async -> String {
         await withCheckedContinuation { continuation in
-            ConfigManager.getEffectiveConfigPath(configName: configName) { path in
-                continuation.resume(returning: path)
+            Task { @MainActor in
+                ConfigManager.getEffectiveConfigPath(configName: configName) { path in
+                    continuation.resume(returning: path)
+                }
             }
         }
     }
@@ -163,7 +165,8 @@ extension ApiClient {
     }
 
     func getProxyDelay(proxyName: String) async -> Int {
-        guard var components = URLComponents(string: ConfigManager.apiUrl + "/proxies/\(proxyName.encoded)/delay") else {
+        let baseURL = await MainActor.run { ConfigManager.apiUrl }
+        guard var components = URLComponents(string: baseURL + "/proxies/\(proxyName.encoded)/delay") else {
             return 0
         }
         components.queryItems = [
