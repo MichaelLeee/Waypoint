@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import WaypointNetworking
 
 class ProxyGroupMenuItemView: MenuItemBaseView {
     private let groupNameLabel: NSTextField

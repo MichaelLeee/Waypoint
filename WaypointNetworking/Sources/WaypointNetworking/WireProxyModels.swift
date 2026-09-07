@@ -1,14 +1,14 @@
 //
-//  WaypointProxy.swift
-//  Waypoint
-//
-//  Sendable value models for the proxy API. Text measuring and provider
-//  back-references live in the app layer so these types stay AppKit-free.
+//  WireProxyModels.swift
+//  WaypointNetworking
+//  Sendable value models for the /proxies and /providers/proxies API,
+//  including the provider merge (`updateProvider`) and group-resolution
+//  logic, testable here without AppKit.
 //
 
 import Foundation
 
-enum WaypointProxyType: String, Codable {
+public enum WaypointProxyType: String, Codable, Sendable {
     case urltest = "URLTest"
     case fallback = "Fallback"
     case loadBalance = "LoadBalance"
@@ -34,9 +34,9 @@ enum WaypointProxyType: String, Codable {
     case hysteria2 = "Hysteria2"
     case tuic = "Tuic"
 
-    static let proxyGroups: [WaypointProxyType] = [.select, .urltest, .fallback, .loadBalance]
+    public static let proxyGroups: [WaypointProxyType] = [.select, .urltest, .fallback, .loadBalance]
 
-    var isAutoGroup: Bool {
+    public var isAutoGroup: Bool {
         switch self {
         case .urltest, .fallback, .loadBalance:
             return true
@@ -45,14 +45,14 @@ enum WaypointProxyType: String, Codable {
         }
     }
 
-    static func isProxyGroup(_ proxy: WaypointProxy) -> Bool {
+    public static func isProxyGroup(_ proxy: WaypointProxy) -> Bool {
         switch proxy.type {
         case .select, .urltest, .fallback, .loadBalance, .relay: return true
         default: return false
         }
     }
 
-    static func isBuiltInProxy(_ proxy: WaypointProxy) -> Bool {
+    public static func isBuiltInProxy(_ proxy: WaypointProxy) -> Bool {
         switch proxy.name {
         case "DIRECT", "REJECT": return true
         default: return false
@@ -60,13 +60,13 @@ enum WaypointProxyType: String, Codable {
     }
 }
 
-typealias WaypointProxyName = String
-typealias WaypointProviderName = String
+public typealias WaypointProxyName = String
+public typealias WaypointProviderName = String
 
-struct WaypointProxySpeedHistory: Codable, Sendable {
-    let time: Date
-    let delay: Int
-    let meanDelay: Int?
+public struct WaypointProxySpeedHistory: Codable, Sendable {
+    public let time: Date
+    public let delay: Int
+    public let meanDelay: Int?
 
     // @unchecked: only holds a lazily built DateFormatter.
     final class HisDateFormaterInstance: @unchecked Sendable {
@@ -78,7 +78,7 @@ struct WaypointProxySpeedHistory: Codable, Sendable {
         }()
     }
 
-    var delayDisplay: String {
+    public var delayDisplay: String {
         if let meanDelay, meanDelay > 0 {
             switch meanDelay {
             case 0: return NSLocalizedString("fail", comment: "")
@@ -92,20 +92,26 @@ struct WaypointProxySpeedHistory: Codable, Sendable {
         }
     }
 
-    var dateDisplay: String { HisDateFormaterInstance.shared.formater.string(from: time) }
+    public var dateDisplay: String { HisDateFormaterInstance.shared.formater.string(from: time) }
 
-    var displayString: String { "\(dateDisplay) \(delayDisplay)" }
+    public var displayString: String { "\(dateDisplay) \(delayDisplay)" }
+
+    public init(time: Date, delay: Int, meanDelay: Int?) {
+        self.time = time
+        self.delay = delay
+        self.meanDelay = meanDelay
+    }
 }
 
-struct WaypointProxy: Codable, Sendable {
-    let name: WaypointProxyName
-    let type: WaypointProxyType
-    let all: [WaypointProxyName]?
-    let history: [WaypointProxySpeedHistory]
-    let now: WaypointProxyName?
-    let alive: Bool?
+public struct WaypointProxy: Codable, Sendable {
+    public let name: WaypointProxyName
+    public let type: WaypointProxyType
+    public let all: [WaypointProxyName]?
+    public let history: [WaypointProxySpeedHistory]
+    public let now: WaypointProxyName?
+    public let alive: Bool?
 
-    enum SpeedtestAbleItem: Sendable {
+    public enum SpeedtestAbleItem: Sendable {
         case proxy(name: WaypointProxyName)
         case provider(name: WaypointProxyName, provider: WaypointProviderName)
     }
@@ -113,20 +119,36 @@ struct WaypointProxy: Codable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case type, all, history, now, name, alive
     }
+
+    public init(
+        name: WaypointProxyName,
+        type: WaypointProxyType,
+        all: [WaypointProxyName]?,
+        history: [WaypointProxySpeedHistory],
+        now: WaypointProxyName?,
+        alive: Bool?
+    ) {
+        self.name = name
+        self.type = type
+        self.all = all
+        self.history = history
+        self.now = now
+        self.alive = alive
+    }
 }
 
-struct WaypointProxyResp: Sendable {
-    private(set) var proxies: [WaypointProxy]
+public struct WaypointProxyResp: Sendable {
+    public private(set) var proxies: [WaypointProxy]
 
-    private(set) var proxiesMap: [WaypointProxyName: WaypointProxy]
+    public private(set) var proxiesMap: [WaypointProxyName: WaypointProxy]
 
     /// Provider ownership resolved by `updateProvider`, replacing the old
     /// per-proxy weak back-reference.
-    private(set) var providerNamesByProxy: [WaypointProxyName: WaypointProviderName]
+    public private(set) var providerNamesByProxy: [WaypointProxyName: WaypointProviderName]
 
-    private(set) var enclosingProviderResp: WaypointProviderResp?
+    public private(set) var enclosingProviderResp: WaypointProviderResp?
 
-    init(_ data: Data?) {
+    public init(_ data: Data?) {
         guard let data,
               let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let proxiesDict = root["proxies"] as? [String: Any]
@@ -159,7 +181,7 @@ struct WaypointProxyResp: Sendable {
         self.proxies = proxiesModel
     }
 
-    mutating func updateProvider(_ providerResp: WaypointProviderResp) {
+    public mutating func updateProvider(_ providerResp: WaypointProviderResp) {
         enclosingProviderResp = providerResp
         for provider in providerResp.providers.values {
             for proxy in provider.proxies {
@@ -171,7 +193,7 @@ struct WaypointProxyResp: Sendable {
     }
 
     /// Resolves the speed-testable entries of a group against the merged data.
-    func speedtestAbleItems(for name: WaypointProxyName) -> [WaypointProxy.SpeedtestAbleItem] {
+    public func speedtestAbleItems(for name: WaypointProxyName) -> [WaypointProxy.SpeedtestAbleItem] {
         guard let group = proxiesMap[name], let allProxys = group.all else { return [] }
         var items = [WaypointProxy.SpeedtestAbleItem]()
         for proxyName in allProxys {
@@ -185,7 +207,7 @@ struct WaypointProxyResp: Sendable {
         return items
     }
 
-    var proxyGroups: [WaypointProxy] {
+    public var proxyGroups: [WaypointProxy] {
         var sortMap = [WaypointProxyName: Int]()
         for (idx, proxy) in (proxiesMap["GLOBAL"]?.all ?? []).enumerated() {
             sortMap[proxy] = idx
@@ -193,5 +215,69 @@ struct WaypointProxyResp: Sendable {
         return proxies.filter {
             WaypointProxyType.isProxyGroup($0)
         }.sorted(by: { sortMap[$0.name] ?? -1 < sortMap[$1.name] ?? -1 })
+    }
+}
+
+public struct WaypointProviderResp: Codable, Sendable {
+    public let allProviders: [WaypointProxyName: WaypointProvider]
+
+    public var providers: [WaypointProxyName: WaypointProvider] {
+        allProviders.filter { $0.value.vehicleType != .Compatible }
+    }
+
+    public init() {
+        allProviders = [:]
+    }
+
+    public static var decoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.js)
+        return decoder
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case allProviders = "providers"
+    }
+}
+
+public struct WaypointProvider: Codable, Sendable {
+    public enum ProviderType: String, Codable, Sendable {
+        case Proxy
+        case Rule
+    }
+
+    public enum ProviderVehicleType: String, Codable, Sendable {
+        case HTTP
+        case File
+        case Compatible
+        case Unknown
+    }
+
+    public let name: WaypointProviderName
+    public let proxies: [WaypointProxy]
+    public let type: ProviderType
+    public let vehicleType: ProviderVehicleType
+
+    public init(
+        name: WaypointProviderName,
+        proxies: [WaypointProxy],
+        type: ProviderType,
+        vehicleType: ProviderVehicleType
+    ) {
+        self.name = name
+        self.proxies = proxies
+        self.type = type
+        self.vehicleType = vehicleType
+    }
+}
+
+public extension DateFormatter {
+    /// mihomo's timestamp format: fractional-truncated ISO 8601 with an
+    /// ICU "Z" (RFC 822 offset) suffix, e.g. 2026-09-07T12:00:00.1+0000.
+    static var js: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: NSCalendar.Identifier.ISO8601.rawValue)
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SZ"
+        return dateFormatter
     }
 }

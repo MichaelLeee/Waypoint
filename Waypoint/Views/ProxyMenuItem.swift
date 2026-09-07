@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import WaypointNetworking
 
 class ProxyMenuItem: NSMenuItem, @unchecked Sendable {
     let proxyName: String

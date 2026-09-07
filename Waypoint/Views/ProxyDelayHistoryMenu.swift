@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import WaypointNetworking
 import FlexibleDiff
 
 class ProxyDelayHistoryMenu: NSMenu {

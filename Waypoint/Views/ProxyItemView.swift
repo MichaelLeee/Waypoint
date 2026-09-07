@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import WaypointNetworking
 
 class ProxyItemView: MenuItemBaseView {
     let nameLabel: NSTextField

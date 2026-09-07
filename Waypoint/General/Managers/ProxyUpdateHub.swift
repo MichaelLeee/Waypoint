@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import WaypointNetworking
 
 /// Typed in-process event flow for proxy data changes, replacing the
 /// stringly-typed `.proxyUpdate` / `.speedTestFinishForProxy` notifications.
