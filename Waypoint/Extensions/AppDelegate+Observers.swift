@@ -94,7 +94,7 @@ extension AppDelegate {
                     if old?.usedHttpPort != config.usedHttpPort || old?.usedSocksPort != config.usedSocksPort {
                         Logger.log("port config updated,new: \(config.usedHttpPort),\(config.usedSocksPort)")
                         if ConfigManager.shared.proxyPortAutoSet {
-                            systemProxy.enableProxy(port: config.usedHttpPort, socksPort: config.usedSocksPort)
+                            self.systemProxy.enableProxy(port: config.usedHttpPort, socksPort: config.usedSocksPort)
                         }
                     }
 
@@ -117,7 +117,7 @@ extension AppDelegate {
                 .sink { _ in
                     MainActor.assumeIsolated {
                         if ConfigManager.shared.proxyPortAutoSet {
-                            systemProxy.enableProxy()
+                            self.systemProxy.enableProxy()
                         }
                     }
                 }.store(in: &cancellables)
