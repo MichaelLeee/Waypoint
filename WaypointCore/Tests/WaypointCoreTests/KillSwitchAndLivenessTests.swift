@@ -48,31 +48,41 @@ extension String {
 }
 
 struct LivenessTrackerTests {
+    // Swift Testing's #expect macro rewrites its argument into an immutable
+    // context, so mutating calls must be hoisted out of it.
     @Test func successResetsFailureStreak() {
         var tracker = LivenessTracker(maxConsecutiveFailures: 3)
-        #expect(!tracker.registerFailure())
+        var tripped = tracker.registerFailure()
+        #expect(!tripped)
         tracker.registerSuccess()
         #expect(tracker.failureCount == 0)
-        #expect(!tracker.registerFailure())
+        tripped = tracker.registerFailure()
+        #expect(!tripped)
         #expect(tracker.failureCount == 1)
     }
 
     @Test func tripsAtThreshold() {
         var tracker = LivenessTracker(maxConsecutiveFailures: 3)
-        #expect(!tracker.registerFailure())
-        #expect(!tracker.registerFailure())
-        #expect(tracker.registerFailure())
+        var tripped = tracker.registerFailure()
+        #expect(!tripped)
+        tripped = tracker.registerFailure()
+        #expect(!tripped)
+        tripped = tracker.registerFailure()
+        #expect(tripped)
     }
 
     @Test func staysTrippedWithoutSuccess() {
         var tracker = LivenessTracker(maxConsecutiveFailures: 2)
         _ = tracker.registerFailure()
-        #expect(tracker.registerFailure())
-        #expect(tracker.registerFailure())
+        var tripped = tracker.registerFailure()
+        #expect(tripped)
+        tripped = tracker.registerFailure()
+        #expect(tripped)
     }
 
     @Test func thresholdOneTripsImmediately() {
         var tracker = LivenessTracker(maxConsecutiveFailures: 1)
-        #expect(tracker.registerFailure())
+        let tripped = tracker.registerFailure()
+        #expect(tripped)
     }
 }
