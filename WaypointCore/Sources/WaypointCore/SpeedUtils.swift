@@ -1,16 +1,18 @@
 //
 //  SpeedUtils.swift
-//  Waypoint
+//  WaypointCore
+//  Traffic-size formatting shared by the status item, dashboard and
+//  connections views.
 //
 
 import Foundation
 
-enum SpeedUtils {
-    static func getSpeedString(for byte: Int) -> String {
-        return getNetString(for: byte).appending("/s")
+public enum SpeedUtils {
+    public static func getSpeedString(for byte: Int) -> String {
+        getNetString(for: byte).appending("/s")
     }
 
-    static func getNetString(for byte: Int) -> String {
+    public static func getNetString(for byte: Int) -> String {
         let kb = byte / 1024
         if kb < 1024 {
             return "\(kb)KB"

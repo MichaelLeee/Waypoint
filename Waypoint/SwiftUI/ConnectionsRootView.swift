@@ -3,6 +3,7 @@
 //  Waypoint
 //
 
+import WaypointCore
 import SwiftUI
 
 struct ConnectionsRootView: View {

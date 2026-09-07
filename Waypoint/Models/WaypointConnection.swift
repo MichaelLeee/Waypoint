@@ -5,17 +5,6 @@
 
 import Cocoa
 
-struct WaypointConnectionBaseSnapShot: Codable {
-    let connections: [Connection]
-}
-
-extension WaypointConnectionBaseSnapShot {
-    struct Connection: Codable {
-        let id: String
-        let chains: [String]
-    }
-}
-
 @available(macOS 10.15, *)
 class WaypointConnectionSnapShot: Decodable {
     var connections: [Connection]

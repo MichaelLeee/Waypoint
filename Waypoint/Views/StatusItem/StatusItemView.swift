@@ -4,6 +4,7 @@
 //
 
 import AppKit
+import WaypointCore
 import Foundation
 
 /// Drives the standard NSStatusItem button (icon + stacked ↑/↓ rates).

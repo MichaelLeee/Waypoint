@@ -4,6 +4,7 @@
 //
 
 import Charts
+import WaypointCore
 import SwiftUI
 
 struct DashboardRootView: View {

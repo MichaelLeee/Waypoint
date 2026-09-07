@@ -202,9 +202,9 @@ extension ApiClient {
 // MARK: - Connections
 
 extension ApiClient {
-    func getConnections() async -> [WaypointConnectionBaseSnapShot.Connection] {
+    func getConnections() async -> [ConnectionsWireMetadata] {
         guard let data = try? await send("/connections") else { return [] }
-        return (try? JSONDecoder().decode(WaypointConnectionBaseSnapShot.self, from: data))?.connections ?? []
+        return (try? JSONDecoder().decode(ConnectionsSnapshot.self, from: data))?.connections ?? []
     }
 
     func closeConnection(_ id: String) async {
