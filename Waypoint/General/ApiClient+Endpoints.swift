@@ -195,15 +195,6 @@ extension ApiClient {
     }
 }
 
-// MARK: - Rules
-
-extension ApiClient {
-    func getRules() async -> [WaypointRule] {
-        guard let data = try? await send("/rules") else { return [] }
-        return WaypointRuleResponse.fromData(data).rules ?? []
-    }
-}
-
 // MARK: - Connections
 
 extension ApiClient {

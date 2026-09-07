@@ -41,26 +41,10 @@ struct RewriteRule: Codable, Identifiable, Equatable {
 
     /// ".example.com" (or the equivalent "*.example.com") matches the domain
     /// itself and every subdomain; anything else is an exact (case-insensitive)
-    /// host match.
+    /// host match. Delegates to the engine's tested implementation so the two
+    /// can never diverge.
     func matches(host candidate: String) -> Bool {
-        let lowered = candidate.lowercased()
-        if let domain = Self.suffixDomain(of: host)?.lowercased() {
-            return lowered == domain || lowered.hasSuffix("." + domain)
-        }
-        return lowered == host.lowercased()
-    }
-
-    /// Normalizes wildcard hosts: "*.example.com" and ".example.com" both
-    /// yield "example.com" for suffix matching; nil means exact match.
-    static func suffixDomain(of host: String) -> String? {
-        let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        if trimmed.hasPrefix(".") {
-            return String(trimmed.dropFirst())
-        }
-        if trimmed.hasPrefix("*.") {
-            return String(trimmed.dropFirst(2))
-        }
-        return nil
+        engineRule.matches(host: candidate)
     }
 
     /// The engine-side mirror handed to WaypointMitmEngine.
