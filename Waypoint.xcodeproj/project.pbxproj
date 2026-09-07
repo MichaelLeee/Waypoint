@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E1E100000000000000000D43 /* WaypointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D47 /* WaypointApp.swift */; };
-		E1E100000000000000000D4D /* WaypointAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4E /* WaypointAppIntents.swift */; };
 		4905A2C82A2058D400AEDA2E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */; };
 		4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4908087A29F8F3FF007A4944 /* libresolv.tbd */; };
 		491E6203258A424D00313AEF /* CommonUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 491E61FD258A424500313AEF /* CommonUtils.m */; };
@@ -18,19 +16,22 @@
 		49722FF0211F338B00650A41 /* EventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEB211F338B00650A41 /* EventStream.swift */; };
 		49722FF1211F338B00650A41 /* Witness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49722FEC211F338B00650A41 /* Witness.swift */; };
 		49761DA721C9497000AE13EF /* dashboard in Resources */ = {isa = PBXBuildFile; fileRef = 49761DA621C9497000AE13EF /* dashboard */; };
-		A1B2C3D4E5F6000100000003 /* mihomo in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000100000004 /* mihomo */; };
-		E1E100000000000000000D54 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D53 /* Localizable.xcstrings */; };
 		4989F98E20D0AE990001E564 /* sampleConfig.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 4989F98D20D0AE990001E564 /* sampleConfig.yaml */; };
 		49CF3B2120CD7463001EBF94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CF3B2020CD7463001EBF94 /* AppDelegate.swift */; };
+		4CB3285C304F67D7003DEFBC /* Waypoint.icon in Resources */ = {isa = PBXBuildFile; fileRef = 4CB3285B304F67D7003DEFBC /* Waypoint.icon */; };
+		A1B2C3D4E5F6000100000003 /* mihomo in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000100000004 /* mihomo */; };
 		D2D20000000000000000AA01 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB01 /* Sparkle */; };
 		D2D20000000000000000AA04 /* FlexibleDiff in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB04 /* FlexibleDiff */; };
 		D2D20000000000000000AA05 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB05 /* Gzip */; };
+		E1E100000000000000000A03 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000A02 /* PFMoveApplication.m */; };
 		E1E100000000000000000D39 /* WaypointCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D38 /* WaypointCore */; };
 		E1E100000000000000000D42 /* WaypointNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D41 /* WaypointNetworking */; };
+		E1E100000000000000000D43 /* WaypointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D47 /* WaypointApp.swift */; };
+		E1E100000000000000000D4D /* WaypointAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D4E /* WaypointAppIntents.swift */; };
 		E1E100000000000000000D52 /* WaypointMitmEngine in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D51 /* WaypointMitmEngine */; };
-		E1E100000000000000000A03 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000A02 /* PFMoveApplication.m */; };
-		F935B2F02307C52E009E4D33 /* org.waypnt.waypoint.ProxyConfigHelper in Copy Files */ = {isa = PBXBuildFile; fileRef = F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E1E100000000000000000D54 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000D53 /* Localizable.xcstrings */; };
 		E1E100000000000000000E02 /* org.waypnt.waypoint.ProxyConfigHelper.plist in Copy Files LaunchDaemons */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */; };
+		F935B2F02307C52E009E4D33 /* org.waypnt.waypoint.ProxyConfigHelper in Copy Files */ = {isa = PBXBuildFile; fileRef = F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F935B2F42307CD32009E4D33 /* ProxyConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F935B2F32307CD32009E4D33 /* ProxyConfigHelper.m */; };
 		F935B2FA23083EE6009E4D33 /* ProxySettingTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F935B2F923083EE6009E4D33 /* ProxySettingTool.m */; };
 		F976275C23634DF8000EDEFE /* LoginServiceKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F976275B23634DF8000EDEFE /* LoginServiceKit.swift */; };
@@ -60,16 +61,6 @@
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F9A7C0672306E874007163C7 /* Copy Files */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			name = "Copy Files";
-			runOnlyForDeploymentPostprocessing = 1;
-		};
 		E1E100000000000000000E03 /* Copy Files LaunchDaemons */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -81,12 +72,19 @@
 			name = "Copy Files LaunchDaemons";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F9A7C0672306E874007163C7 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "org.waypnt.waypoint.ProxyConfigHelper.plist"; sourceTree = "<group>"; };
-		E1E100000000000000000D47 /* WaypointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointApp.swift; sourceTree = "<group>"; };
-		E1E100000000000000000D4E /* WaypointAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointAppIntents.swift; sourceTree = "<group>"; };
 		4908087A29F8F3FF007A4944 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		491E61FC258A424500313AEF /* CommonUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtils.h; sourceTree = "<group>"; };
 		491E61FD258A424500313AEF /* CommonUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtils.m; sourceTree = "<group>"; };
@@ -97,8 +95,6 @@
 		49722FEC211F338B00650A41 /* Witness.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Witness.swift; sourceTree = "<group>"; };
 		49722FED211F338B00650A41 /* Witness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Witness.h; sourceTree = "<group>"; };
 		49761DA621C9497000AE13EF /* dashboard */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dashboard; sourceTree = "<group>"; };
-		A1B2C3D4E5F6000100000004 /* mihomo */ = {isa = PBXFileReference; lastKnownFileType = file; path = mihomo; sourceTree = "<group>"; };
-		E1E100000000000000000D53 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		498960722340F21C00AFB7EC /* org.waypnt.waypoint.ProxyConfigHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = org.waypnt.waypoint.ProxyConfigHelper.entitlements; sourceTree = "<group>"; };
 		4989F98D20D0AE990001E564 /* sampleConfig.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = sampleConfig.yaml; sourceTree = "<group>"; };
 		49CF3B1D20CD7463001EBF94 /* Waypoint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Waypoint.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,9 +102,14 @@
 		49CF3B2920CD7465001EBF94 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49CF3B2A20CD7465001EBF94 /* Waypoint.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Waypoint.entitlements; sourceTree = "<group>"; };
 		49CF3B3520CD75DF001EBF94 /* Waypoint-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Waypoint-Bridging-Header.h"; sourceTree = "<group>"; };
+		4CB3285B304F67D7003DEFBC /* Waypoint.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Waypoint.icon; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000100000004 /* mihomo */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mihomo; sourceTree = "<group>"; };
 		E1E100000000000000000A01 /* PFMoveApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFMoveApplication.h; sourceTree = "<group>"; };
 		E1E100000000000000000A02 /* PFMoveApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFMoveApplication.m; sourceTree = "<group>"; };
-
+		E1E100000000000000000D47 /* WaypointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointApp.swift; sourceTree = "<group>"; };
+		E1E100000000000000000D4E /* WaypointAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointAppIntents.swift; sourceTree = "<group>"; };
+		E1E100000000000000000D53 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		E1E100000000000000000E01 /* org.waypnt.waypoint.ProxyConfigHelper.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = org.waypnt.waypoint.ProxyConfigHelper.plist; sourceTree = "<group>"; };
 		F935B2EA2307B6BA009E4D33 /* Helper-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Helper-Info.plist"; sourceTree = "<group>"; };
 		F935B2F12307C802009E4D33 /* Helper-Launchd.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Helper-Launchd.plist"; sourceTree = "<group>"; };
 		F935B2F22307CD32009E4D33 /* ProxyConfigHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxyConfigHelper.h; sourceTree = "<group>"; };
@@ -120,80 +121,55 @@
 		F9A7C0692306E874007163C7 /* org.waypnt.waypoint.ProxyConfigHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = org.waypnt.waypoint.ProxyConfigHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9A7C06B2306E874007163C7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F9FAB31D262BE04800DE02A6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F1A000000000000000000001 /* AppleScript */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = AppleScript;
 			sourceTree = "<group>";
 		};
 		F1A000000000000000000002 /* Basic */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = Basic;
 			sourceTree = "<group>";
 		};
 		F1A000000000000000000003 /* Macro */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = Macro;
 			sourceTree = "<group>";
 		};
 		F1A000000000000000000004 /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = Models;
 			sourceTree = "<group>";
 		};
 		F1A000000000000000000005 /* Extensions */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = Extensions;
 			sourceTree = "<group>";
 		};
 		F1A000000000000000000006 /* General */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = General;
 			sourceTree = "<group>";
 		};
 		F1A000000000000000000007 /* Views */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = Views;
 			sourceTree = "<group>";
 		};
 		F1A000000000000000000008 /* Actions */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = Actions;
-			sourceTree = "<group>";
-		};
-		F1A000000000000000000009 /* ViewControllers */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
-			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 		F1A00000000000000000000A /* SwiftUI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {};
-			explicitFolders = ();
 			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
-/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		49CF3B1A20CD7463001EBF94 /* Frameworks */ = {
@@ -285,7 +261,6 @@
 				F1A000000000000000000006 /* General */,
 				F1A000000000000000000007 /* Views */,
 				F1A000000000000000000008 /* Actions */,
-				F1A000000000000000000009 /* ViewControllers */,
 				49761DA521C9490400AE13EF /* Resources */,
 				49CF3B3A20CD783A001EBF94 /* Support Files */,
 				49CF3B2020CD7463001EBF94 /* AppDelegate.swift */,
@@ -295,17 +270,26 @@
 				49CF3B2A20CD7465001EBF94 /* Waypoint.entitlements */,
 				49CF3B3520CD75DF001EBF94 /* Waypoint-Bridging-Header.h */,
 				F9FAB31D262BE04800DE02A6 /* Images.xcassets */,
+				4CB3285B304F67D7003DEFBC /* Waypoint.icon */,
 				F1A00000000000000000000A /* SwiftUI */,
-		);
-				path = Waypoint;
-				sourceTree = "<group>";
+			);
+			path = Waypoint;
+			sourceTree = "<group>";
 		};
 		49CF3B3A20CD783A001EBF94 /* Support Files */ = {
-				isa = PBXGroup;
-				children = (
-					E1E100000000000000000D53 /* Localizable.xcstrings */,
+			isa = PBXGroup;
+			children = (
+				E1E100000000000000000D53 /* Localizable.xcstrings */,
 			);
 			path = "Support Files";
+			sourceTree = "<group>";
+		};
+		CF1AC9FACC36FCE7663C5583 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4908087A29F8F3FF007A4944 /* libresolv.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E1E100000000000000000B01 /* LetsMove */ = {
@@ -315,14 +299,6 @@
 				E1E100000000000000000A02 /* PFMoveApplication.m */,
 			);
 			path = LetsMove;
-			sourceTree = "<group>";
-		};
-		CF1AC9FACC36FCE7663C5583 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				4908087A29F8F3FF007A4944 /* libresolv.tbd */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		F976275D23634F18000EDEFE /* LoginServiceKit */ = {
@@ -380,7 +356,6 @@
 				F1A000000000000000000006 /* General */,
 				F1A000000000000000000007 /* Views */,
 				F1A000000000000000000008 /* Actions */,
-				F1A000000000000000000009 /* ViewControllers */,
 				F1A00000000000000000000A /* SwiftUI */,
 			);
 			name = Waypoint;
@@ -427,7 +402,6 @@
 				TargetAttributes = {
 					49CF3B1C20CD7463001EBF94 = {
 						CreatedOnToolsVersion = 9.4;
-						DevelopmentTeam = N48L43Q7F9;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -441,13 +415,12 @@
 					};
 					F9A7C0682306E874007163C7 = {
 						CreatedOnToolsVersion = 10.3;
-						DevelopmentTeam = N48L43Q7F9;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = 49CF3B1820CD7463001EBF94 /* Build configuration list for PBXProject "Waypoint" */;
-					developmentRegion = en;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -462,6 +435,7 @@
 				E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */,
 				E1E100000000000000000D40 /* XCLocalSwiftPackageReference "WaypointNetworking" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 49CF3B1E20CD7463001EBF94 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -483,6 +457,7 @@
 				E1E100000000000000000D54 /* Localizable.xcstrings in Resources */,
 				F9FAB31E262BE04800DE02A6 /* Images.xcassets in Resources */,
 				4989F98E20D0AE990001E564 /* sampleConfig.yaml in Resources */,
+				4CB3285C304F67D7003DEFBC /* Waypoint.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,6 +466,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		A1B2C3D4E5F6000100000005 /* Fix mihomo exec bit */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -499,7 +475,6 @@
 			inputPaths = (
 			);
 			name = "Fix mihomo exec bit";
-			alwaysOutOfDate = 1;
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -548,7 +523,6 @@
 		};
 /* End PBXTargetDependency section */
 
-
 /* Begin XCBuildConfiguration section */
 		49CF3B2B20CD7465001EBF94 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -585,9 +559,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = N48L43Q7F9;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = N48L43Q7F9;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -650,9 +624,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = N48L43Q7F9;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = N48L43Q7F9;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -677,15 +651,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Waypoint;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Waypoint/Waypoint.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = N48L43Q7F9;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COMPRESS_PNG_FILES = YES;
 				CURRENT_PROJECT_VERSION = 2.6.0;
+				DEVELOPMENT_TEAM = N48L43Q7F9;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 655S682U6A;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -716,15 +691,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Waypoint;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Waypoint/Waypoint.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = N48L43Q7F9;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COMPRESS_PNG_FILES = YES;
 				CURRENT_PROJECT_VERSION = 2.6.0;
+				DEVELOPMENT_TEAM = N48L43Q7F9;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 655S682U6A;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -757,9 +733,10 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_ENTITLEMENTS = ProxyConfigHelper/org.waypnt.waypoint.ProxyConfigHelper.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = N48L43Q7F9;
 				CODE_SIGN_STYLE = Manual;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = N48L43Q7F9;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 655S682U6A;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/ProxyConfigHelper/Helper-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
@@ -789,9 +766,10 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_ENTITLEMENTS = ProxyConfigHelper/org.waypnt.waypoint.ProxyConfigHelper.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = N48L43Q7F9;
 				CODE_SIGN_STYLE = Manual;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = N48L43Q7F9;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 655S682U6A;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/ProxyConfigHelper/Helper-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
@@ -846,6 +824,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = WaypointCore;
+		};
+		E1E100000000000000000D40 /* XCLocalSwiftPackageReference "WaypointNetworking" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = WaypointNetworking;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		4905A2C62A2058D400AEDA2E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -881,16 +870,7 @@
 		};
 /* End XCRemoteSwiftPackageReference section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = WaypointCore;
-		};
-		E1E100000000000000000D40 /* XCLocalSwiftPackageReference "WaypointNetworking" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = WaypointNetworking;
-		};
-/* End XCLocalSwiftPackageReference section */
+/* Begin XCSwiftPackageProductDependency section */
 		4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4905A2C62A2058D400AEDA2E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
