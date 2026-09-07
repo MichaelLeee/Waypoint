@@ -20,6 +20,13 @@ public enum ApiError: LocalizedError {
             return message.isEmpty ? "mihomo returned status \(code)" : message
         }
     }
+
+    /// Maps a non-2xx response to an error, using the core's JSON
+    /// `{"message": …}` body as the message when present.
+    public static func badStatus(statusCode: Int, body: Data) -> ApiError {
+        let message = (try? JSONDecoder().decode(MihomoError.self, from: body))?.message ?? ""
+        return .badStatus(statusCode, message)
+    }
 }
 
 struct MihomoError: Decodable {

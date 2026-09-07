@@ -55,8 +55,7 @@ public actor ApiClient {
         }
         let (data, response) = try await session.data(for: request)
         if let http = response as? HTTPURLResponse, !(200 ... 299).contains(http.statusCode) {
-            let message = (try? JSONDecoder().decode(MihomoError.self, from: data))?.message ?? ""
-            throw ApiError.badStatus(http.statusCode, message)
+            throw ApiError.badStatus(statusCode: http.statusCode, body: data)
         }
         return data
     }
@@ -100,20 +99,11 @@ public actor ApiClient {
 
     public func connectionsStream() -> AsyncStream<ConnectionsSnapshot> {
         stream("/connections") { text in
-            guard let data = text.data(using: .utf8) else { return nil }
-            struct Payload: Decodable {
-                let downloadTotal: Int
-                let uploadTotal: Int
-                let connections: [ConnectionsWireMetadata]?
-            }
-            guard let payload = try? Self.connectionsDecoder.decode(Payload.self, from: data) else {
+            guard let data = text.data(using: .utf8),
+                  let snapshot = try? Self.connectionsDecoder.decode(ConnectionsSnapshot.self, from: data) else {
                 return nil
             }
-            return ConnectionsSnapshot(
-                downloadTotal: payload.downloadTotal,
-                uploadTotal: payload.uploadTotal,
-                connections: payload.connections ?? []
-            )
+            return snapshot
         }
     }
 
@@ -124,12 +114,12 @@ public actor ApiClient {
         return url
     }
 
-    private static func authHeader(secret: String) -> [String: String] {
+    static func authHeader(secret: String) -> [String: String] {
         secret.isEmpty ? [:] : ["Authorization": "Bearer \(secret)"]
     }
 
     // Immutable decoder, used from the stream's @Sendable transform closure.
-    private static let connectionsDecoder: JSONDecoder = {
+    static let connectionsDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: NSCalendar.Identifier.ISO8601.rawValue)

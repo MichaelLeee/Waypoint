@@ -33,6 +33,11 @@ jobs:
           cd WaypointCore
           swift test
 
+      - name: Test WaypointNetworking
+        run: |
+          cd WaypointNetworking
+          swift test
+
   lint:
     name: Lint
     runs-on: macos-26

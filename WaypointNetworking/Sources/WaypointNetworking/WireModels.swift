@@ -84,14 +84,26 @@ public struct ConnectionsWireMetadata: Sendable, Decodable {
     }
 }
 
-public struct ConnectionsSnapshot: Sendable {
+public struct ConnectionsSnapshot: Sendable, Decodable {
     public let downloadTotal: Int
     public let uploadTotal: Int
+    /// mihomo omits the key entirely once all connections are closed.
     public let connections: [ConnectionsWireMetadata]
 
     public init(downloadTotal: Int, uploadTotal: Int, connections: [ConnectionsWireMetadata]) {
         self.downloadTotal = downloadTotal
         self.uploadTotal = uploadTotal
         self.connections = connections
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case downloadTotal, uploadTotal, connections
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        downloadTotal = try container.decode(Int.self, forKey: .downloadTotal)
+        uploadTotal = try container.decode(Int.self, forKey: .uploadTotal)
+        connections = try container.decodeIfPresent([ConnectionsWireMetadata].self, forKey: .connections) ?? []
     }
 }

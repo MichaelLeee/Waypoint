@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "WaypointNetworking", targets: ["WaypointNetworking"])
     ],
     targets: [
-        .target(name: "WaypointNetworking")
+        .target(name: "WaypointNetworking"),
+        .testTarget(name: "WaypointNetworkingTests", dependencies: ["WaypointNetworking"])
     ]
 )
