@@ -133,4 +133,14 @@ struct WireProxyModelTests {
         let fail = WaypointProxySpeedHistory(time: Date(), delay: 0, meanDelay: nil)
         #expect(fail.delayDisplay == "fail")
     }
+
+    @Test func equalityIsByDisplayString() {
+        // Same minute-of-day and same delay text -> equal, even at different
+        // instants (legacy dedupe semantics used by the history menu).
+        let a = WaypointProxySpeedHistory(time: Date(timeIntervalSince1970: 100), delay: 10, meanDelay: nil)
+        let b = WaypointProxySpeedHistory(time: Date(timeIntervalSince1970: 130), delay: 10, meanDelay: nil)
+        #expect(a == b)
+        let c = WaypointProxySpeedHistory(time: a.time, delay: 20, meanDelay: nil)
+        #expect(a != c)
+    }
 }

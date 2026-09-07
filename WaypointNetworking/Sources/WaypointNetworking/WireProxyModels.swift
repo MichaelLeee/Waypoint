@@ -101,6 +101,13 @@ public struct WaypointProxySpeedHistory: Codable, Sendable {
         self.delay = delay
         self.meanDelay = meanDelay
     }
+
+    /// Equality by display string: two entries in the same minute with the
+    /// same delay text are considered identical (legacy behavior the history
+    /// menu relies on for dedupe).
+    public static func == (lhs: WaypointProxySpeedHistory, rhs: WaypointProxySpeedHistory) -> Bool {
+        lhs.displayString == rhs.displayString
+    }
 }
 
 public struct WaypointProxy: Codable, Sendable {

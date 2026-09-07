@@ -57,9 +57,3 @@ class ProxyDelayHistoryMenu: NSMenu {
         }
     }
 }
-
-extension WaypointProxySpeedHistory: Equatable {
-    static func == (lhs: WaypointProxySpeedHistory, rhs: WaypointProxySpeedHistory) -> Bool {
-        return lhs.displayString == rhs.displayString
-    }
-}
