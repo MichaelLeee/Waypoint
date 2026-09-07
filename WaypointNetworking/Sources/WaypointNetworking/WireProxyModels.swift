@@ -111,7 +111,7 @@ public struct WaypointProxy: Codable, Sendable {
     public let now: WaypointProxyName?
     public let alive: Bool?
 
-    public enum SpeedtestAbleItem: Sendable {
+    public enum SpeedtestAbleItem: Equatable, Sendable {
         case proxy(name: WaypointProxyName)
         case provider(name: WaypointProxyName, provider: WaypointProviderName)
     }
