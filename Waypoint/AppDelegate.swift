@@ -89,8 +89,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// below does real-world work inside the preview process (Sparkle
     /// updater, move-to-Applications and helper-install modals, core API
     /// calls) that hangs or crashes every #Preview canvas at once.
+    /// JIT-mode previews (the default) set XCODE_RUNNING_FOR_PLAYGROUNDS;
+    /// older/legacy preview mode sets XCODE_RUNNING_FOR_PREVIEWS.
     private static let isPreviewProcess =
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+        || ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         Logger.log("applicationWillFinishLaunching")
