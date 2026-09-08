@@ -98,7 +98,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillFinishLaunching(_ notification: Notification) {
         Logger.log("applicationWillFinishLaunching")
         signal(SIGPIPE, SIG_IGN)
-        if !Self.isPreviewProcess {
+        if Self.isPreviewProcess {
+            // Waypoint is an LSUIElement agent app; the preview agent's
+            // launch handshake may not complete for accessory-policy apps,
+            // so present as a regular app inside preview processes only.
+            NSApp.setActivationPolicy(.regular)
+        } else {
             failLaunchProtect()
         }
         setupMenus()
