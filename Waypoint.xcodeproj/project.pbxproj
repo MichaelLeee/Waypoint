@@ -21,7 +21,6 @@
 		4CB3285C304F67D7003DEFBC /* Waypoint.icon in Resources */ = {isa = PBXBuildFile; fileRef = 4CB3285B304F67D7003DEFBC /* Waypoint.icon */; };
 		A1B2C3D4E5F6000100000003 /* mihomo in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000100000004 /* mihomo */; };
 		D2D20000000000000000AA01 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB01 /* Sparkle */; };
-		D2D20000000000000000AA05 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = D2D20000000000000000BB05 /* Gzip */; };
 		E1E100000000000000000A03 /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E100000000000000000A02 /* PFMoveApplication.m */; };
 		E1E100000000000000000D39 /* WaypointCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D38 /* WaypointCore */; };
 		E1E100000000000000000D42 /* WaypointNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = E1E100000000000000000D41 /* WaypointNetworking */; };
@@ -177,7 +176,6 @@
 			files = (
 				4905A2C82A2058D400AEDA2E /* KeyboardShortcuts in Frameworks */,
 				D2D20000000000000000AA01 /* Sparkle in Frameworks */,
-				D2D20000000000000000AA05 /* Gzip in Frameworks */,
 				4908087B29F8F405007A4944 /* libresolv.tbd in Frameworks */,
 				E1E100000000000000000D39 /* WaypointCore in Frameworks */,
 				E1E100000000000000000D42 /* WaypointNetworking in Frameworks */,
@@ -360,7 +358,6 @@
 			packageProductDependencies = (
 				4905A2C72A2058D400AEDA2E /* KeyboardShortcuts */,
 				D2D20000000000000000BB01 /* Sparkle */,
-				D2D20000000000000000BB05 /* Gzip */,
 				E1E100000000000000000D38 /* WaypointCore */,
 				E1E100000000000000000D41 /* WaypointNetworking */,
 				E1E100000000000000000D51 /* WaypointMitmEngine */,
@@ -427,7 +424,6 @@
 			packageReferences = (
 				4905A2C62A2058D400AEDA2E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				D1D10000000000000000CC01 /* XCRemoteSwiftPackageReference "Sparkle" */,
-				D1D10000000000000000CC04 /* XCRemoteSwiftPackageReference "GzipSwift" */,
 				E1E100000000000000000D37 /* XCLocalSwiftPackageReference "WaypointCore" */,
 				E1E100000000000000000D40 /* XCLocalSwiftPackageReference "WaypointNetworking" */,
 			);
@@ -848,14 +844,6 @@
 				minimumVersion = 2.5.1;
 			};
 		};
-		D1D10000000000000000CC04 /* XCRemoteSwiftPackageReference "GzipSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/1024jp/GzipSwift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -868,11 +856,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D1D10000000000000000CC01 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
-		};
-		D2D20000000000000000BB05 /* Gzip */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D1D10000000000000000CC04 /* XCRemoteSwiftPackageReference "GzipSwift" */;
-			productName = Gzip;
 		};
 		E1E100000000000000000D38 /* WaypointCore */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1,6 +1,6 @@
 import AppKit
 import Foundation
-import Gzip
+import WaypointCore
 
 @MainActor
 enum WaypointResourceManager {
@@ -41,7 +41,7 @@ enum WaypointResourceManager {
             Logger.log("installing new mmdb file")
             if let mmdbUrl = Bundle.main.url(forResource: "Country.mmdb", withExtension: "gz") {
                 do {
-                    let data = try Data(contentsOf: mmdbUrl).gunzipped()
+                    let data = try GzipDecoder.gunzip(Data(contentsOf: mmdbUrl))
                     try data.write(to: URL(fileURLWithPath: destMMDBPath))
                 } catch let err {
                     Logger.log("add mmdb fail:\(err)", level: .error)
