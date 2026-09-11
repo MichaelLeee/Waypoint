@@ -30,10 +30,10 @@ final class SettingsStore {
     }
 
     var proxyIgnoreListText = Settings.proxyIgnoreList.joined(separator: ",") {
-        didSet { commitList(proxyIgnoreListText) { Settings.proxyIgnoreList = $0 } }
+        didSet { Settings.proxyIgnoreList = CommaSeparatedList.parse(proxyIgnoreListText) }
     }
     var ssidSuspendListText = Settings.disableSSIDList.joined(separator: ",") {
-        didSet { commitList(ssidSuspendListText) { Settings.disableSSIDList = $0 } }
+        didSet { Settings.disableSSIDList = CommaSeparatedList.parse(ssidSuspendListText) }
     }
 
     // Network & API
@@ -192,12 +192,6 @@ final class SettingsStore {
 
     func resetIgnoreList() {
         proxyIgnoreListText = Settings.proxyIgnoreListDefaultValue.joined(separator: ",")
-    }
-
-    private func commitList(_ text: String, apply: ([String]) -> Void) {
-        let items = text.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
-        apply(items)
     }
 
     func reloadConfig() async -> Bool {

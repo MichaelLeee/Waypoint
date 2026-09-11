@@ -5,14 +5,8 @@
 
 import Observation
 import Foundation
+import WaypointCore
 import WaypointNetworking
-
-struct SpeedSample: Identifiable {
-    let id: Int
-    let date: Date
-    let up: Int
-    let down: Int
-}
 
 @MainActor
 @Observable
@@ -26,7 +20,8 @@ final class DashboardStore {
     private(set) var downloadTotal = 0
     private(set) var samples = [SpeedSample]()
 
-    static let sampleLimit = 120
+    private static let sampleLimit = 120
+    private var series = SpeedSampleSeries(limit: DashboardStore.sampleLimit)
 
     // nonisolated so deinit can cancel the tasks: Task is Sendable, and deinit
     // has exclusive access to the instance, so no concurrent mutation is possible.
@@ -59,16 +54,8 @@ final class DashboardStore {
     private func apply(traffic: TrafficSnapshot) {
         upSpeed = traffic.up
         downSpeed = traffic.down
-        let sample = SpeedSample(
-            id: (samples.last?.id ?? 0) + 1,
-            date: Date(),
-            up: traffic.up,
-            down: traffic.down
-        )
-        samples.append(sample)
-        if samples.count > Self.sampleLimit {
-            samples.removeFirst(samples.count - Self.sampleLimit)
-        }
+        series.append(up: traffic.up, down: traffic.down, at: Date())
+        samples = series.samples
     }
 
     private func apply(connections snapshot: ConnectionsSnapshot) {
