@@ -23,9 +23,11 @@ final class DashboardStore {
     private static let sampleLimit = 120
     private var series = SpeedSampleSeries(limit: DashboardStore.sampleLimit)
 
-    // nonisolated so deinit can cancel the tasks: Task is Sendable, and deinit
-    // has exclusive access to the instance, so no concurrent mutation is possible.
-    private nonisolated var tasks = [Task<Void, Never>]()
+    // nonisolated(unsafe) so deinit can cancel the tasks: Task is Sendable, and
+    // deinit has exclusive access to the instance, so no concurrent mutation is
+    // possible. Plain `nonisolated` cannot be applied to a mutable stored
+    // property, and the handles are not view state, so observation is skipped.
+    @ObservationIgnored private nonisolated(unsafe) var tasks = [Task<Void, Never>]()
 
     init() {
         let api = ApiClient.shared

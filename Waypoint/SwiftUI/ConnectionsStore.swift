@@ -40,9 +40,11 @@ final class ConnectionsStore {
 
     private var table = ConnectionTable()
     private var activeIDs = Set<String>()
-    // nonisolated so deinit can cancel it: Task is Sendable, and it is only
-    // touched from init and deinit, both on the main actor.
-    private nonisolated var streamTask: Task<Void, Never>?
+    // nonisolated(unsafe) so deinit can cancel it: Task is Sendable, and it is
+    // only touched from init and deinit, both on the main actor. Plain
+    // `nonisolated` cannot be applied to a mutable stored property, and the
+    // handle is not view state, so observation is skipped.
+    @ObservationIgnored private nonisolated(unsafe) var streamTask: Task<Void, Never>?
 
     init() {
         streamTask = Task { [weak self] in
