@@ -75,6 +75,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let systemProxy: any SystemProxyManaging
     let helperInstaller: any HelperInstalling
 
+    // Holds the throwaway window a preview process opens; see
+    // applicationWillFinishLaunching.
+    private var previewHostWindow: NSWindow?
+
     // The SwiftUI adaptor instantiates us on the main thread; the shared
     // reference is captured here because NSApp.delegate is SwiftUI's wrapper.
     override init() {
@@ -95,14 +99,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
         || ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
 
+    /// Throwaway window that exists only so a preview process looks like an
+    /// ordinary window-owning app to the preview agent; see the call site in
+    /// applicationWillFinishLaunching.
+    private static func makePreviewHostWindow() -> NSWindow {
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 320),
+                              styleMask: [.titled, .closable, .resizable],
+                              backing: .buffered,
+                              defer: false)
+        window.title = "Waypoint Preview Host"
+        window.isReleasedWhenClosed = false
+        window.center()
+        window.makeKeyAndOrderFront(nil)
+        return window
+    }
+
     func applicationWillFinishLaunching(_ notification: Notification) {
         Logger.log("applicationWillFinishLaunching")
         signal(SIGPIPE, SIG_IGN)
         if Self.isPreviewProcess {
-            // Waypoint is an LSUIElement agent app; the preview agent's
-            // launch handshake may not complete for accessory-policy apps,
-            // so present as a regular app inside preview processes only.
+            // Waypoint is an LSUIElement agent app: it launches with the
+            // accessory activation policy, never activates, and its scene is
+            // MenuBarExtra-only, so the process owns no window. The preview
+            // agent's launch handshake does not complete for such a process
+            // even though it is up and idling in its event loop, and Xcode
+            // reports "The app 'Waypoint.app' did not launch on 'My Mac' in
+            // 30 seconds". Inside preview processes only, present as a
+            // regular, activated, window-owning app instead.
             NSApp.setActivationPolicy(.regular)
+            previewHostWindow = Self.makePreviewHostWindow()
+            NSApp.activate()
         } else {
             failLaunchProtect()
         }
