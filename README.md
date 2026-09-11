@@ -37,3 +37,25 @@ The two Swift packages carry their own tests:
 (cd WaypointCore && swift test)
 (cd WaypointNetworking && swift test)
 ```
+
+## Updates
+
+The app bundles Sparkle and starts its updater from `AutoUpgardeManager`; the
+"Check Update" menu item is bound to Sparkle's standard updater controller, and
+the update channel picker switches between the stable feed and a pre-release feed.
+
+Self-updating needs an EdDSA key pair and a signed appcast, neither of which is
+committed:
+
+- `SUPublicEDKey` is deliberately absent from `Waypoint/Info.plist`. Until it is
+  set, Sparkle cannot validate a download, so the updater fails to start and the
+  app logs that the key is missing.
+- `SUFeedURL` points at `https://michaelleee.github.io/Waypoint/appcast.xml`, which
+  has to exist before a check can succeed.
+
+To finish on a machine with Sparkle's tools: run `generate_keys` once (from the
+Sparkle distribution's `bin/` directory — it prints the public key and stores the
+private key in the login keychain), add the printed value to `Waypoint/Info.plist`
+as `SUPublicEDKey`, then sign each release and write the feed with
+`generate_appcast`. Keep the private key out of the repository.
+
