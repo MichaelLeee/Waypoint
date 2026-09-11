@@ -100,6 +100,53 @@ struct ConnectionTableTests {
         #expect(table.rows.map(\.id) == ["finished"])
         #expect(table.activeIDs.isEmpty)
     }
+
+    @Test func finishedRowsAtTheCapAreKept() {
+        var table = ConnectionTable(maxFinishedRows: 3)
+        let base = Date(timeIntervalSince1970: 0)
+        table.merge([
+            conn("a", start: base),
+            conn("b", start: base.addingTimeInterval(10)),
+            conn("c", start: base.addingTimeInterval(20)),
+        ])
+        table.merge([])
+        #expect(table.rows.map(\.id) == ["c", "b", "a"])
+    }
+
+    @Test func finishedRowsBeyondTheCapAreEvictedOldestFirst() {
+        var table = ConnectionTable(maxFinishedRows: 2)
+        let base = Date(timeIntervalSince1970: 0)
+        table.merge([
+            conn("old", start: base),
+            conn("mid", start: base.addingTimeInterval(10)),
+            conn("new", start: base.addingTimeInterval(20)),
+        ])
+        table.merge([])
+        #expect(table.rows.map(\.id) == ["new", "mid"])
+    }
+
+    // The cap counts finished rows only: a live connection stays listed even
+    // when the finished rows around it are being trimmed.
+    @Test func activeRowsAreNeverEvictedByTheCap() {
+        var table = ConnectionTable(maxFinishedRows: 1)
+        let base = Date(timeIntervalSince1970: 0)
+        table.merge([
+            conn("doneOld", start: base),
+            conn("live", start: base.addingTimeInterval(5)),
+            conn("doneNew", start: base.addingTimeInterval(10)),
+        ])
+        table.merge([conn("live", start: base.addingTimeInterval(5))])
+        #expect(table.rows.map(\.id) == ["doneNew", "live"])
+        #expect(table.activeIDs == ["live"])
+    }
+
+    @Test func zeroCapDropsEveryFinishedRowButKeepsActiveOnes() {
+        var table = ConnectionTable(maxFinishedRows: 0)
+        table.merge([conn("finished"), conn("live")])
+        table.merge([conn("live")])
+        #expect(table.rows.map(\.id) == ["live"])
+        #expect(table.activeIDs == ["live"])
+    }
 }
 
 struct ConnectionFilterTests {

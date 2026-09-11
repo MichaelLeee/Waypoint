@@ -66,12 +66,20 @@ public struct ConnectionRow: Identifiable, Sendable, Equatable {
 /// Merges the connection snapshots the core streams (about once per second).
 /// A row that drops out of a frame is kept with its final totals, so the list
 /// still shows what a finished connection transferred, but it reports zero
-/// speed and is no longer active.
+/// speed and is no longer active. Finished rows are kept newest-first up to
+/// `maxFinishedRows`; older ones are dropped so a long-running session does
+/// not grow the list without bound.
 public struct ConnectionTable: Sendable {
     public private(set) var activeIDs = Set<String>()
     private var rowsByID = [String: ConnectionRow]()
+    /// How many finished rows to retain. Only finished rows count toward the
+    /// limit and only finished rows are evicted, oldest first, so live
+    /// connections never disappear from under the user.
+    private let maxFinishedRows: Int
 
-    public init() {}
+    public init(maxFinishedRows: Int = 1_000) {
+        self.maxFinishedRows = max(0, maxFinishedRows)
+    }
 
     /// Newest connection first; finished rows keep their original position.
     public var rows: [ConnectionRow] {
@@ -96,6 +104,15 @@ public struct ConnectionTable: Sendable {
         for id in finished {
             rowsByID[id]?.uploadSpeed = 0
             rowsByID[id]?.downloadSpeed = 0
+        }
+        let overflow = finished.count - maxFinishedRows
+        if overflow > 0 {
+            let oldestFirst = finished.sorted {
+                (rowsByID[$0]?.start ?? .distantPast) < (rowsByID[$1]?.start ?? .distantPast)
+            }
+            for id in oldestFirst.prefix(overflow) {
+                rowsByID[id] = nil
+            }
         }
         activeIDs = alive
     }
