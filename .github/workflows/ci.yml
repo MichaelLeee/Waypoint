@@ -42,16 +42,21 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build | xcbeautify
 
-      # xcodebuild rewrites its pin file for the app's own graph whenever it
-      # resolves something that disagrees with it, so a diff here means the
-      # committed pins no longer describe what the app builds against. That
-      # graph is wider than the packages': Xcode resolves test-target
-      # dependencies of dependencies, so Quick and Nimble arrive through
-      # FlexibleDiff's test target even though no target here links them.
+      # xcodebuild rewrites its pin file whenever it resolves something that
+      # disagrees with it, so a diff here means the committed pins no longer
+      # describe what the app builds against. The app's graph is wider than the
+      # packages': Xcode resolves test-target dependencies of dependencies,
+      # which SwiftPM prunes for non-root packages.
       - name: Xcode dependency pins are reproducible
         run: |
-          git diff -- Waypoint.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          git diff --exit-code -- Waypoint.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          PINS=Waypoint.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          if ! git diff --quiet -- "$PINS"; then
+            echo "::error::$PINS was rewritten during this build; the canonical file follows."
+            echo "----- BEGIN CANONICAL $PINS -----"
+            cat "$PINS"
+            echo "----- END CANONICAL $PINS -----"
+            exit 1
+          fi
 
       - name: Test WaypointCore
         run: |
@@ -70,7 +75,15 @@ jobs:
       # repository pins. WaypointNetworking declares no dependencies and so has
       # no resolved file.
       - name: Dependency pins are reproducible
-        run: git diff --exit-code -- WaypointCore/Package.resolved
+        run: |
+          PINS=WaypointCore/Package.resolved
+          if ! git diff --quiet -- "$PINS"; then
+            echo "::error::$PINS was rewritten during this build; the canonical file follows."
+            echo "----- BEGIN CANONICAL $PINS -----"
+            cat "$PINS"
+            echo "----- END CANONICAL $PINS -----"
+            exit 1
+          fi
 
   lint:
     name: Lint

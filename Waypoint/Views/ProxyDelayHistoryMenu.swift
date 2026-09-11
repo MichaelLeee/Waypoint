@@ -5,10 +5,8 @@
 
 import Cocoa
 import WaypointNetworking
-import FlexibleDiff
 
 class ProxyDelayHistoryMenu: NSMenu {
-    var currentHistory: [WaypointProxySpeedHistory]?
     private var observerTask: Task<Void, Never>?
 
     @MainActor
@@ -36,24 +34,10 @@ class ProxyDelayHistoryMenu: NSMenu {
     }
 
     private func updateHistoryMenu(proxy: WaypointProxy) {
-        let historys = Array(proxy.history.reversed())
-        let change = Changeset(previous: currentHistory, current: historys, identifier: { $0.time })
-        currentHistory = historys
-        if change.moves.isEmpty && change.mutations.isEmpty {
-            change.removals.reversed().forEach { idx in
-                removeItem(at: idx)
-            }
-            change.inserts.forEach { idx in
-                let his = historys[idx]
-                let item = NSMenuItem(title: his.displayString, action: nil, keyEquivalent: "")
-                insertItem(item, at: idx)
-            }
-        } else {
-            historys.map { his in
-                NSMenuItem(title: his.displayString, action: nil, keyEquivalent: "")
-            }.forEach { item in
-                addItem(item)
-            }
+        removeAllItems()
+        for history in proxy.history.reversed() {
+            let item = NSMenuItem(title: history.displayString, action: nil, keyEquivalent: "")
+            addItem(item)
         }
     }
 }
