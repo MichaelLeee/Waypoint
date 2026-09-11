@@ -14,7 +14,7 @@ jobs:
     name: Build (macOS 26)
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # mihomo, the dashboard and Country.mmdb.gz are produced by
       # install_dependency.sh and are not tracked, but the app target copies all
@@ -52,11 +52,23 @@ jobs:
           cd WaypointNetworking
           swift test
 
+      - name: Dump resolved pins
+        run: cat WaypointCore/Package.resolved
+
+      # The package manifests declare version ranges, so the concrete graph only
+      # stays fixed if the resolution is committed. SwiftPM rewrites
+      # Package.resolved whenever it resolves something that disagrees with it,
+      # so a non-empty diff here means CI is building a different graph than the
+      # repository pins. WaypointNetworking declares no dependencies and so has
+      # no resolved file.
+      - name: Dependency pins are reproducible
+        run: git diff --exit-code -- WaypointCore/Package.resolved
+
   lint:
     name: Lint
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install lint tools
         run: brew install swiftlint swiftformat
@@ -72,7 +84,7 @@ jobs:
     name: Mihomo supply chain
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Verify pinned download
         run: |
