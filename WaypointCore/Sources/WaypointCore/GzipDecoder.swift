@@ -44,11 +44,14 @@ public enum GzipDecoder {
 
                 var status: Int32 = Z_OK
                 repeat {
+                    // Read `capacity` before the closure: touching `buffer` inside
+                    // `withUnsafeMutableBytes` is an overlapping access.
+                    let capacity = buffer.count
                     let produced = buffer.withUnsafeMutableBytes { out -> Int in
                         stream.next_out = out.bindMemory(to: Bytef.self).baseAddress
-                        stream.avail_out = uInt(clamping: buffer.count)
+                        stream.avail_out = uInt(clamping: capacity)
                         status = inflate(&stream, Z_NO_FLUSH)
-                        return buffer.count - Int(stream.avail_out)
+                        return capacity - Int(stream.avail_out)
                     }
                     if produced > 0 {
                         output.append(contentsOf: buffer[0 ..< produced])
