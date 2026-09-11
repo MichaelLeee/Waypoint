@@ -2,15 +2,6 @@
   "originHash" : "ffbcd5480092f1f2da89e724c6b38c88fd067c094eeb3abf59dbc22167cb0385",
   "pins" : [
     {
-      "identity" : "flexiblediff",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/RACCommunity/FlexibleDiff.git",
-      "state" : {
-        "revision" : "a5132719a812111ef7eaea647a659a351b15abf4",
-        "version" : "0.0.9"
-      }
-    },
-    {
       "identity" : "gzipswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/1024jp/GzipSwift.git",
@@ -26,24 +17,6 @@
       "state" : {
         "revision" : "ac12762853126cf2e7ad63a6a58e1c9f58c6a0ee",
         "version" : "1.17.0"
-      }
-    },
-    {
-      "identity" : "nimble",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Quick/Nimble.git",
-      "state" : {
-        "revision" : "7a46a5fc86cb917f69e3daf79fcb045283d8f008",
-        "version" : "8.1.2"
-      }
-    },
-    {
-      "identity" : "quick",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Quick/Quick.git",
-      "state" : {
-        "revision" : "09b3becb37cb2163919a3842a4c5fa6ec7130792",
-        "version" : "2.2.1"
       }
     },
     {
