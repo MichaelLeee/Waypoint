@@ -1,0 +1,14 @@
+# Supply-chain pins for the bootstrap assets install_dependency.sh fetches.
+#
+# meta-rules-dat publishes its GeoIP database as a single rolling release whose
+# tag is literally "latest" — the assets are replaced in place, roughly daily —
+# so there is no immutable version to pin. The hash below is the only check on
+# whatever "latest" serves at download time; a mismatch aborts the bootstrap
+# instead of shipping unreviewed data. Expect it to fail once upstream
+# republishes: audit the new database, then run ./install_dependency.sh --update.
+#
+# yacd has no releases at all, only a gh-pages branch whose tip moves. It is
+# fetched by commit rather than by branch, so a moving tip cannot change what
+# ends up in the bundle.
+mmdb_sha256=4790a1479e63c8d3b67af7b47f6cb0b96a8d05a6d01ed568af8385c1d1176c8e
+yacd_commit=6945744f5ab10d3d639d6eb76f3a67167da77b34
