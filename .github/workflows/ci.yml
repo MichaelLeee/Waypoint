@@ -27,7 +27,7 @@ jobs:
           clang -o Waypoint/Resources/mihomo /tmp/mihomo.c
           mkdir -p Waypoint/Resources/dashboard
           printf '<!doctype html>\n' > Waypoint/Resources/dashboard/index.html
-          gzip -c /dev/null > Waypoint/Resources/Country.mmdb.gz
+          printf '' | gzip -c > Waypoint/Resources/Country.mmdb.gz
 
       - name: Build app (unsigned)
         env:
