@@ -42,6 +42,17 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build | xcbeautify
 
+      # xcodebuild rewrites its pin file for the app's own graph whenever it
+      # resolves something that disagrees with it, so a diff here means the
+      # committed pins no longer describe what the app builds against. That
+      # graph is wider than the packages': Xcode resolves test-target
+      # dependencies of dependencies, so Quick and Nimble arrive through
+      # FlexibleDiff's test target even though no target here links them.
+      - name: Xcode dependency pins are reproducible
+        run: |
+          git diff -- Waypoint.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          git diff --exit-code -- Waypoint.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
       - name: Test WaypointCore
         run: |
           cd WaypointCore
