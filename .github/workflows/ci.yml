@@ -16,10 +16,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # mihomo and the dashboard are produced by install_dependency.sh and are
+      # not tracked, but the app target copies both into the bundle. Stub them so
+      # this job stays a compile/link check that does not depend on the download;
+      # the supply-chain job verifies the real core separately.
+      - name: Stub generated resources
+        run: |
+          printf 'int main(void) { return 0; }\n' > /tmp/mihomo.c
+          clang -o Waypoint/Resources/mihomo /tmp/mihomo.c
+          mkdir -p Waypoint/Resources/dashboard
+          printf '<!doctype html>\n' > Waypoint/Resources/dashboard/index.html
+
       - name: Build app (unsigned)
         env:
           MACOSX_DEPLOYMENT_TARGET: "26.0"
         run: |
+          set -o pipefail
           xcodebuild \
             -project Waypoint.xcodeproj \
             -scheme Waypoint \
