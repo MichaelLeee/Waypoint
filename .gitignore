@@ -23,6 +23,6 @@ gitupdate.bat
 Waypoint/goWaypoint/.mihomo-build/
 
 # SwiftPM local build artifacts
+# Package.resolved is deliberately tracked: the manifests declare version ranges,
+# so the committed resolution is what holds CI and local checkouts to one graph.
 .build/
-WaypointCore/Package.resolved
-WaypointNetworking/Package.resolved

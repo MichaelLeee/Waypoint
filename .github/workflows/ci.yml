@@ -52,9 +52,6 @@ jobs:
           cd WaypointNetworking
           swift test
 
-      - name: Dump resolved pins
-        run: cat WaypointCore/Package.resolved
-
       # The package manifests declare version ranges, so the concrete graph only
       # stays fixed if the resolution is committed. SwiftPM rewrites
       # Package.resolved whenever it resolves something that disagrees with it,

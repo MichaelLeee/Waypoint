@@ -1,42 +1,6 @@
 {
-  "originHash" : "ffbcd5480092f1f2da89e724c6b38c88fd067c094eeb3abf59dbc22167cb0385",
+  "originHash" : "4f4e26acf3ed728acf4436628c964d9f7e66b351d9d18261606c528fd5d45152",
   "pins" : [
-    {
-      "identity" : "flexiblediff",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/RACCommunity/FlexibleDiff.git",
-      "state" : {
-        "revision" : "a5132719a812111ef7eaea647a659a351b15abf4",
-        "version" : "0.0.9"
-      }
-    },
-    {
-      "identity" : "gzipswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/1024jp/GzipSwift.git",
-      "state" : {
-        "revision" : "7a7f17761c76a932662ab77028a4329f67d645a4",
-        "version" : "5.2.0"
-      }
-    },
-    {
-      "identity" : "keyboardshortcuts",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sindresorhus/KeyboardShortcuts.git",
-      "state" : {
-        "revision" : "ac12762853126cf2e7ad63a6a58e1c9f58c6a0ee",
-        "version" : "1.17.0"
-      }
-    },
-    {
-      "identity" : "sparkle",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sparkle-project/Sparkle.git",
-      "state" : {
-        "revision" : "ac2def288cbff5cfc7df3ffef6abdf45b72bcb0a",
-        "version" : "2.9.6"
-      }
-    },
     {
       "identity" : "swift-atomics",
       "kind" : "remoteSourceControl",
