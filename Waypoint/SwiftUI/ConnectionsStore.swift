@@ -53,9 +53,9 @@ final class ConnectionsStore {
 
     private var activeIDs = Set<String>()
     private var rowsByID = [String: ConnectionRow]()
-    // nonisolated(unsafe): only touched from init and deinit, both on the
-    // main actor.
-    private nonisolated(unsafe) var streamTask: Task<Void, Never>?
+    // nonisolated so deinit can cancel it: Task is Sendable, and it is only
+    // touched from init and deinit, both on the main actor.
+    private nonisolated var streamTask: Task<Void, Never>?
 
     init() {
         streamTask = Task { [weak self] in
