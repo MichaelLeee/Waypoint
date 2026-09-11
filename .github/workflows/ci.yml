@@ -43,14 +43,21 @@ jobs:
             build | xcbeautify
 
       # xcodebuild rewrites its pin file whenever it resolves something that
-      # disagrees with it, so a diff here means the committed pins no longer
-      # describe what the app builds against. The app's graph is wider than the
-      # packages': Xcode resolves test-target dependencies of dependencies,
-      # which SwiftPM prunes for non-root packages.
+      # disagrees with it, so any change here means the committed pins no longer
+      # describe what the app builds against. This file must list exactly the
+      # packages the project declares: a pin for a package with no
+      # packageReferences entry makes Xcode 26 abort before compiling, with an
+      # internal count mismatch in IDESwiftPackageCore (SIGABRT, exit 134), not
+      # a normal build error. Xcode 26 does not revalidate originHash for this
+      # embedded-project store, so a stale hash alone is inert -- this check is
+      # the safety net if a future toolchain starts validating it.
+      #
+      # git status, not git diff, so a deleted or untracked pin file is caught
+      # too; git diff exits 0 for a path that is no longer tracked.
       - name: Xcode dependency pins are reproducible
         run: |
           PINS=Waypoint.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          if ! git diff --quiet -- "$PINS"; then
+          if [ -n "$(git status --porcelain -- "$PINS")" ]; then
             echo "::error::$PINS was rewritten during this build; the canonical file follows."
             echo "----- BEGIN CANONICAL $PINS -----"
             cat "$PINS"
@@ -71,13 +78,16 @@ jobs:
       # The package manifests declare version ranges, so the concrete graph only
       # stays fixed if the resolution is committed. SwiftPM rewrites
       # Package.resolved whenever it resolves something that disagrees with it,
-      # so a non-empty diff here means CI is building a different graph than the
+      # so any change here means CI is building a different graph than the
       # repository pins. WaypointNetworking declares no dependencies and so has
       # no resolved file.
+      #
+      # git status, not git diff, so a deleted or untracked pin file is caught
+      # too; git diff exits 0 for a path that is no longer tracked.
       - name: Dependency pins are reproducible
         run: |
           PINS=WaypointCore/Package.resolved
-          if ! git diff --quiet -- "$PINS"; then
+          if [ -n "$(git status --porcelain -- "$PINS")" ]; then
             echo "::error::$PINS was rewritten during this build; the canonical file follows."
             echo "----- BEGIN CANONICAL $PINS -----"
             cat "$PINS"
