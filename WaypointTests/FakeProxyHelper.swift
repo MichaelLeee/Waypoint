@@ -38,7 +38,7 @@ final class FakeProxyHelper: PrivilegedProxyHelper {
     var killSwitchErrorMessage: String?
     var clearCount = 0
 
-    func getCurrentProxySetting(reply: @escaping ([String: Any]?) -> Void) {
+    func getCurrentProxySetting(reply: @escaping @Sendable ([String: Any]?) -> Void) {
         callNames.append("getCurrentProxySetting")
         reply(proxySetting)
     }
@@ -47,7 +47,7 @@ final class FakeProxyHelper: PrivilegedProxyHelper {
                      socksPort: Int,
                      filterInterface: Bool,
                      ignoreList: [String],
-                     error: @escaping (String?) -> Void) {
+                     error: @escaping @Sendable (String?) -> Void) {
         callNames.append("enableProxy")
         enabledPort = port
         enabledSocksPort = socksPort
@@ -56,7 +56,7 @@ final class FakeProxyHelper: PrivilegedProxyHelper {
         error(enableErrorMessage)
     }
 
-    func disableProxy(filterInterface: Bool, reply: @escaping (String?) -> Void) {
+    func disableProxy(filterInterface: Bool, reply: @escaping @Sendable (String?) -> Void) {
         callNames.append("disableProxy")
         disabledFilterInterface = filterInterface
         reply(disableErrorMessage)
@@ -66,7 +66,7 @@ final class FakeProxyHelper: PrivilegedProxyHelper {
                       socksPort: Int,
                       info: [String: Any],
                       filterInterface: Bool,
-                      error: @escaping (String?) -> Void) {
+                      error: @escaping @Sendable (String?) -> Void) {
         callNames.append("restoreProxy")
         restoredPort = port
         restoredSocksPort = socksPort
@@ -75,13 +75,13 @@ final class FakeProxyHelper: PrivilegedProxyHelper {
         error(restoreErrorMessage)
     }
 
-    func setFirewallKillSwitch(rules: String, reply: @escaping (String?) -> Void) {
+    func setFirewallKillSwitch(rules: String, reply: @escaping @Sendable (String?) -> Void) {
         callNames.append("setFirewallKillSwitch")
         killSwitchRules = rules
         reply(killSwitchErrorMessage)
     }
 
-    func clearFirewallKillSwitch(reply: @escaping (String?) -> Void) {
+    func clearFirewallKillSwitch(reply: @escaping @Sendable (String?) -> Void) {
         callNames.append("clearFirewallKillSwitch")
         clearCount += 1
         reply(killSwitchErrorMessage)

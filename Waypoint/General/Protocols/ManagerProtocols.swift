@@ -46,22 +46,23 @@ protocol HelperInstalling: AnyObject {
 /// The XPC protocol itself is declared in ObjC and reaches Swift through the
 /// app target's bridging header, which is not part of the Waypoint module: a
 /// test target can name this protocol but not that one. The adapter below
-/// bridges the two, so a test can substitute a fake helper.
+/// bridges the two, so a test can substitute a fake helper. The XPC blocks
+/// arrive as `@Sendable`, so the seam declares them that way too.
 protocol PrivilegedProxyHelper: AnyObject {
-    func getCurrentProxySetting(reply: @escaping ([String: Any]?) -> Void)
+    func getCurrentProxySetting(reply: @escaping @Sendable ([String: Any]?) -> Void)
     func enableProxy(port: Int,
                      socksPort: Int,
                      filterInterface: Bool,
                      ignoreList: [String],
-                     error: @escaping (String?) -> Void)
-    func disableProxy(filterInterface: Bool, reply: @escaping (String?) -> Void)
+                     error: @escaping @Sendable (String?) -> Void)
+    func disableProxy(filterInterface: Bool, reply: @escaping @Sendable (String?) -> Void)
     func restoreProxy(port: Int,
                       socksPort: Int,
                       info: [String: Any],
                       filterInterface: Bool,
-                      error: @escaping (String?) -> Void)
-    func setFirewallKillSwitch(rules: String, reply: @escaping (String?) -> Void)
-    func clearFirewallKillSwitch(reply: @escaping (String?) -> Void)
+                      error: @escaping @Sendable (String?) -> Void)
+    func setFirewallKillSwitch(rules: String, reply: @escaping @Sendable (String?) -> Void)
+    func clearFirewallKillSwitch(reply: @escaping @Sendable (String?) -> Void)
 }
 
 /// Presents an XPC connection as a `PrivilegedProxyHelper`. The ObjC replies
@@ -74,7 +75,7 @@ final class PrivilegedProxyHelperAdapter: PrivilegedProxyHelper {
         self.helper = helper
     }
 
-    func getCurrentProxySetting(reply: @escaping ([String: Any]?) -> Void) {
+    func getCurrentProxySetting(reply: @escaping @Sendable ([String: Any]?) -> Void) {
         helper.getCurrentProxySetting { info in reply(info as? [String: Any]) }
     }
 
@@ -82,7 +83,7 @@ final class PrivilegedProxyHelperAdapter: PrivilegedProxyHelper {
                      socksPort: Int,
                      filterInterface: Bool,
                      ignoreList: [String],
-                     error: @escaping (String?) -> Void) {
+                     error: @escaping @Sendable (String?) -> Void) {
         helper.enableProxy(withPort: Int32(port),
                            socksPort: Int32(socksPort),
                            pac: nil,
@@ -91,7 +92,7 @@ final class PrivilegedProxyHelperAdapter: PrivilegedProxyHelper {
                            error: error)
     }
 
-    func disableProxy(filterInterface: Bool, reply: @escaping (String?) -> Void) {
+    func disableProxy(filterInterface: Bool, reply: @escaping @Sendable (String?) -> Void) {
         helper.disableProxy(withFilterInterface: filterInterface, reply: reply)
     }
 
@@ -99,7 +100,7 @@ final class PrivilegedProxyHelperAdapter: PrivilegedProxyHelper {
                       socksPort: Int,
                       info: [String: Any],
                       filterInterface: Bool,
-                      error: @escaping (String?) -> Void) {
+                      error: @escaping @Sendable (String?) -> Void) {
         helper.restoreProxy(withCurrentPort: Int32(port),
                             socksPort: Int32(socksPort),
                             info: info,
@@ -107,11 +108,11 @@ final class PrivilegedProxyHelperAdapter: PrivilegedProxyHelper {
                             error: error)
     }
 
-    func setFirewallKillSwitch(rules: String, reply: @escaping (String?) -> Void) {
+    func setFirewallKillSwitch(rules: String, reply: @escaping @Sendable (String?) -> Void) {
         helper.setFirewallKillSwitch(rules, reply: reply)
     }
 
-    func clearFirewallKillSwitch(reply: @escaping (String?) -> Void) {
+    func clearFirewallKillSwitch(reply: @escaping @Sendable (String?) -> Void) {
         helper.clearFirewallKillSwitch(reply)
     }
 }
