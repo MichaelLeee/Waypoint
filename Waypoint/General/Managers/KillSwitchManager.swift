@@ -15,7 +15,19 @@ import WaypointCore
 final class KillSwitchManager {
     static let shared = KillSwitchManager()
 
-    private init() {}
+    /// Usable directly so a test can build an isolated instance with its own
+    /// helperProvider; `shared` remains the app's single instance.
+    init() {}
+
+    /// Resolves the privileged helper. Production points this at the XPC
+    /// connection in PrivilegedHelperManager; a test substitutes a fake so the
+    /// composition and reply paths below run without a helper installed. The
+    /// argument is the connection's failure handler, which may fire before the
+    /// reply block does.
+    var helperProvider: (_ failure: ((String) -> Void)?) -> PrivilegedProxyHelper? = { failure in
+        guard let helper = PrivilegedHelperManager.shared.helper(failture: failure) else { return nil }
+        return PrivilegedProxyHelperAdapter(helper: helper)
+    }
 
     /// Installs the anchor with rules for the current runtime shape
     /// (TUN vs system proxy, allow-LAN). Returns nil on success.
@@ -25,13 +37,13 @@ final class KillSwitchManager {
             // The XPC error handler and the reply block can both fire for one
             // call; the box makes the first win and the second a no-op.
             let reply = ReplyBox(fallback: "proxy helper unavailable", continuation: continuation)
-            guard let helper = PrivilegedHelperManager.shared.helper(failture: { message in
+            guard let helper = helperProvider({ message in
                 reply.resume(returning: "proxy helper unavailable: \(message)")
             }) else {
                 reply.resume(returning: "proxy helper unavailable")
                 return
             }
-            helper.setFirewallKillSwitch(rules) { errorMessage in
+            helper.setFirewallKillSwitch(rules: rules) { errorMessage in
                 reply.resume(returning: errorMessage)
             }
         }
@@ -42,7 +54,7 @@ final class KillSwitchManager {
     func clear() async -> String? {
         await withCheckedContinuation { (continuation: CheckedContinuation<String?, Never>) in
             let reply = ReplyBox(fallback: "proxy helper unavailable", continuation: continuation)
-            guard let helper = PrivilegedHelperManager.shared.helper(failture: { _ in
+            guard let helper = helperProvider({ _ in
                 reply.resume(returning: "proxy helper unavailable")
             }) else {
                 reply.resume(returning: "proxy helper unavailable")

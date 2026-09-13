@@ -41,6 +41,81 @@ protocol HelperInstalling: AnyObject {
     func helper(failture: ((String) -> Void)?) -> ProxyConfigRemoteProcessProtocol?
 }
 
+/// The privileged helper's XPC surface as the proxy managers use it.
+///
+/// The XPC protocol itself is declared in ObjC and reaches Swift through the
+/// app target's bridging header, which is not part of the Waypoint module: a
+/// test target can name this protocol but not that one. The adapter below
+/// bridges the two, so a test can substitute a fake helper.
+protocol PrivilegedProxyHelper: AnyObject {
+    func getCurrentProxySetting(reply: @escaping ([String: Any]?) -> Void)
+    func enableProxy(port: Int,
+                     socksPort: Int,
+                     filterInterface: Bool,
+                     ignoreList: [String],
+                     error: @escaping (String?) -> Void)
+    func disableProxy(filterInterface: Bool, reply: @escaping (String?) -> Void)
+    func restoreProxy(port: Int,
+                      socksPort: Int,
+                      info: [String: Any],
+                      filterInterface: Bool,
+                      error: @escaping (String?) -> Void)
+    func setFirewallKillSwitch(rules: String, reply: @escaping (String?) -> Void)
+    func clearFirewallKillSwitch(reply: @escaping (String?) -> Void)
+}
+
+/// Presents an XPC connection as a `PrivilegedProxyHelper`. The ObjC replies
+/// carry untyped collections and `String!`, so the conversions live here rather
+/// than at each call site in the managers.
+final class PrivilegedProxyHelperAdapter: PrivilegedProxyHelper {
+    private let helper: ProxyConfigRemoteProcessProtocol
+
+    init(helper: ProxyConfigRemoteProcessProtocol) {
+        self.helper = helper
+    }
+
+    func getCurrentProxySetting(reply: @escaping ([String: Any]?) -> Void) {
+        helper.getCurrentProxySetting { info in reply(info as? [String: Any]) }
+    }
+
+    func enableProxy(port: Int,
+                     socksPort: Int,
+                     filterInterface: Bool,
+                     ignoreList: [String],
+                     error: @escaping (String?) -> Void) {
+        helper.enableProxy(withPort: Int32(port),
+                           socksPort: Int32(socksPort),
+                           pac: nil,
+                           filterInterface: filterInterface,
+                           ignoreList: ignoreList,
+                           error: error)
+    }
+
+    func disableProxy(filterInterface: Bool, reply: @escaping (String?) -> Void) {
+        helper.disableProxy(withFilterInterface: filterInterface, reply: reply)
+    }
+
+    func restoreProxy(port: Int,
+                      socksPort: Int,
+                      info: [String: Any],
+                      filterInterface: Bool,
+                      error: @escaping (String?) -> Void) {
+        helper.restoreProxy(withCurrentPort: Int32(port),
+                            socksPort: Int32(socksPort),
+                            info: info,
+                            filterInterface: filterInterface,
+                            error: error)
+    }
+
+    func setFirewallKillSwitch(rules: String, reply: @escaping (String?) -> Void) {
+        helper.setFirewallKillSwitch(rules, reply: reply)
+    }
+
+    func clearFirewallKillSwitch(reply: @escaping (String?) -> Void) {
+        helper.clearFirewallKillSwitch(reply)
+    }
+}
+
 extension CoreProcessManager: ProxyCoreControlling {}
 extension SystemProxyManager: SystemProxyManaging {}
 extension PrivilegedHelperManager: HelperInstalling {}

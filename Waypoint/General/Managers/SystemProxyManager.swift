@@ -15,9 +15,15 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
         set { Persistence.savedProxyInfo = newValue }
     }
 
-    private var helper: ProxyConfigRemoteProcessProtocol? {
-        PrivilegedHelperManager.shared.helper()
+    /// Resolves the privileged helper. Production points this at the XPC
+    /// connection in PrivilegedHelperManager; a test substitutes a fake so the
+    /// guard-and-delegate paths below run without a helper installed.
+    var helperProvider: () -> PrivilegedProxyHelper? = {
+        guard let helper = PrivilegedHelperManager.shared.helper() else { return nil }
+        return PrivilegedProxyHelperAdapter(helper: helper)
     }
+
+    private var helper: PrivilegedProxyHelper? { helperProvider() }
 
     func saveProxy() {
         guard !Settings.disableRestoreProxy else { return }
@@ -28,7 +34,7 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
         Logger.log("saveProxy", level: .debug)
         helper.getCurrentProxySetting { [weak self] info in
             Logger.log("saveProxy done", level: .debug)
-            if let info = info as? [String: Any] {
+            if let info {
                 self?.savedProxyInfo = info
             }
         }
@@ -72,16 +78,15 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
             return
         }
         Logger.log("enableProxy", level: .debug)
-        helper.enableProxy(withPort: Int32(port),
-                            socksPort: Int32(socksPort),
-                            pac: nil,
-                            filterInterface: Settings.filterInterface,
-                            ignoreList: Settings.proxyIgnoreList,
-                            error: { error in
-                                if let error = error {
-                                    Logger.log("enableProxy \(error)", level: .error)
-                                }
-                            })
+        helper.enableProxy(port: port,
+                           socksPort: socksPort,
+                           filterInterface: Settings.filterInterface,
+                           ignoreList: Settings.proxyIgnoreList,
+                           error: { error in
+                               if let error = error {
+                                   Logger.log("enableProxy \(error)", level: .error)
+                               }
+                           })
     }
 
     // Reads ConfigManager (MainActor); all callers are main-thread paths.
@@ -104,7 +109,7 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
         }
 
         if Settings.disableRestoreProxy || forceDisable {
-            helper.disableProxy(withFilterInterface: Settings.filterInterface) { error in
+            helper.disableProxy(filterInterface: Settings.filterInterface) { error in
                 if let error = error {
                     Logger.log("disableProxy \(error)", level: .error)
                 }
@@ -113,7 +118,7 @@ class SystemProxyManager: NSObject, @unchecked Sendable {
             return
         }
 
-        helper.restoreProxy(withCurrentPort: Int32(port), socksPort: Int32(socksPort), info: savedProxyInfo, filterInterface: Settings.filterInterface, error: { error in
+        helper.restoreProxy(port: port, socksPort: socksPort, info: savedProxyInfo, filterInterface: Settings.filterInterface, error: { error in
             if let error = error {
                 Logger.log("restoreProxy \(error)", level: .error)
             }
