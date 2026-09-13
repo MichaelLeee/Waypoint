@@ -25,13 +25,18 @@ struct PureHelperTests {
         #expect([Int]()[safe: 0] == nil)
     }
 
+    // #expect captures its expression in a closure, so a mutating call has to
+    // happen first and the result be checked separately.
     @Test("safeRemove reports whether it removed anything")
     func safeRemoveReportsOutcome() {
         var values = ["a", "b", "c"]
-        #expect(values.safeRemove(at: 1))
+        let removedMiddle = values.safeRemove(at: 1)
+        #expect(removedMiddle)
         #expect(values == ["a", "c"])
-        #expect(!values.safeRemove(at: 99))
-        #expect(!values.safeRemove(at: -1))
+        let removedPastEnd = values.safeRemove(at: 99)
+        #expect(!removedPastEnd)
+        let removedNegative = values.safeRemove(at: -1)
+        #expect(!removedNegative)
         #expect(values == ["a", "c"])
     }
 
