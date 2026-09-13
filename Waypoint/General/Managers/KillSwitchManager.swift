@@ -36,15 +36,15 @@ final class KillSwitchManager {
         return await withCheckedContinuation { (continuation: CheckedContinuation<String?, Never>) in
             // The XPC error handler and the reply block can both fire for one
             // call; the box makes the first win and the second a no-op.
-            let reply = ReplyBox(fallback: "proxy helper unavailable", continuation: continuation)
+            let reply = OnceBox<String?> { continuation.resume(returning: $0) }
             guard let helper = helperProvider({ message in
-                reply.resume(returning: "proxy helper unavailable: \(message)")
+                reply.resume("proxy helper unavailable: \(message)")
             }) else {
-                reply.resume(returning: "proxy helper unavailable")
+                reply.resume("proxy helper unavailable")
                 return
             }
             helper.setFirewallKillSwitch(rules: rules) { errorMessage in
-                reply.resume(returning: errorMessage)
+                reply.resume(errorMessage)
             }
         }
     }
@@ -53,39 +53,17 @@ final class KillSwitchManager {
     @discardableResult
     func clear() async -> String? {
         await withCheckedContinuation { (continuation: CheckedContinuation<String?, Never>) in
-            let reply = ReplyBox(fallback: "proxy helper unavailable", continuation: continuation)
+            let reply = OnceBox<String?> { continuation.resume(returning: $0) }
             guard let helper = helperProvider({ _ in
-                reply.resume(returning: "proxy helper unavailable")
+                reply.resume("proxy helper unavailable")
             }) else {
-                reply.resume(returning: "proxy helper unavailable")
+                reply.resume("proxy helper unavailable")
                 return
             }
             helper.clearFirewallKillSwitch { errorMessage in
-                reply.resume(returning: errorMessage)
+                reply.resume(errorMessage)
             }
         }
-    }
-}
-
-/// Resumes the wrapped continuation at most once, from whichever callback
-/// (XPC error handler or reply block) lands first.
-private final class ReplyBox<T: Sendable>: @unchecked Sendable {
-    private let lock = NSLock()
-    private var done = false
-    private let continuation: CheckedContinuation<T, Never>
-    private let fallback: T
-
-    init(fallback: T, continuation: CheckedContinuation<T, Never>) {
-        self.fallback = fallback
-        self.continuation = continuation
-    }
-
-    func resume(returning value: T) {
-        lock.lock()
-        defer { lock.unlock() }
-        guard !done else { return }
-        done = true
-        continuation.resume(returning: value)
     }
 }
 

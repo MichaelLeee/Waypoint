@@ -158,7 +158,7 @@ final class CoreProcessManager {
         }
 
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            let once = ResumeOnce(continuation)
+            let once = OnceBox<Result<Void, Error>> { continuation.resume(with: $0) }
             guard let helper = PrivilegedHelperManager.shared.helper(failture: { message in
                 once.resume(.failure(CoreProcessError.launchFailed(message)))
             }) else {
@@ -315,25 +315,5 @@ final class CoreProcessManager {
 
     nonisolated static func binaryPath() -> String? {
         return Bundle.main.path(forResource: "mihomo", ofType: nil)
-    }
-}
-
-/// Resumes the wrapped continuation at most once; safe to call from any thread
-/// (XPC reply queues race with connection error handlers).
-final class ResumeOnce: @unchecked Sendable {
-    private let lock = NSLock()
-    private var done = false
-    private let continuation: CheckedContinuation<Void, Error>
-
-    init(_ continuation: CheckedContinuation<Void, Error>) {
-        self.continuation = continuation
-    }
-
-    func resume(_ result: Result<Void, Error>) {
-        lock.lock()
-        defer { lock.unlock() }
-        guard !done else { return }
-        done = true
-        continuation.resume(with: result)
     }
 }

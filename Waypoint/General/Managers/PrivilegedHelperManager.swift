@@ -139,9 +139,9 @@ class PrivilegedHelperManager: @unchecked Sendable {
     private func getHelperStatus(callback: @escaping @Sendable (HelperStatus) -> Void) {
         // Runs at most once: whichever of the timeout task or the XPC reply
         // lands first decides the reported status.
-        let once = OnceReplyBox()
+        let once = OnceBox<HelperStatus> { callback($0) }
         let reply: @Sendable (HelperStatus) -> Void = { status in
-            once.run { callback(status) }
+            once.resume(status)
         }
 
         let helperURL = Bundle.main.bundleURL.appendingPathComponent("Contents/Library/LaunchServices/" + PrivilegedHelperManager.machServiceName)
@@ -286,18 +286,6 @@ extension PrivilegedHelperManager {
         default:
             return false
         }
-    }
-}
-
-private final class OnceReplyBox: @unchecked Sendable {
-    private let lock = NSLock()
-    private var done = false
-    func run(_ body: () -> Void) {
-        lock.lock()
-        defer { lock.unlock() }
-        guard !done else { return }
-        done = true
-        body()
     }
 }
 
