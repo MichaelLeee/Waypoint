@@ -42,6 +42,24 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build | xcbeautify
 
+      # App-hosted tests for the code that cannot live in a package target:
+      # the managers, the preference store and the pure helper extensions. The
+      # bundle is loaded into the real app, so AppDelegate skips its launch
+      # work when it sees the XCTest environment (no modal, no network, no
+      # helper install in a headless run).
+      - name: Test app target
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "26.0"
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project Waypoint.xcodeproj \
+            -scheme Waypoint \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            test | xcbeautify
+
       # xcodebuild rewrites its pin file whenever it resolves something that
       # disagrees with it, so any change here means the committed pins no longer
       # describe what the app builds against. This file must list exactly the

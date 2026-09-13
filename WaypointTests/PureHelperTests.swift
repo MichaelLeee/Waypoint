@@ -1,0 +1,64 @@
+//
+//  PureHelperTests.swift
+//  WaypointTests
+//
+
+import Foundation
+import Testing
+@testable import Waypoint
+
+@Suite("Pure helpers")
+struct PureHelperTests {
+
+    // MARK: - Array+Safe
+
+    @Test("Subscripting an in-range index returns the element")
+    func safeSubscriptInRange() {
+        #expect([10, 20, 30][safe: 0] == 10)
+        #expect([10, 20, 30][safe: 2] == 30)
+    }
+
+    @Test("Subscripting past either end returns nil instead of trapping")
+    func safeSubscriptOutOfRange() {
+        #expect([10, 20, 30][safe: 3] == nil)
+        #expect([10, 20, 30][safe: -1] == nil)
+        #expect([Int]()[safe: 0] == nil)
+    }
+
+    @Test("safeRemove reports whether it removed anything")
+    func safeRemoveReportsOutcome() {
+        var values = ["a", "b", "c"]
+        #expect(values.safeRemove(at: 1))
+        #expect(values == ["a", "c"])
+        #expect(!values.safeRemove(at: 99))
+        #expect(!values.safeRemove(at: -1))
+        #expect(values == ["a", "c"])
+    }
+
+    // MARK: - Paths
+
+    @Test("A config name maps to a yaml file under the config folder")
+    func configPaths() {
+        #expect(Paths.configFileName(for: "direct") == "direct.yaml")
+        #expect(Paths.localConfigPath(for: "direct").hasSuffix("/.config/waypoint/direct.yaml"))
+    }
+
+    @Test("The default config path matches the default selected config name")
+    func defaultConfigPath() {
+        #expect(kDefaultConfigFilePath.hasSuffix("/.config/waypoint/config.yaml"))
+        #expect(kDefaultConfigFilePath == Paths.localConfigPath(for: "config"))
+    }
+
+    // MARK: - String+Encode
+
+    @Test("Percent-encoding escapes characters a URL host cannot carry")
+    func stringEncoding() {
+        #expect("a b".encoded == "a%20b")
+        #expect("a#b".encoded == "a%23b")
+    }
+
+    @Test("Percent-encoding leaves a plain host name alone")
+    func stringEncodingPassthrough() {
+        #expect("example.com".encoded == "example.com")
+    }
+}

@@ -95,14 +95,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
         || ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
 
+    /// A host-app test bundle is launched as a real Waypoint.app, so the
+    /// launch path below would run its modals and core API calls inside the
+    /// test process too. XCTest publishes its configuration to the
+    /// environment before the host app starts.
+    private static let isTestProcess =
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+        || ProcessInfo.processInfo.environment["XCTestBundlePath"] != nil
+
+    /// A preview or test run: no user is at the menu bar, so launch work that
+    /// waits on the network, a helper install, or a modal must be skipped.
+    private static let isNonInteractiveProcess = isPreviewProcess || isTestProcess
+
     func applicationWillFinishLaunching(_ notification: Notification) {
         Logger.log("applicationWillFinishLaunching")
         signal(SIGPIPE, SIG_IGN)
-        if !Self.isPreviewProcess {
+        if !Self.isNonInteractiveProcess {
             failLaunchProtect()
         }
         setupMenus()
-        if !Self.isPreviewProcess {
+        if !Self.isNonInteractiveProcess {
             setupEditShortcutMonitor()
         }
         NSAppleEventManager.shared()
@@ -120,7 +132,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // flag is on, no NSStatusItem is created and statusItemView stays a
         // no-op so speed/status call sites remain safe.
         statusItemView = NullStatusItemView()
-        if Self.isPreviewProcess { return }
+        if Self.isNonInteractiveProcess { return }
         if !Settings.useSwiftUIMenu {
             // AppKit NSStatusItem is the primary menu UI on purpose, not a
             // legacy leftover. SwiftUI's MenuBarExtra(.menu) cannot host live
