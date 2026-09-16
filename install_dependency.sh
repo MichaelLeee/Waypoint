@@ -6,23 +6,48 @@
 # release moving underneath us fails the bootstrap instead of silently changing
 # what gets shipped.
 #
-#     ./install_dependency.sh            verify the pins, then install
-#     ./install_dependency.sh --update   re-pin the assets in assets.sha256
+#     ./install_dependency.sh              verify the pins, then install
+#     ./install_dependency.sh --official   install the pinned official mihomo
+#                                          binaries instead of building from
+#                                          source; needs no Go toolchain
+#     ./install_dependency.sh --update     re-pin the assets in assets.sha256
 #
 # --update trusts whatever upstream is serving at that moment; review the new
 # bytes before committing the refreshed pins.
+#
+# Building from source is the default because it is the only mode that ties the
+# shipped binary to the pinned tag and commit. --official is checksum-verified
+# too, but against hashes computed from an upstream build that embeds its own
+# wall-clock timestamp, so it cannot be proven to match that source.
 set -euo pipefail
 
 cd "$(dirname "$0")"
 
 update=0
-[ "${1:-}" = "--update" ] && update=1
+official=0
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --update) update=1 ;;
+        --official) official=1 ;;
+        *)
+            echo "usage: $0 [--update] [--official]" >&2
+            exit 2
+            ;;
+    esac
+    shift
+done
 
 # shellcheck source=assets.sha256
 . ./assets.sha256
 
 echo "==> mihomo core"
-(cd Waypoint/goWaypoint && python3 bundle_mihomo.py)
+# Not an array expansion: macOS ships bash 3.2, where "${arr[@]}" on an empty
+# array trips `set -u`.
+if [ "$official" = 1 ]; then
+    (cd Waypoint/goWaypoint && python3 bundle_mihomo.py --official)
+else
+    (cd Waypoint/goWaypoint && python3 bundle_mihomo.py)
+fi
 
 echo "==> GeoIP database"
 country_mmdb="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb"

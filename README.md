@@ -24,6 +24,11 @@ brew install go            # only needed to build the core from source
 open Waypoint.xcodeproj    # build and run the Waypoint scheme
 ```
 
+Without a Go toolchain, `./install_dependency.sh --official` downloads the
+pinned mihomo release binaries and checksum-verifies them instead of compiling
+them — much faster, but only the from-source build ties the shipped binary to
+the pinned tag and commit.
+
 Every download is checked against a pin — `Waypoint/goWaypoint/mihomo.sha256`
 for the core (built from a pinned source tag by default), `assets.sha256` for
 the rest. The GeoIP database comes from a rolling upstream release that is
