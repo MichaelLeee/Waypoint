@@ -15,15 +15,13 @@ public enum AdBlockConfig {
     public static let trackerRules = ["GEOSITE,category-public-tracker"]
 
     public static func apply(to config: String) -> String {
-        // Match whole rule lines rather than substrings of the document: the
-        // old `contains` check was satisfied by a mere mention — a comment or a
-        // group name containing the text — which silently cancelled the
-        // injection and left ad blocking off.
-        let pending = (adRules + trackerRules).filter { rule in
-            !config.split(separator: "\n").contains { line in
-                line.trimmingCharacters(in: .whitespaces) == "\(rule),REJECT"
-            }
-        }
+        // Compare against the rule statements the file already holds, rather
+        // than substrings of the whole document: the old `contains` check was
+        // satisfied by a mere mention — a comment, or a group name carrying the
+        // text — which silently cancelled the injection and left ad blocking
+        // off.
+        let statements = Set(config.split(separator: "\n").map(Self.ruleStatement))
+        let pending = (adRules + trackerRules).filter { !statements.contains("\($0),REJECT") }
         guard !pending.isEmpty else { return config }
         let injected = pending.map { "  - \($0),REJECT" }
 
@@ -52,5 +50,13 @@ public enum AdBlockConfig {
             + "rules:\n"
             + (injected + ["  - MATCH,DIRECT"]).joined(separator: "\n")
             + "\n"
+    }
+
+    /// The rule text a YAML sequence line carries, with its `- ` marker and
+    /// surrounding space removed.
+    private static func ruleStatement(_ line: Substring) -> String {
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        guard trimmed.hasPrefix("- ") else { return trimmed }
+        return String(trimmed.dropFirst(2)).trimmingCharacters(in: .whitespaces)
     }
 }
