@@ -108,7 +108,8 @@ class Logger: @unchecked Sendable {
         }
         currentFileHandle = try? FileHandle(forWritingTo: URL(fileURLWithPath: path))
         if let handle = currentFileHandle {
-            currentFileSize = (try? handle.seekToEnd()) ?? 0
+            // seekToEnd returns the new offset, which is the file's size.
+            currentFileSize = Int((try? handle.seekToEnd()) ?? 0)
         } else {
             currentFileSize = 0
         }
