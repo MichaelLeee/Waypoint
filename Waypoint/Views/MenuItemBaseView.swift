@@ -68,9 +68,12 @@ class MenuItemBaseView: NSView {
         needsDisplay = true
     }
 
-    func didClickView() {
-        assertionFailure("Please override this method")
-    }
+    /// Optional hook: most rows are handled by the enclosing menu item's own
+    /// action, so an un-overridden click does nothing. Deliberately not an
+    /// `assertionFailure` — a group row legitimately has no override, and the
+    /// trap only fires in Debug builds, where it aborts the app while the same
+    /// click is a no-op in Release.
+    func didClickView() {}
 
     // MARK: Private
 
