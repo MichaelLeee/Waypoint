@@ -15,7 +15,15 @@ public enum AdBlockConfig {
     public static let trackerRules = ["GEOSITE,category-public-tracker"]
 
     public static func apply(to config: String) -> String {
-        let pending = (adRules + trackerRules).filter { !config.contains($0) }
+        // Match whole rule lines rather than substrings of the document: the
+        // old `contains` check was satisfied by a mere mention — a comment or a
+        // group name containing the text — which silently cancelled the
+        // injection and left ad blocking off.
+        let pending = (adRules + trackerRules).filter { rule in
+            !config.split(separator: "\n").contains { line in
+                line.trimmingCharacters(in: .whitespaces) == "\(rule),REJECT"
+            }
+        }
         guard !pending.isEmpty else { return config }
         let injected = pending.map { "  - \($0),REJECT" }
 

@@ -169,9 +169,27 @@ extension TunConfig {
         return isIPv6Body(String(body[..<zone]))
     }
 
+    /// Structural check, not just a character-set one: the previous version
+    /// accepted anything made of hex digits and colons (`1::2::3`,
+    /// `1:2:3:4:5:6:7:8:9`, `12345::1`), so a malformed subscription entry
+    /// survived sanitizing and mihomo then failed TUN startup on it — the exact
+    /// failure `sanitizedDNSHijackEntries` exists to prevent.
     private static func isIPv6Body(_ body: String) -> Bool {
-        body.contains(":") && body.count <= 45
-            && body.allSatisfy { $0.isHexDigit || $0 == ":" }
+        guard body.contains(":"), body.count <= 39, !body.contains(":::") else { return false }
+        // Elision may appear once; a colon at either end is only legal as part
+        // of it.
+        let elisions = body.components(separatedBy: "::").count - 1
+        guard elisions <= 1 else { return false }
+        if body.hasPrefix(":") && !body.hasPrefix("::") { return false }
+        if body.hasSuffix(":") && !body.hasSuffix("::") { return false }
+        let groups = body.split(separator: ":")
+        if elisions == 1 {
+            // "::" stands for at least one elided group.
+            guard groups.count <= 7 else { return false }
+        } else {
+            guard groups.count == 8 else { return false }
+        }
+        return groups.allSatisfy { $0.count <= 4 && $0.allSatisfy(\.isHexDigit) }
     }
 
     /// Returns `config` with `tun`'s block appended, unless the config already

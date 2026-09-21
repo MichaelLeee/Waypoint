@@ -10,6 +10,15 @@ struct SpeedSampleSeriesTests {
         #expect(series.samples == [SpeedSample(id: 1, date: date, up: 11, down: 22)])
     }
 
+    // A negative limit used to make `removeFirst(count - limit)` ask for more
+    // elements than the array holds, which traps.
+    @Test func negativeLimitIsClampedInsteadOfTrapping() {
+        var series = SpeedSampleSeries(limit: -1)
+        #expect(series.limit == 0)
+        series.append(up: 1, down: 2, at: Date(timeIntervalSince1970: 0))
+        #expect(series.samples.isEmpty)
+    }
+
     @Test func idsKeepCountingUpAcrossTheWindow() {
         var series = SpeedSampleSeries(limit: 2)
         let base = Date(timeIntervalSince1970: 0)

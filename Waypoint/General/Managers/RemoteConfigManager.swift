@@ -208,9 +208,10 @@ final class RemoteConfigManager {
 
     nonisolated private static func performSave(savePath: String, newConfig: String, complete: @escaping @Sendable (String?) -> Void) {
         do {
-            if FileManager.default.fileExists(atPath: savePath) {
-                try FileManager.default.removeItem(atPath: savePath)
-            }
+            // No pre-delete: `write(atomically:)` already replaces the file via a
+            // temporary file and a rename, and removing the old config first
+            // meant a failed write (disk full, permissions, missing parent) left
+            // the user with no config at all instead of the previous one.
             try newConfig.write(to: URL(fileURLWithPath: savePath), atomically: true, encoding: .utf8)
             complete(nil)
         } catch let err {

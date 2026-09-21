@@ -42,6 +42,23 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build | xcbeautify
 
+      # Release is a separate compilation unit: it optimises whole-module and it
+      # is the only configuration where the #else branch of #if DEBUG is
+      # compiled at all (AppDelegate+CrashAndMemory's crash-loop protection).
+      # Building only Debug left that code unchecked until someone archived.
+      - name: Build app (Release, unsigned)
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "26.0"
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project Waypoint.xcodeproj \
+            -scheme Waypoint \
+            -configuration Release \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build | xcbeautify
+
       # App-hosted tests for the code that cannot live in a package target:
       # the managers, the preference store and the pure helper extensions. The
       # bundle is loaded into the real app, so AppDelegate skips its launch

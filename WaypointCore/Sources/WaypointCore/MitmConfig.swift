@@ -24,6 +24,12 @@ public enum MitmConfig {
         for raw in hosts {
             let host = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             guard !host.isEmpty, !seen.contains(host) else { continue }
+            // These are persisted free-text fields, and they are emitted into a
+            // comma-delimited rule list: a comma injects a policy
+            // (`DOMAIN,a.com,DIRECT,waypoint-mitm`) and a newline injects a
+            // whole extra rule, either of which makes mihomo reject the
+            // generated config. Keep only host-shaped patterns.
+            guard host.allSatisfy(Self.isHostPatternCharacter) else { continue }
             seen.insert(host)
             // Wildcard form "*.example.com" must not reach mihomo as
             // "DOMAIN,*.example.com" (an invalid rule); expand it the same
@@ -54,6 +60,11 @@ public enum MitmConfig {
     }
 
     // MARK: - Internals
+
+    private static func isHostPatternCharacter(_ character: Character) -> Bool {
+        character.isLetter || character.isNumber
+            || character == "." || character == "-" || character == "*" || character == "_"
+    }
 
     private static func injectProxyEntry(to config: String, port: Int) -> String {
         if config.contains("name: \(proxyName)") {

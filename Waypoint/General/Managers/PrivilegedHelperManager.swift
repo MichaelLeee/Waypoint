@@ -22,7 +22,6 @@ class PrivilegedHelperManager: @unchecked Sendable {
     private let maxInstallAttempts = 2
 
     private var connection: NSXPCConnection?
-    private var _helper: ProxyConfigRemoteProcessProtocol?
     static let machServiceName = "org.waypnt.waypoint.ProxyConfigHelper"
     static let daemonPlistName = "org.waypnt.waypoint.ProxyConfigHelper.plist"
     static let shared = PrivilegedHelperManager()
@@ -68,7 +67,6 @@ class PrivilegedHelperManager: @unchecked Sendable {
     func resetConnection() {
         connection?.invalidate()
         connection = nil
-        _helper = nil
     }
 
     /// Install the helper daemon via SMAppService. SMJobBless is deprecated

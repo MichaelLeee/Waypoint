@@ -66,7 +66,12 @@ class NetworkChangeNotifier {
     }
 
     static func getRawProxySetting() -> [String: AnyObject] {
-        return CFNetworkCopySystemProxySettings()?.takeRetainedValue() as! [String: AnyObject]
+        // CFNetworkCopySystemProxySettings returns NULL when the system has no
+        // proxy dictionary; the old `as!` on that Optional trapped.
+        guard let settings = CFNetworkCopySystemProxySettings()?.takeRetainedValue() else {
+            return [:]
+        }
+        return settings as? [String: AnyObject] ?? [:]
     }
 
     static func currentSystemProxySetting() -> (UInt, UInt, UInt) {

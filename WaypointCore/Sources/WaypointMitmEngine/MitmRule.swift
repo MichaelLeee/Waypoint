@@ -32,11 +32,15 @@ public struct MitmRule: Sendable, Equatable {
     /// itself and every subdomain; anything else is an exact (case-insensitive)
     /// host match.
     public func matches(host candidate: String) -> Bool {
-        let lowered = candidate.lowercased()
-        if let domain = Self.suffixDomain(of: host)?.lowercased() {
+        let lowered = candidate.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        // The rule's host is normalized the same way in both branches: the
+        // suffix branch already trimmed, so an untrimmed exact comparison made
+        // " api.example.com" silently never match.
+        let expected = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let domain = Self.suffixDomain(of: expected)?.lowercased() {
             return lowered == domain || lowered.hasSuffix("." + domain)
         }
-        return lowered == host.lowercased()
+        return lowered == expected.lowercased()
     }
 
     /// "*.example.com" and ".example.com" both yield "example.com" for suffix

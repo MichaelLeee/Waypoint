@@ -104,6 +104,19 @@ struct SetProxyModeIntent: AppIntent {
     }
 }
 
+/// The config id round-trips through the Shortcuts editor as free text, so it
+/// is not necessarily a config this app installed.
+enum ConfigIntentError: LocalizedError {
+    case notInstalled(String)
+
+    var errorDescription: String? {
+        switch self {
+        case let .notInstalled(name):
+            return "No installed config is named \"\(name)\"."
+        }
+    }
+}
+
 struct SelectConfigIntent: AppIntent {
     static let title: LocalizedStringResource = "Select Config"
     static let description = IntentDescription("Loads one of the installed Waypoint configs.")
@@ -113,6 +126,12 @@ struct SelectConfigIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
+        // Only accept a name the config folder actually holds: the id becomes a
+        // file name under that folder, and an arbitrary one could point out of
+        // it.
+        guard ConfigManager.getConfigFilesList().contains(config.id) else {
+            throw ConfigIntentError.notInstalled(config.id)
+        }
         AppDelegate.shared.updateConfig(configName: config.id)
         return .result(dialog: IntentDialog("Config \(config.id) activated."))
     }

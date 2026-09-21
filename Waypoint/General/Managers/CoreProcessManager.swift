@@ -39,7 +39,10 @@ final class CoreProcessManager {
     // detected by polling the core's API.
     private var livenessMonitorTask: Task<Void, Never>?
     private static let livenessCheckIntervalNanos: UInt64 = 3_000_000_000
-    private static let maxLivenessFailures = 3
+    // Five polls (~15s) rather than three (~9s): the check has a 1s request
+    // timeout, so a loaded machine or a wake-from-sleep blip could otherwise
+    // reach three consecutive failures and tear down a healthy proxy.
+    private static let maxLivenessFailures = 5
 
     private(set) var isRunning = false
 
@@ -90,7 +93,18 @@ final class CoreProcessManager {
                                    secret: secret,
                                    externalUI: externalUI)
         }
-        try await waitForReadiness(externalController: externalController, secret: secret)
+        do {
+            try await waitForReadiness(externalController: externalController, secret: secret)
+        } catch {
+            // The process is already spawned at this point (locally, or as root
+            // through the helper) and nothing else tracks it: leaving it alive
+            // keeps the proxy and API ports bound while the app reports the core
+            // as down, so a later "set as system proxy" would point at a core the
+            // app does not know about. The termination handler cannot cover this
+            // either — isRunning was never set, so it stays silent.
+            stop()
+            throw error
+        }
         startLivenessMonitor(externalController: externalController, secret: secret)
     }
 

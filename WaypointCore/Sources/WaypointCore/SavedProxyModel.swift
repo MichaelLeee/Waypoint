@@ -24,7 +24,10 @@ public struct SavedProxyModel: Codable, Equatable, Sendable {
     /// Deliberately excludes `selected` so re-selecting a proxy in the same
     /// group replaces the previous record instead of accumulating entries.
     public var key: String {
-        "\(group)_\(config)"
+        // Length-prefixed rather than joined with "_": an unescaped separator
+        // makes ("a_b", "c") and ("a", "b_c") the same key, which would drop one
+        // record on dedupe and remove the wrong one on re-select.
+        "\(group.count):\(group)|\(config.count):\(config)"
     }
 
     /// First-wins dedupe on `key`, preserving input order.

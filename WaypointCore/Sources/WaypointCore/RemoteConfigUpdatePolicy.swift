@@ -22,9 +22,12 @@ public enum RemoteConfigUpdatePolicy {
 /// Validates and shapes the HTTP layer of a remote-config download.
 /// The URLSession call itself stays app-side; only the pure decisions live here.
 public enum RemoteConfigFetch {
-    /// Builds the download request; nil when the configured URL is malformed.
+    /// Builds the download request; nil when the configured URL is malformed or
+    /// is not http(s). The scheme is checked here rather than trusting the UI
+    /// gate: this is reachable from a persisted model, which an older version or
+    /// a hand-edited blob can carry any scheme in (file:// among them).
     public static func request(urlString: String) -> URLRequest? {
-        guard let url = URL(string: urlString) else { return nil }
+        guard urlString.isValidHttpUrl(), let url = URL(string: urlString) else { return nil }
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringCacheData
         return request

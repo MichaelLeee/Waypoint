@@ -28,7 +28,10 @@ public struct SpeedSampleSeries: Sendable {
     public private(set) var samples = [SpeedSample]()
 
     public init(limit: Int) {
-        self.limit = limit
+        // Clamped like ConnectionTable's cap: a negative limit made
+        // `removeFirst(count - limit)` ask for more elements than exist and trap
+        // on the first append.
+        self.limit = max(0, limit)
     }
 
     public mutating func append(up: Int, down: Int, at date: Date) {

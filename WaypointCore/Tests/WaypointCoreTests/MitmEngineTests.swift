@@ -42,6 +42,17 @@ struct MitmRuleTests {
         #expect(!rule.matches(host: "badexample.com"))
         #expect(!rule.matches(host: "other.org"))
     }
+
+    // The suffix branch trimmed the rule host but the exact branch did not, so
+    // a padded rule matched in one mode and silently never in the other.
+    @Test("Padding is ignored on both the rule and the candidate")
+    func whitespaceInsensitive() {
+        let exact = MitmRule(kind: .reject, host: " ads.example.com ", headerKey: "", headerValue: "")
+        #expect(exact.matches(host: "ads.example.com"))
+        #expect(exact.matches(host: " ads.example.com\n"))
+        let suffix = MitmRule(kind: .reject, host: " .example.com ", headerKey: "", headerValue: "")
+        #expect(suffix.matches(host: "a.example.com"))
+    }
 }
 
 @Suite("HTTP wire helpers")

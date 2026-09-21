@@ -107,8 +107,11 @@ struct RewriteSettingsView: View {
 
     private func ruleBinding(_ index: Int, keyPath: WritableKeyPath<RewriteRule, RewriteRule.Kind>) -> Binding<RewriteRule.Kind> {
         Binding(
-            get: { store.rewriteRules[index][keyPath: keyPath] },
+            // Guarded like textBinding: SwiftUI can evaluate the getter with an
+            // index captured before a deletion.
+            get: { store.rewriteRules.indices.contains(index) ? store.rewriteRules[index][keyPath: keyPath] : .reject },
             set: { newValue in
+                guard store.rewriteRules.indices.contains(index) else { return }
                 store.updateRewriteRule(at: index) { $0[keyPath: keyPath] = newValue }
             }
         )

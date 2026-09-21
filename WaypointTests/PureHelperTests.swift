@@ -54,6 +54,28 @@ struct PureHelperTests {
         #expect(kDefaultConfigFilePath == Paths.localConfigPath(for: "config"))
     }
 
+    // Config names reach a file path from the add-config form, the waypoint://
+    // URL scheme and the Shortcuts surface, so a name carrying a path separator
+    // used to address a file outside the config folder.
+    @Test("A config name that would escape the config folder is rejected")
+    func invalidConfigNames() {
+        #expect(!Paths.isValidConfigName(""))
+        #expect(!Paths.isValidConfigName("."))
+        #expect(!Paths.isValidConfigName(".."))
+        #expect(!Paths.isValidConfigName("../../evil"))
+        #expect(!Paths.isValidConfigName("sub/name"))
+        #expect(!Paths.isValidConfigName("nul\0name"))
+        #expect(Paths.isValidConfigName("config"))
+        #expect(Paths.isValidConfigName("my-config.v2"))
+    }
+
+    @Test("An escaping config name cannot compose a path outside the config folder")
+    func invalidConfigNameStaysInFolder() {
+        #expect(Paths.configFileName(for: "../../evil") == "config.yaml")
+        #expect(Paths.localConfigPath(for: "../../evil") == Paths.localConfigPath(for: "config"))
+        #expect(!Paths.localConfigPath(for: "../evil").contains(".."))
+    }
+
     // MARK: - String+Encode
 
     @Test("Percent-encoding escapes characters a URL host cannot carry")

@@ -86,6 +86,13 @@ final class RemoteConfigStore {
         } else {
             configName = URL(string: urlString)?.host ?? "unknown"
         }
+        // The name becomes a file name under the config folder, so reject
+        // anything that would reach outside it instead of writing there.
+        guard Paths.isValidConfigName(configName) else {
+            alertMessage = NSLocalizedString("A config name cannot be empty or contain a slash.", comment: "")
+            showAlert = true
+            return
+        }
 
         if let existed = RemoteConfigManager.shared.configs.first(where: { $0.name == configName }) {
             guard context.allowAlt else {

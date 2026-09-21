@@ -22,6 +22,9 @@ struct UrlValidationTests {
         #expect(!"example.com".isValidHttpUrl())
         #expect(!"http://".isValidHttpUrl())
         #expect(!"/relative/path".isValidHttpUrl())
+        // Parses with a present-but-empty host, which a `host != nil` test
+        // alone would accept.
+        #expect(!"http:///path".isValidHttpUrl())
     }
 
     @Test func rejectsEmpty() {

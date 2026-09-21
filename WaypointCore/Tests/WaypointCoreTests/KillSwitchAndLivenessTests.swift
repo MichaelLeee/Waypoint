@@ -9,23 +9,42 @@ struct KillSwitchRulesTests {
 
     @Test func containsPassesForOwnUidAndRoot() {
         let rules = KillSwitchRules.compose(uid: 501, allowsLan: false)
-        #expect(rules.contains("pass out user 501 no state"))
-        #expect(rules.contains("pass out user root no state"))
-        #expect(rules.contains("pass on lo0 all no state"))
+        #expect(rules.contains("pass out quick user 501 no state"))
+        #expect(rules.contains("pass out quick user root no state"))
+        #expect(rules.contains("pass quick on lo0 all no state"))
     }
 
     @Test func lanPassOnlyWhenAllowed() {
         #expect(!KillSwitchRules.compose(uid: 501, allowsLan: false)
             .contains("192.168.0.0/16"))
         #expect(KillSwitchRules.compose(uid: 501, allowsLan: true)
-            .contains("pass out to { 192.168.0.0/16 10.0.0.0/8 172.16.0.0/12 } no state"))
+            .contains("pass out quick to { 192.168.0.0/16 10.0.0.0/8 172.16.0.0/12 } no state"))
     }
 
     @Test func lanPassSitsBeforeFinalBlock() {
         let rules = KillSwitchRules.compose(uid: 0, allowsLan: true)
-        let lanIndex = rules.index(of: "pass out to { 192.168.0.0/16")!
+        let lanIndex = rules.index(of: "pass out quick to { 192.168.0.0/16")!
         let blockIndex = rules.index(of: "block drop out all")!
         #expect(lanIndex < blockIndex)
+    }
+
+    // pf resolves pass/block by the LAST matching rule, so a catch-all block at
+    // the end wins over every exception that is not marked quick. Without quick
+    // on all of them, loading this anchor drops every outbound packet —
+    // loopback and the core's own upstream sockets included.
+    @Test func everyExceptionIsTerminal() {
+        for allowsLan in [true, false] {
+            let ruleLines = KillSwitchRules.compose(uid: 501, allowsLan: allowsLan)
+                .split(separator: "\n")
+                .map(String.init)
+                .filter { !$0.hasPrefix("#") && !$0.isEmpty }
+            for line in ruleLines where line.hasPrefix("pass") {
+                #expect(line.hasPrefix("pass quick") || line.hasPrefix("pass out quick"),
+                        "pass rule is not marked quick: \(line)")
+            }
+            #expect(ruleLines.filter { $0.hasPrefix("block") } == ["block drop out all"])
+            #expect(ruleLines.last == "block drop out all")
+        }
     }
 
     @Test func utunRangesEnumerated() {

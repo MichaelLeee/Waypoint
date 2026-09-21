@@ -200,7 +200,10 @@ extension ApiClient {
 extension ApiClient {
     func getConnections() async -> [ConnectionsWireMetadata] {
         guard let data = try? await send("/connections") else { return [] }
-        return (try? JSONDecoder().decode(ConnectionsSnapshot.self, from: data))?.connections ?? []
+        // Must be the shared decoder: a default JSONDecoder cannot read the
+        // ISO-8601 `start` string, which silently returned no connections at
+        // all and made "close connections for group" a no-op.
+        return (try? Self.connectionsDecoder.decode(ConnectionsSnapshot.self, from: data))?.connections ?? []
     }
 
     func closeConnection(_ id: String) async {

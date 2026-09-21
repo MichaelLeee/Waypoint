@@ -80,7 +80,10 @@ enum KeyboardShortCutManager {
 
         KeyboardShortcuts.onKeyUp(for: .openMenu) {
             MainActor.assumeIsolated {
-                AppDelegate.shared.statusItem.button?.performClick(nil)
+                // Optional: with the SwiftUI menu enabled, no NSStatusItem is
+                // ever created, so statusItem is nil and this shortcut has
+                // nothing to click.
+                AppDelegate.shared.statusItem?.button?.performClick(nil)
             }
         }
         KeyboardShortcuts.onKeyUp(for: .nativeDashboard) {

@@ -17,13 +17,20 @@ class Logger: @unchecked Sendable {
     private let logsDirectory: String
     private var currentFileHandle: FileHandle?
     private var currentFileName: String = ""
+    private var currentFileSize = 0
+
+    // The core logs continuously while the app runs (which is for days), so the
+    // day's file is capped and restarted from the top rather than growing
+    // without limit. Nothing is lost for diagnosis: every line also goes to the
+    // unified log via os.Logger.
+    private static let maxLogFileBytes = 20 * 1024 * 1024
 
     private init() {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Waypoint/Logs", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         logsDirectory = dir.path
-        pruneOldLogs()
+        // openLogFile prunes as well, on every roll to a new day's file.
         openLogFile()
     }
 
@@ -101,14 +108,29 @@ class Logger: @unchecked Sendable {
         }
         currentFileHandle = try? FileHandle(forWritingTo: URL(fileURLWithPath: path))
         if let handle = currentFileHandle {
-            _ = try? handle.seekToEnd()
+            currentFileSize = (try? handle.seekToEnd()) ?? 0
+        } else {
+            currentFileSize = 0
         }
+        // A run that spans days used to leave the older files behind, since
+        // pruning only happened once at launch.
+        pruneOldLogs()
     }
 
     private func appendToFile(_ line: String) {
         openLogFile()
         guard let handle = currentFileHandle, let data = "\(line)\n".data(using: .utf8) else { return }
+        if currentFileSize + data.count > Self.maxLogFileBytes {
+            do {
+                try handle.truncate(atOffset: 0)
+                _ = try handle.seek(toOffset: 0)
+                currentFileSize = 0
+            } catch {
+                return
+            }
+        }
         handle.write(data)
+        currentFileSize += data.count
     }
 
     private func pruneOldLogs() {

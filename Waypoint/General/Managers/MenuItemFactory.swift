@@ -92,10 +92,20 @@ final class MenuItemFactory {
 
     static func updateProxyList(withMenus menus: [NSMenuItem]) {
         let app = AppDelegate.shared
-        let startIndex = app.statusMenu.items.firstIndex(of: app.separatorLineTop)! + 1
-        let endIndex = app.statusMenu.items.firstIndex(of: app.sepatatorLineEndProxySelect)!
+        // The two separators bracket the proxy rows. If a rebuild ever leaves
+        // one out of the menu, or leaves them out of order, the old forced
+        // unwrap and the negative row count each trapped; skip instead.
+        guard let top = app.statusMenu.items.firstIndex(of: app.separatorLineTop),
+              let end = app.statusMenu.items.firstIndex(of: app.sepatatorLineEndProxySelect),
+              end >= top else {
+            Logger.log("updateProxyList: proxy separators missing from the menu", level: .error)
+            return
+        }
+        let startIndex = top + 1
         app.sepatatorLineEndProxySelect.isHidden = menus.isEmpty
-        for _ in 0 ..< endIndex - startIndex {
+        // Clamped so adjacent separators (zero existing rows) cannot form the
+        // negative range `startIndex ..< end`, which would trap.
+        for _ in 0 ..< max(0, end - startIndex) {
             app.statusMenu.removeItem(at: startIndex)
         }
         for each in menus {

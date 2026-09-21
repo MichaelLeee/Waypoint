@@ -12,7 +12,16 @@ struct SavedProxyModelTests {
         let a = SavedProxyModel(group: "GLOBAL", selected: "A", config: "config")
         let b = SavedProxyModel(group: "GLOBAL", selected: "B", config: "config")
         #expect(a.key == b.key)
-        #expect(a.key == "GLOBAL_config")
+        #expect(a.key == "6:GLOBAL|6:config")
+    }
+
+    // An unescaped "_" separator made these two records share a key, so dedupe
+    // dropped one and re-selecting a proxy removed the other.
+    @Test func keyDoesNotCollideOnUnderscores() {
+        let a = SavedProxyModel(group: "a_b", selected: "x", config: "c")
+        let b = SavedProxyModel(group: "a", selected: "x", config: "b_c")
+        #expect(a.key != b.key)
+        #expect(SavedProxyModel.deduplicated([a, b]) == [a, b])
     }
 
     @Test func keyDistinguishesGroupsAndConfigs() {

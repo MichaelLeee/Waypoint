@@ -46,6 +46,13 @@ struct RemoteConfigFetchTests {
         #expect(RemoteConfigFetch.request(urlString: "http://[::1") == nil)
     }
 
+    // The scheme is checked here too, not only by the UI gate: a persisted
+    // model can carry any scheme.
+    @Test func requestRejectsNonHttpSchemes() {
+        #expect(RemoteConfigFetch.request(urlString: "file:///etc/passwd") == nil)
+        #expect(RemoteConfigFetch.request(urlString: "ftp://example.com/x.yaml") == nil)
+    }
+
     @Test func requestUsesReloadIgnoringCacheData() {
         let request = RemoteConfigFetch.request(urlString: "https://example.com/config.yaml")
         #expect(request?.url?.absoluteString == "https://example.com/config.yaml")

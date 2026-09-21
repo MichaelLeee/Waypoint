@@ -50,6 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var lastSetByOtherObserved = false
     var trafficStreamTask: Task<Void, Never>?
     var logStreamTask: Task<Void, Never>?
+    var configSyncTask: Task<Void, Never>?
     var statusItemView: StatusItemViewProtocol!
     var isSpeedTesting = false
 
@@ -236,8 +237,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func checkMenuIconVisable() {
-        guard let button = statusItem.button else { assertionFailure(); return }
-        guard let window = button.window else { assertionFailure(); return }
+        // Not assertionFailure: a status item the menu bar is not currently
+        // showing has no button window (full menu bar, item hidden), which is a
+        // normal state rather than a programmer error — and the assertion aborts
+        // a Debug build, which is what the app is run from in development.
+        guard let button = statusItem?.button, let window = button.window else {
+            Logger.log("checkMenuIconVisable: status item has no window", level: .debug)
+            return
+        }
         let buttonRect = button.convert(button.bounds, to: nil)
         let onScreenRect = window.convertToScreen(buttonRect)
         var leftScreenX: CGFloat = 0

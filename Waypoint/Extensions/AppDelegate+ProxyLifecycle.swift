@@ -9,23 +9,14 @@ import Cocoa
 import WaypointNetworking
 
 extension AppDelegate {
-    func updateProxyList(withMenus menus: [NSMenuItem]) {
-        let startIndex = statusMenu.items.firstIndex(of: separatorLineTop)! + 1
-        let endIndex = statusMenu.items.firstIndex(of: sepatatorLineEndProxySelect)!
-        sepatatorLineEndProxySelect.isHidden = menus.isEmpty
-        for _ in 0 ..< endIndex - startIndex {
-            statusMenu.removeItem(at: startIndex)
-        }
-        for each in menus {
-            statusMenu.insertItem(each, at: startIndex)
-        }
-    }
-
     func updateConfigFiles() {
         guard let menu = configSeparatorLine.menu else { return }
         MenuItemFactory.generateSwitchConfigMenuItems {
             items in
-            let lineIndex = menu.items.firstIndex(of: self.configSeparatorLine)!
+            guard let lineIndex = menu.items.firstIndex(of: self.configSeparatorLine) else {
+                Logger.log("updateConfigFiles: config separator missing from the menu", level: .error)
+                return
+            }
             for _ in 0 ..< lineIndex {
                 menu.removeItem(at: 0)
             }
@@ -120,6 +111,11 @@ extension AppDelegate {
                 lastCoreStartError = error
                 ConfigManager.shared.isRunning = false
                 self.proxyModeMenuItem.isEnabled = false
+                // The engine was started above because building the effective
+                // config needs its bound port; with no core to feed it, leaving
+                // it listening would keep intercepting after the app reports the
+                // proxy as off.
+                MitmProxyServer.shared.stop()
                 Logger.log(error.localizedDescription, level: .error)
                 WaypointNotifier.postConfigErrorNotice(msg: error.localizedDescription)
             }
@@ -136,8 +132,13 @@ extension AppDelegate {
     }
 
     func syncConfig() {
-        Task {
-            ConfigManager.shared.currentConfig = await ApiClient.shared.requestConfig()
+        // Every menu open and every reload path calls this, so overlapping
+        // requests could land out of order and leave a stale config on screen.
+        configSyncTask?.cancel()
+        configSyncTask = Task {
+            let config = await ApiClient.shared.requestConfig()
+            guard !Task.isCancelled else { return }
+            ConfigManager.shared.currentConfig = config
         }
     }
 

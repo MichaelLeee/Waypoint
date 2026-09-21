@@ -122,6 +122,20 @@ struct WaypointConfigTests {
         #expect(!TunConfig.isValidHijackEntry("8.8.8.8"))
     }
 
+    // The old check only required hex digits and colons, so these survived
+    // sanitizing and made mihomo fail TUN startup — the failure the sanitizer
+    // exists to prevent.
+    @Test("Malformed IPv6 hijack entries are rejected so they get sanitized")
+    func hijackEntryRejectsMalformedIPv6() {
+        #expect(!TunConfig.isValidHijackEntry("1::2::3:53"))
+        #expect(!TunConfig.isValidHijackEntry("1:2:3:4:5:6:7:8:9:53"))
+        #expect(!TunConfig.isValidHijackEntry("12345::53"))
+        #expect(!TunConfig.isValidHijackEntry("::::53"))
+        #expect(TunConfig.isValidHijackEntry("2001:db8::1:53"))
+        #expect(TunConfig.isValidHijackEntry("[2001:db8::1]:53"))
+        #expect(TunConfig.isValidHijackEntry("2001:db8:0:0:0:0:0:1:53"))
+    }
+
     // MARK: - DnsConfig
 
     @Test("DNS block renders fake-ip defaults")
@@ -193,6 +207,17 @@ struct WaypointConfigTests {
         let adsCount = out.components(separatedBy: "GEOSITE,category-ads-all").count - 1
         #expect(adsCount == 1)
         #expect(out.components(separatedBy: "GEOSITE,category-public-tracker").count - 1 == 1)
+    }
+
+    // Matching a bare substring meant any mention of the rule — a comment, a
+    // proxy or group name — counted as "already injected" and silently disabled
+    // ad blocking altogether.
+    @Test("A rule name mentioned in a comment does not cancel the injection")
+    func adBlockIgnoresMereMentions() {
+        let config = "# see GEOSITE,category-ads-all docs\nrules:\n  - MATCH,DIRECT\n"
+        let out = AdBlockConfig.apply(to: config)
+        #expect(out.contains("  - GEOSITE,category-ads-all,REJECT"))
+        #expect(out.contains("  - GEOSITE,category-public-tracker,REJECT"))
     }
 
     // MARK: - YAML top-level detection

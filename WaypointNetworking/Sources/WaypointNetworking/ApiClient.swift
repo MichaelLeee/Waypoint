@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import os
 
 public struct ApiEndpoint: Sendable {
     public let url: String
@@ -24,6 +25,11 @@ public struct ApiEndpoint: Sendable {
 public actor ApiClient {
     private let session: URLSession
     private let endpointProvider: @Sendable () async -> ApiEndpoint
+
+    // The package cannot reach the app's Logger, and a stream failure used to
+    // leave no trace anywhere: a wrong secret or port showed up only as panels
+    // that stayed empty.
+    private static let oslog = os.Logger(subsystem: "org.waypnt.waypoint", category: "networking")
 
     public init(endpoint: @escaping @Sendable () async -> ApiEndpoint) {
         let configuration = URLSessionConfiguration.default
@@ -118,13 +124,14 @@ public actor ApiClient {
         secret.isEmpty ? [:] : ["Authorization": "Bearer \(secret)"]
     }
 
-    // Immutable decoder, used from the stream's @Sendable transform closure.
-    static let connectionsDecoder: JSONDecoder = {
+    /// Immutable decoder for a connections payload, used from the stream's
+    /// `@Sendable` transform closure and by every one-shot `/connections` fetch.
+    /// mihomo sends `start` as an ISO-8601 string, so a default `JSONDecoder`
+    /// (which expects a double) fails the whole decode and yields no
+    /// connections at all.
+    public static let connectionsDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: NSCalendar.Identifier.ISO8601.rawValue)
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SZ"
-        decoder.dateDecodingStrategy = .formatted(formatter)
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.js)
         return decoder
     }()
 
@@ -151,7 +158,10 @@ public actor ApiClient {
                 try await connect(path: path, continuation: continuation, parse: parse)
                 retryDelay = 1
             } catch {
-                // connection failed or dropped; back off and retry below
+                // Connection failed or dropped: back off and retry below, and
+                // record it — with the backoff this stays a handful of lines per
+                // minute rather than one per attempt.
+                Self.oslog.error("stream \(path, privacy: .public) failed: \(error.localizedDescription, privacy: .public)")
             }
             guard !Task.isCancelled else { break }
             try? await Task.sleep(nanoseconds: UInt64(retryDelay * 1_000_000_000))

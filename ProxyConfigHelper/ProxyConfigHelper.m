@@ -107,10 +107,13 @@ static SecCodeRef WPCodeForConnection(NSXPCConnection *connection) {
     return NULL;
 }
 
-/// Returns kSecCodeInfoTeamName for a code object, or nil for unsigned /
+/// Returns the signing Team ID for a code object, or nil for unsigned /
 /// ad-hoc signed binaries.
-// Recent SDKs no longer export the kSecCodeInfoTeamName constant; the
-// dictionary key's documented string value is unchanged.
+// The Team ID is kSecCodeInfoTeamIdentifier. It is read by string value
+// because SecCode.h declares the constant without publishing its literal;
+// "teamid" is the documented value and "TeamName" is kept as a fallback
+// spelling rather than betting on one.
+static NSString * const kWPTeamIdentifierKey = @"teamid";
 static NSString * const kWPTeamNameKey = @"TeamName";
 
 static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
@@ -120,8 +123,14 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
         return nil;
     }
     NSDictionary *info = CFBridgingRelease(infoRef);
-    NSString *teamName = info[kWPTeamNameKey];
-    return [teamName isKindOfClass:NSString.class] ? teamName : nil;
+    // kSecCodeInfoTeamIdentifier's string value is "teamid"; "TeamName" is kept
+    // as a fallback spelling. Reading only "TeamName" made this always return
+    // nil, which silently took the Team-ID comparison below out of service.
+    NSString *team = info[kWPTeamIdentifierKey];
+    if (![team isKindOfClass:NSString.class]) {
+        team = info[kWPTeamNameKey];
+    }
+    return [team isKindOfClass:NSString.class] ? team : nil;
 }
 
 - (void)logRejection: (NSXPCConnection *)connection reason:(NSString *)reason {
@@ -382,10 +391,13 @@ static NSString * const kWPEndMark = @"# <<< Waypoint kill switch <<<";
 /// Synchronous, idempotent teardown — also called from connection-invalidation
 /// and daemon-exit paths, not just the XPC entry point.
 - (void)clearFirewallState {
-    if (self.killSwitchActive) {
-        int flushStatus = 0;
-        [self runPfctlWithArgs:@[@"-a", kWPAnchorName, @"-F", @"all"] status:&flushStatus];
-    }
+    // Unconditional: killSwitchActive is in-memory only, so a helper killed
+    // while the switch was up (crash, SIGKILL, kickstart) left the anchor
+    // loaded with nothing to clear it. This runs on launch precisely to clean
+    // up after such a predecessor, and flushing an anchor that holds no rules
+    // is a no-op.
+    int flushStatus = 0;
+    [self runPfctlWithArgs:@[@"-a", kWPAnchorName, @"-F", @"all"] status:&flushStatus];
     self.killSwitchActive = NO;
 
     NSString *conf = [NSString stringWithContentsOfFile:kWPPfConfPath encoding:NSUTF8StringEncoding error:nil];

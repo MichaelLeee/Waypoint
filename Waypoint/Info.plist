@@ -89,12 +89,12 @@
 	<string>ProxySetting.sdef</string>
 	<key>SMAuthorizedClients</key>
 	<array>
-		<string>identifier "org.waypnt.waypoint" and anchor apple generic and certificate leaf[subject.OU] = "N48L43Q7F9"</string>
+		<string>identifier "org.waypnt.waypoint" and anchor apple generic and certificate leaf[subject.OU] = "$(DEVELOPMENT_TEAM)"</string>
 	</array>
 	<key>SMPrivilegedExecutables</key>
 	<dict>
 		<key>org.waypnt.waypoint.ProxyConfigHelper</key>
-		<string>anchor apple generic and identifier "org.waypnt.waypoint.ProxyConfigHelper" and certificate leaf[subject.OU] = N48L43Q7F9</string>
+		<string>anchor apple generic and identifier "org.waypnt.waypoint.ProxyConfigHelper" and certificate leaf[subject.OU] = $(DEVELOPMENT_TEAM)</string>
 	</dict>
 	<key>SUDisallowSelectChannel</key>
 	<false/>
