@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Values here must be LITERAL — no $(BUILD_SETTING) placeholders.
+
+  This file reaches the helper binary through the linker, not through Xcode's
+  Info.plist processing: the helper target's OTHER_LDFLAGS carry
+  "-sectcreate __TEXT __info_plist $(SRCROOT)/ProxyConfigHelper/Helper-Info.plist",
+  which embeds the source file verbatim. Whatever text is written here is what
+  CFBundleCopyInfoDictionaryForURL reads back at runtime, unexpanded.
+
+  That is why CFBundleShortVersionString is a literal: PrivilegedHelperManager
+  compares it against the installed helper's version to decide whether the
+  helper needs reinstalling, so a placeholder makes every launch report
+  "needs update" and sends the app into the install flow for a helper that is
+  already registered — which then fails with "Operation not permitted".
+
+  Keep CFBundleShortVersionString equal to the helper target's MARKETING_VERSION,
+  and keep the SMAuthorizedClients OU equal to the app's SMPrivilegedExecutables
+  OU in Waypoint/Info.plist. Change them together.
+-->
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
@@ -9,12 +28,12 @@
 	<key>CFBundleName</key>
 	<string>org.waypnt.waypoint.ProxyConfigHelper</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>2.6.0</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>2.6.0</string>
 	<key>SMAuthorizedClients</key>
 	<array>
-		<string>anchor apple generic and identifier &quot;org.waypnt.waypoint&quot; and certificate leaf[subject.OU] = $(DEVELOPMENT_TEAM)</string>
+		<string>anchor apple generic and identifier &quot;org.waypnt.waypoint&quot; and certificate leaf[subject.OU] = N48L43Q7F9</string>
 	</array>
 </dict>
 </plist>

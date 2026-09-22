@@ -143,6 +143,16 @@ class PrivilegedHelperManager: @unchecked Sendable {
         }
 
         let helperURL = Bundle.main.bundleURL.appendingPathComponent("Contents/Library/LaunchServices/" + PrivilegedHelperManager.machServiceName)
+        // Reads the helper's EMBEDDED Info.plist, which the linker copied
+        // verbatim from ProxyConfigHelper/Helper-Info.plist through the helper
+        // target's `-sectcreate __TEXT __info_plist` flag. It never goes through
+        // Xcode's Info.plist processing, so a $(BUILD_SETTING) placeholder in
+        // that file arrives here unexpanded: it would never equal the version an
+        // installed helper reports, every launch would decide the helper needs
+        // reinstalling, and the install flow would run against an
+        // already-registered helper and fail with "Operation not permitted".
+        // That file's version must stay a literal, kept in step with the helper
+        // target's MARKETING_VERSION by hand.
         guard
             let helperBundleInfo = CFBundleCopyInfoDictionaryForURL(helperURL as CFURL) as? [String: Any],
             let helperVersion = helperBundleInfo["CFBundleShortVersionString"] as? String else {
