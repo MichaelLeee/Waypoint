@@ -182,7 +182,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         helperInstaller.checkInstall()
         ConfigFileManager.copySampleConfigIfNeed()
 
-        PFMoveToApplicationsFolderIfNecessary()
+        // LetsMove installs by trashing the destination copy first. When that
+        // trash fails — the installed copy is in use, or a same-named item is
+        // already in the Trash — the copy then fails with dupFNErr (EEXIST) and
+        // it puts up a modal "could not move" alert. Anyone who builds from
+        // Xcode while a copy is installed hits that on every run, so skip the
+        // attempt when a copy is already there and log it instead.
+        let bundleName = Bundle.main.bundleURL.lastPathComponent
+        let installedCopies = ["/Applications", NSHomeDirectory() + "/Applications"]
+            .map { "\($0)/\(bundleName)" }
+        if !installedCopies.contains(Bundle.main.bundlePath),
+           installedCopies.contains(where: { FileManager.default.fileExists(atPath: $0) }) {
+            Logger.log("not moving to Applications: \(bundleName) is already installed there", level: .warning)
+        } else {
+            PFMoveToApplicationsFolderIfNecessary()
+        }
 
         // claer not existed selected model
         removeUnExistProxyGroups()

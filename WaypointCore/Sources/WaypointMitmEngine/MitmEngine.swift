@@ -31,11 +31,25 @@ public final class MitmEngine: @unchecked Sendable {
         }
     }
 
-    private let group = MultiThreadedEventLoopGroup(numberOfThreads: 2)
     private let lock = NSLock()
     private var serverChannel: Channel?
     private var activeRules: [MitmRule] = []
     private var activeProvider: MitmIdentityProviding?
+
+    /// Event loop group, created on the first bind. The embedder holds this
+    /// engine in a process-lifetime singleton, so nothing ever shuts the group
+    /// down: building it eagerly (as a stored `let`) started two idle event-loop
+    /// threads for every run, including runs with interception switched off.
+    private var storedGroup: MultiThreadedEventLoopGroup?
+
+    private func eventLoopGroupForBind() -> MultiThreadedEventLoopGroup {
+        lock.lock()
+        defer { lock.unlock() }
+        if let storedGroup { return storedGroup }
+        let created = MultiThreadedEventLoopGroup(numberOfThreads: 2)
+        storedGroup = created
+        return created
+    }
 
     /// Port the engine bound after a successful `start`; 0 when stopped.
     public private(set) var port: UInt16 = 0
@@ -45,7 +59,9 @@ public final class MitmEngine: @unchecked Sendable {
     public init() {}
 
     deinit {
-        try? group.syncShutdownGracefully()
+        // Only what was actually created; touching a lazy group here would
+        // spawn the threads just to shut them down.
+        try? storedGroup?.syncShutdownGracefully()
     }
 
     // MARK: - Lifecycle
@@ -97,7 +113,7 @@ public final class MitmEngine: @unchecked Sendable {
     }
 
     private func bind(_ port: UInt16, provider: MitmIdentityProviding) throws -> Channel {
-        let bootstrap = ServerBootstrap(group: group)
+        let bootstrap = ServerBootstrap(group: eventLoopGroupForBind())
             .serverChannelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .childChannelInitializer { [weak self] channel in
                 guard let self else { return channel.close() }

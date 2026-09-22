@@ -23,6 +23,22 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
     private static let iconOnlyLength: CGFloat = 25
     private static let displayHeight: CGFloat = 22
 
+    private static let displayFont = NSFont.monospacedDigitSystemFont(
+        ofSize: min(StatusItemTool.font.pointSize, 8), weight: .regular)
+
+    /// Width of the widest rate string, measured once. It depends only on the
+    /// font, and the display image is rebuilt for every traffic sample, so
+    /// measuring the samples in there re-ran text layout roughly once a second.
+    private static let textSlotWidth: CGFloat = {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: displayFont,
+            .foregroundColor: NSColor.black,
+        ]
+        return ["1023.9GB/s", "99.99MB/s", "1023KB/s"]
+            .map { ceil(($0 as NSString).size(withAttributes: attributes).width) }
+            .max() ?? 0
+    }()
+
     private let statusItem: NSStatusItem
     private let button: NSStatusBarButton
 
@@ -86,15 +102,13 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
             }
             return
         }
-        let font = NSFont.monospacedDigitSystemFont(
-            ofSize: min(StatusItemTool.font.pointSize, 8), weight: .regular)
         let upText = "↑\(SpeedUtils.getSpeedString(for: up))"
         let downText = "↓\(SpeedUtils.getSpeedString(for: down))"
         guard upText != lastUpText || downText != lastDownText else { return }
         lastUpText = upText
         lastDownText = downText
         let image = Self.stackedDisplayImage(
-            icon: StatusItemTool.menuImage, lines: [upText, downText], font: font)
+            icon: StatusItemTool.menuImage, lines: [upText, downText])
         button.image = image
         button.title = ""
         let targetLength = ceil(image.size.width) + Self.buttonPadding
@@ -106,24 +120,21 @@ final class StatusItemView: NSObject, StatusItemViewProtocol {
     /// Icon at the left, the given text lines stacked at the right, drawn at
     /// 2x backing resolution so text stays crisp on Retina. Rendered black
     /// with `isTemplate = true` so the menu bar tints it for dark/light mode.
-    private static func stackedDisplayImage(
-        icon: NSImage, lines: [String], font: NSFont) -> NSImage {
+    private static func stackedDisplayImage(icon: NSImage, lines: [String]) -> NSImage {
+        let font = displayFont
         let attributes: [NSAttributedString.Key: Any] = [
             .font: font,
             .foregroundColor: NSColor.black,
         ]
         let attributed = lines.map { NSAttributedString(string: $0, attributes: attributes) }
         let lineHeight = ceil(font.ascender - font.descender)
-        // Fixed-width slot sized for the widest possible rate string. The
-        // status button centers its content, so letting the image width
-        // follow the current digit count would re-center (wiggle) icon and
-        // text on every 1↔3-digit transition; a constant width keeps the
-        // layout anchored, with the extra space trailing after the text.
-        let slotSamples = ["1023.9GB/s", "99.99MB/s", "1023KB/s"]
-        let textWidth = slotSamples
-            .map { ceil(($0 as NSString).size(withAttributes: attributes).width) }
-            .max() ?? 0
-        let width = iconLength + iconTextGap + textWidth
+        // Fixed-width slot sized for the widest possible rate string (measured
+        // once, see textSlotWidth). The status button centers its content, so
+        // letting the image width follow the current digit count would
+        // re-center (wiggle) icon and text on every 1↔3-digit transition; a
+        // constant width keeps the layout anchored, with the extra space
+        // trailing after the text.
+        let width = iconLength + iconTextGap + textSlotWidth
         let height = max(displayHeight, lineHeight * CGFloat(lines.count))
 
         guard let rep = NSBitmapImageRep(

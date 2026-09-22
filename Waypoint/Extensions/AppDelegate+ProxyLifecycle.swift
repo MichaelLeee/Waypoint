@@ -102,6 +102,13 @@ extension AppDelegate {
                 ConfigManager.shared.isRunning = true
                 self.proxyModeMenuItem.isEnabled = true
                 self.dashboardMenuItem.isEnabled = true
+                // A running core is all the streams need, so start them (and take
+                // a config snapshot) here instead of only after a successful
+                // config PUT. A failed PUT used to leave the speed indicator,
+                // the dashboard and "Set as system proxy" with nothing to read,
+                // for the rest of the session.
+                self.syncConfig()
+                self.resetStreamApi()
                 if Settings.killSwitchEnabled {
                     if let killSwitchError = await KillSwitchManager.shared.applyNow() {
                         Logger.log("kill switch failed: \(killSwitchError)", level: .error)

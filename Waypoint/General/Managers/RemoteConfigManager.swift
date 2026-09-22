@@ -137,8 +137,10 @@ final class RemoteConfigManager {
     /// Downloads a remote config. Returns (config text or nil, suggested filename).
     nonisolated static func getRemoteConfigData(config: RemoteConfigModel) async -> (String?, String?) {
         guard let urlRequest = RemoteConfigFetch.request(urlString: config.url) else {
-            assertionFailure()
-            Logger.log("[getRemoteConfigData] url incorrect,\(config.name) \(config.url)")
+            // A stored config can carry any URL (older versions and hand-edited
+            // blobs are accepted), so this is reachable data, not a programmer
+            // error — and assertionFailure aborts a Debug build.
+            Logger.log("[getRemoteConfigData] url incorrect,\(config.name) \(config.url)", level: .error)
             return (nil, nil)
         }
         do {
@@ -247,7 +249,9 @@ final class RemoteConfigManager {
             alert.runModal()
             return
         }
-        Settings.configAutoUpdateInterval = TimeInterval(intValue * 60 * 60)
+        // Int arithmetic here trapped on overflow: any value above Int.max/3600
+        // passed the `> 0` check and killed the app from the settings dialog.
+        Settings.configAutoUpdateInterval = TimeInterval(intValue) * 60 * 60
         RemoteConfigManager.shared.autoUpdateCheck()
     }
 }

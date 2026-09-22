@@ -29,6 +29,8 @@ final class MitmCertificateAuthority: @unchecked Sendable, MitmIdentityProviding
     private var caCertificate: SecCertificate?
     /// host -> issued leaf; caches so repeat CONNECTs skip re-signing.
     private var leafIdentities: [String: MitmIdentity] = [:]
+    /// Cap on that cache; see `identity(forHost:)`.
+    private static let maxCachedLeaves = 512
 
     enum AuthorityError: LocalizedError {
         case keyUnavailable(OSStatus)
@@ -53,13 +55,6 @@ final class MitmCertificateAuthority: @unchecked Sendable, MitmIdentityProviding
     }
 
     // MARK: - Root authority
-
-    /// Loads or creates the CA key and its self-signed certificate.
-    func ensureAuthority() throws {
-        lock.lock()
-        defer { lock.unlock() }
-        try ensureAuthorityLocked()
-    }
 
     private func ensureAuthorityLocked() throws {
         if caPrivateKey != nil, caCertificate != nil { return }
@@ -96,9 +91,19 @@ final class MitmCertificateAuthority: @unchecked Sendable, MitmIdentityProviding
     }
 
     func certificateData() throws -> Data {
+        SecCertificateCopyData(try currentCertificate()) as Data
+    }
+
+    /// The CA certificate, created if needed and read under the lock. Callers
+    /// outside the class used to reach `caCertificate` directly (or to call
+    /// `ensureAuthorityLocked()` without holding the lock), while the identity
+    /// path mutates that state from engine event-loop threads.
+    private func currentCertificate() throws -> SecCertificate {
+        lock.lock()
+        defer { lock.unlock() }
         try ensureAuthorityLocked()
         guard let caCertificate else { throw AuthorityError.notInitialized }
-        return SecCertificateCopyData(caCertificate) as Data
+        return caCertificate
     }
 
     /// Writes the root certificate next to the app's config folder for manual
@@ -117,8 +122,7 @@ final class MitmCertificateAuthority: @unchecked Sendable, MitmIdentityProviding
     /// a message and falls back to exporting the .cer for Keychain Access.
     func installAndTrust() -> String? {
         do {
-            try ensureAuthority()
-            guard let caCertificate else { throw AuthorityError.notInitialized }
+            let caCertificate = try currentCertificate()
             // sec_trust_settings_for_certificate and the
             // kSecTrustSettingsResult* constants are not exported to Swift;
             // the documented string value of the trustRoot result is
@@ -183,6 +187,13 @@ final class MitmCertificateAuthority: @unchecked Sendable, MitmIdentityProviding
             certificateDER: [UInt8](der),
             privateKeyDER: [UInt8](leafKey.derRepresentation)
         )
+        // Bounded: `host` is whatever the client asked to reach, so a page that
+        // touches many distinct names — or a hostile one — would otherwise grow
+        // this map without limit, holding a keypair and a certificate per entry
+        // for the life of the process. Re-minting a leaf is cheap.
+        if leafIdentities.count >= Self.maxCachedLeaves {
+            leafIdentities.removeAll(keepingCapacity: true)
+        }
         leafIdentities[host] = identity
         return identity
     }

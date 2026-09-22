@@ -174,13 +174,17 @@ class NetworkChangeNotifier {
             while ptr != nil {
                 defer { ptr = ptr?.pointee.ifa_next }
                 guard let interface = ptr?.pointee else { continue }
-                let addrFamily = interface.ifa_addr.pointee.sa_family
+                // getifaddrs can hand back entries with a NULL ifa_addr (seen on
+                // some virtual interfaces); dereferencing it crashed the app on
+                // a routine path (menu, IP display, every network change).
+                guard let address = interface.ifa_addr else { continue }
+                let addrFamily = address.pointee.sa_family
                 if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
                     let name = String(cString: interface.ifa_name)
                     if name == primary {
                         var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
-                        getnameinfo(interface.ifa_addr,
-                                    socklen_t(interface.ifa_addr.pointee.sa_len),
+                        getnameinfo(address,
+                                    socklen_t(address.pointee.sa_len),
                                     &hostname,
                                     socklen_t(hostname.count),
                                     nil,

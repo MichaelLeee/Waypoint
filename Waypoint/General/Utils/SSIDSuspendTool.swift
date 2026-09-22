@@ -66,6 +66,16 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
         update()
     }
 
+    /// `.authorized` is the legacy alias for `.authorizedAlways`, and macOS
+    /// usually reports `.authorizedWhenInUse` instead — which the plain
+    /// `!= .authorized` checks treated as a denial, so a user who picked "While
+    /// Using" had SSID auto-suspend silently never engage.
+    @MainActor
+    private var hasLocationPermission: Bool {
+        let status = locationManager.authorizationStatus
+        return status == .authorized || status == .authorizedWhenInUse
+    }
+
     @MainActor
     func requestPermissionIfNeed() {
         defer {
@@ -78,7 +88,7 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
                 locationManager.desiredAccuracy = kCLLocationAccuracyReduced
                 locationManager.delegate = self
                 locationManager.requestAlwaysAuthorization()
-            } else if locationManager.authorizationStatus != .authorized {
+            } else if !hasLocationPermission {
                 if showNoticeOnNotPermission {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                         guard let self else { return }
@@ -109,7 +119,8 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
 
     private func getCurrentSSID() -> String? {
         if #available(macOS 14, *) {
-            if locationManager.authorizationStatus != .authorized {
+            let status = locationManager.authorizationStatus
+            if status != .authorized && status != .authorizedWhenInUse {
                 // CoreWLAN returns nil without location permission; the old
                 // fallback (airport) was removed by Apple in macOS 14.4.
                 Logger.log("location permission not granted, cannot read SSID", level: .debug)
@@ -132,7 +143,7 @@ extension SSIDSuspendTool: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         Logger.log("Location status: \(status.rawValue)")
         MainActor.assumeIsolated {
-            if status != .authorized, showNoticeOnNotPermission {
+            if status != .authorized, status != .authorizedWhenInUse, showNoticeOnNotPermission {
                 openLocationSettings()
             }
             showNoticeOnNotPermission = false

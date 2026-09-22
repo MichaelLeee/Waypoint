@@ -16,8 +16,18 @@ extension AppDelegate {
         // Otherwise the checkmark is stale until the first toggle: the action
         // now derives its new value from the manager, and this sink mirrors it.
         showNetSpeedIndicatorMenuItem.state = ConfigManager.shared.showNetSpeedIndicator ? .on : .off
-        // The remaining publishers drive the NSStatusItem view only.
-        guard !Settings.useSwiftUIMenu else { return }
+        // The remaining publishers drive the NSStatusItem view only. The SwiftUI
+        // MenuBarExtra draws the icon with no room for rates and there is no
+        // NSStatusItem view behind it, so "Show Network Indicator" cannot have
+        // any effect while it is selected — say so in the log rather than
+        // silently ignoring the setting.
+        guard !Settings.useSwiftUIMenu else {
+            if ConfigManager.shared.showNetSpeedIndicator {
+                Logger.log("network speed indicator is unavailable while the SwiftUI status menu is enabled",
+                           level: .warning)
+            }
+            return
+        }
         NotificationCenter.default
             .publisher(for: .waypointShowNetSpeedIndicatorDidChange)
             .receive(on: DispatchQueue.main)

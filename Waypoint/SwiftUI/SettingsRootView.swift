@@ -373,7 +373,7 @@ struct SettingsRootView: View {
                     NSLocalizedString("Use SwiftUI status menu (MenuBarExtra)", comment: ""),
                     isOn: $store.useSwiftUIMenu
                 )
-                Text(NSLocalizedString("Switches between the AppKit status menu and the SwiftUI MenuBarExtra comparison UI. Restart the app to apply.", comment: ""))
+                Text(NSLocalizedString("Switches between the AppKit status menu and the SwiftUI MenuBarExtra comparison UI. Restart the app to apply. The network speed indicator is not available in the SwiftUI menu.", comment: ""))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Button(NSLocalizedString("Restart App", comment: "")) {

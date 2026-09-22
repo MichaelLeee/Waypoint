@@ -137,7 +137,20 @@ extension AppDelegate {
             if canSaveProxy {
                 systemProxy.saveProxy()
             }
-            systemProxy.enableProxy()
+            // The ports come from the running core, so with none the toggle
+            // flips to "on" over a proxy that was never set — which looks
+            // exactly like a silent failure. Say so instead.
+            let config = ConfigManager.shared.currentConfig
+            if (config?.usedHttpPort ?? 0) > 0, (config?.usedSocksPort ?? 0) > 0 {
+                systemProxy.enableProxy()
+            } else {
+                Logger.log("set system proxy: core reports no usable proxy port", level: .error)
+                WaypointNotifier.post(
+                    title: NSLocalizedString("System proxy not set", comment: ""),
+                    info: NSLocalizedString(
+                        "The proxy core is not reporting a listening port yet, so the system proxy was left unchanged. Make sure the proxy is running, then try again.",
+                        comment: ""))
+            }
         } else {
             systemProxy.disableProxy(forceDisable: false, complete: nil)
         }

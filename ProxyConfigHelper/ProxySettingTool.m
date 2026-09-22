@@ -190,6 +190,7 @@
                  filterInterface:(BOOL)filterInterface
                          devices:(void(^)(NSString *, NSDictionary *))callback {
     NSDictionary *sets = (__bridge NSDictionary *)SCPreferencesGetValue(ref, kSCPrefNetworkServices);
+    NSMutableArray<NSString *> *matched = [NSMutableArray array];
     for (NSString *key in [sets allKeys]) {
         NSMutableDictionary *dict = [sets objectForKey:key];
         NSString *hardware = [dict valueForKeyPath:@"Interface.Hardware"];
@@ -197,8 +198,23 @@
             || [hardware isEqualToString:@"Wi-Fi"]
             || [hardware isEqualToString:@"Ethernet"]
             ) {
-            callback(key,dict);
+            [matched addObject:key];
         }
+    }
+
+    // The filter above is a short allow-list of hardware strings, so a service
+    // reporting anything else (a USB-C dock, a Thunderbolt bridge, tethering)
+    // matched no entry at all: every caller then applied nothing and still
+    // reported success, which is what "the system proxy does nothing" looks
+    // like. Fall back to every service — the same thing the filter does when
+    // it is switched off — rather than silently no-op.
+    if (filterInterface && matched.count == 0) {
+        NSLog(@"[waypoint-helper] no network service matched the interface filter; applying to all services");
+        [matched addObjectsFromArray:[sets allKeys]];
+    }
+
+    for (NSString *key in matched) {
+        callback(key, [sets objectForKey:key]);
     }
 }
 

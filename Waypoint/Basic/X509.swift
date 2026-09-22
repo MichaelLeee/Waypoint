@@ -158,6 +158,11 @@ enum X509 {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyMMddHHmmss'Z'"
         formatter.timeZone = TimeZone(identifier: "UTC")
+        // Required for a fixed-format date: without it the year field follows the
+        // user's region calendar (a Buddhist-calendar user would get "69" for
+        // 2026), producing a certificate that is not valid for decades — and the
+        // bad CA is persisted in the keychain, so it survives relaunch.
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         return tlv(0x17, Array(formatter.string(from: date).utf8))
     }
 
@@ -271,13 +276,18 @@ enum X509 {
         ) else {
             throw X509Error.signatureFailed(statusCode(of: error))
         }
-        // Convert DER-encoded r||s into the 64-byte concatenation form.
+        // Convert DER-encoded r||s into the 64-byte concatenation form. A DER
+        // INTEGER is at most 33 bytes (a leading 0x00 is added when the high bit
+        // is set), so taking the low 32 bytes and left-padding is the whole
+        // conversion. Trimming "trailing zeros" first — as this used to — drops
+        // significant low bytes instead: a scalar ending in 0x00 (about 1 in
+        // 256) came out shifted, the certificate failed to verify, and because
+        // leaves are cached per host that host stayed broken for the session.
         let der = [UInt8](signature as Data)
         let (r, s) = parseTwoIntegers(der)
         var padded: [UInt8] = []
         for scalar in [r, s] {
-            let trimmed = scalar.reversed().drop { $0 == 0 }.reversed()
-            var fixed = [UInt8](trimmed.suffix(32))
+            var fixed = [UInt8](scalar.suffix(32))
             while fixed.count < 32 {
                 fixed.insert(0, at: 0)
             }

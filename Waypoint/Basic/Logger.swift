@@ -18,6 +18,10 @@ class Logger: @unchecked Sendable {
     private var currentFileHandle: FileHandle?
     private var currentFileName: String = ""
     private var currentFileSize = 0
+    // Built once and reused; only touched on `Self.queue`.
+    private var dayFormatter: DateFormatter?
+    // Wall-clock instant after which the day's file may have changed.
+    private var nextDayCheck = Date.distantPast
 
     // The core logs continuously while the app runs (which is for days), so the
     // day's file is capped and restarted from the top rather than growing
@@ -89,14 +93,30 @@ class Logger: @unchecked Sendable {
     }
 
     private func logFileName(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = .current
-        return "waypoint-\(formatter.string(from: date)).log"
+        // Instance state rather than a static: this class is @unchecked
+        // Sendable and the formatter is only ever touched on `Self.queue`.
+        if dayFormatter == nil {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            formatter.timeZone = .current
+            dayFormatter = formatter
+        }
+        let day = dayFormatter?.string(from: date) ?? ""
+        return "waypoint-\(day).log"
     }
 
     private func openLogFile() {
-        let name = logFileName(Date())
+        // appendToFile calls this for every line, and the core's log stream
+        // delivers a line per connection at info level: deciding whether the day
+        // rolled over used to allocate a DateFormatter and run ICU on every one
+        // of them. A date comparison does it instead, so that work happens once
+        // a day.
+        let now = Date()
+        if !currentFileName.isEmpty, now < nextDayCheck {
+            return
+        }
+        nextDayCheck = Calendar.current.startOfDay(for: now).addingTimeInterval(24 * 60 * 60)
+        let name = logFileName(now)
         guard name != currentFileName else { return }
         currentFileHandle?.closeFile()
         currentFileHandle = nil
