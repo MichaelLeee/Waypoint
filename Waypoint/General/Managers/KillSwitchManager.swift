@@ -69,8 +69,11 @@ final class KillSwitchManager {
 
 extension KillSwitchManager {
     /// The full anchor ruleset; composition lives in WaypointCore so it is
-    /// unit-testable without a helper.
+    /// unit-testable without a helper. `Settings.tunEnabled` is also what makes
+    /// `CoreProcessManager` spawn the core through the helper, i.e. as root.
     static func buildRules() -> String {
-        KillSwitchRules.compose(uid: getuid(), allowsLan: ConfigManager.allowConnectFromLan)
+        KillSwitchRules.compose(uid: getuid(),
+                                allowsLan: ConfigManager.allowConnectFromLan,
+                                coreRunsAsRoot: Settings.tunEnabled)
     }
 }

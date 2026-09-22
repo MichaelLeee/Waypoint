@@ -61,7 +61,12 @@ extension PrivilegedHelperManager {
             let appleScript = NSAppleScript(source: appleScriptStr)
             var dict: NSDictionary?
             if appleScript?.executeAndReturnError(&dict) == nil {
-                Logger.log("apple script failed")
+                // The dictionary holds the only actionable part — the AppKit
+                // error number and message, e.g. -128 "User canceled." — and a
+                // bare "failed" line left this path undiagnosable. Logged
+                // verbatim so it depends on no AppKit key constant.
+                Logger.log("legacy install apple script failed: \(String(describing: dict))",
+                           level: .error)
             } else {
                 Logger.log("apple script result: \(String(describing: dict))")
             }

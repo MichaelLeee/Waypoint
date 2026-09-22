@@ -25,10 +25,15 @@ class WaypointStatusTool {
         // Zero ports is legitimate with Enhanced Mode (TUN) or a portless
         // config — it must never block the UI or quit the app, so this stays
         // a dismissible notification, not a modal alert.
+        //
+        // It is also what a failed listener looks like: mihomo logs "bind:
+        // address already in use" and then carries on running, so a core whose
+        // port was taken still reports itself as up. Both causes are named here
+        // because the fixes are completely different.
         WaypointNotifier.post(
             title: NSLocalizedString("Ports Open Fail", comment: ""),
             info: NSLocalizedString(
-                "The proxy core reports no open ports, so the system proxy cannot be set. Edit your config to add a mixed-port (or enable Enhanced Mode), then reload the config.",
+                "The proxy core reports no open ports, so the system proxy cannot be set. Either the config has no mixed-port (add one, or enable Enhanced Mode), or something else already holds the port — a core left over from an earlier run is the usual cause; run `sudo pkill -f mihomo` in Terminal and reload the config.",
                 comment: ""))
     }
 }

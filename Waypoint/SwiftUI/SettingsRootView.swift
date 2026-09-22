@@ -140,6 +140,10 @@ struct SettingsRootView: View {
                     NSLocalizedString("Allow LAN connections to API", comment: ""),
                     isOn: $store.apiPortAllowLan
                 )
+                .disabled(true)
+                Text(NSLocalizedString("The controller API is bound to 127.0.0.1 in this build, so LAN access is not available. It speaks plain HTTP and grants full control of the proxy, so it stays loopback-only until it can be served over TLS.", comment: ""))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 SecureField(NSLocalizedString("Secret", comment: ""), text: $store.apiSecret)
                 Toggle(
                     NSLocalizedString("Use this secret even if the config defines one", comment: ""),

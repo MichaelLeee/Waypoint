@@ -60,7 +60,18 @@ extension AppDelegate {
 
         let secret = ConfigManager.shared.overrideSecret ?? Settings.apiSecret
         let port = Settings.apiPort > 0 ? Settings.apiPort : 9090
-        let apiAddr = Settings.apiPortAllowLan ? "0.0.0.0:\(port)" : "127.0.0.1:\(port)"
+        // Loopback only, always. The controller API hands out full control of
+        // the proxy (select a node, close connections, rewrite the route) and it
+        // speaks plain HTTP, so a 0.0.0.0 bind would hand that to every host on
+        // the network along with the secret, which travels in the clear.
+        // Settings.apiPortAllowLan is deliberately ignored until the API can be
+        // served over TLS; the setting is left in place so the choice can be
+        // revisited rather than silently lost.
+        if Settings.apiPortAllowLan {
+            Logger.log("ignoring 'Allow LAN connections to API': the controller is loopback-only in this build",
+                       level: .warning)
+        }
+        let apiAddr = "127.0.0.1:\(port)"
 
         var externalUI: String?
         if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html", inDirectory: "dashboard") {

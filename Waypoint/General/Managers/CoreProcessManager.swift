@@ -16,6 +16,7 @@ final class CoreProcessManager {
         case binaryNotFound
         case launchFailed(String)
         case notReady(String)
+        case apiPortInUse(String)
 
         var errorDescription: String? {
             switch self {
@@ -25,6 +26,8 @@ final class CoreProcessManager {
                 return "Failed to launch mihomo: \(message)"
             case let .notReady(message):
                 return "mihomo did not become ready: \(message)"
+            case let .apiPortInUse(address):
+                return "Something is already listening on \(address), so Waypoint could not start its own proxy. A core left over from an earlier run is the usual cause: quit any other proxy and run `sudo pkill -f mihomo` in Terminal, then try again."
             }
         }
     }
@@ -80,6 +83,17 @@ final class CoreProcessManager {
         }
         terminatingProcesses.removeAll()
 
+        // Before spawning: refuse to start when the API port already belongs to
+        // another process. mihomo treats "address already in use" on its
+        // external controller as non-fatal and keeps running, so without this
+        // the readiness probe below is answered by whatever is already
+        // listening: the app reports the core as running while its own core
+        // bound nothing, and every later reading — ports, proxies, config —
+        // silently describes the other process. That surfaces as "the core is
+        // running but the system proxy cannot be set", which is exactly what a
+        // leftover core from a previous run produces.
+        try await requireAPIPortFree(externalController: externalController, secret: secret)
+
         if Settings.tunEnabled {
             try await startViaHelper(configPath: configPath,
                                      homeDir: homeDir,
@@ -106,6 +120,39 @@ final class CoreProcessManager {
             throw error
         }
         startLivenessMonitor(externalController: externalController, secret: secret)
+    }
+
+    /// Waits for the controller address to stop answering, then throws.
+    ///
+    /// The wait matters: a core this app just asked to stop can still answer for
+    /// a few seconds — in TUN mode the stop goes through the helper, which
+    /// SIGTERMs the core and waits up to 3s before SIGKILLing it, and telling
+    /// the user "something else is listening" for our own dying core would be
+    /// wrong. Five seconds covers that window with margin.
+    private func requireAPIPortFree(externalController: String, secret: String) async throws {
+        for attempt in 0 ..< 25 {
+            if !(await apiPortIsAnswering(externalController: externalController, secret: secret)) {
+                return
+            }
+            if attempt < 24 {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+            }
+        }
+        throw CoreProcessError.apiPortInUse(externalController)
+    }
+
+    /// True when anything at all answers HTTP on the controller address. A wrong
+    /// or absent secret still answers (401), which is why this checks that a
+    /// response arrived rather than that it was a success.
+    private func apiPortIsAnswering(externalController: String, secret: String) async -> Bool {
+        guard let url = URL(string: "http://\(externalController)/version") else { return false }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 1
+        if !secret.isEmpty {
+            request.setValue("Bearer \(secret)", forHTTPHeaderField: "Authorization")
+        }
+        guard let (_, response) = try? await session.data(for: request) else { return false }
+        return response is HTTPURLResponse
     }
 
     /// Spawns mihomo as the current user. Used for system-proxy mode (no TUN).

@@ -165,12 +165,20 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
         return YES;
     }
 
-    // Helper is ad-hoc/unsigned (development builds): no team identity exists
-    // to compare, so fall back to requiring the caller's signing identifier
-    // to be our app's. Xcode derives the identifier from the bundle
-    // identifier, but old ad-hoc-era builds carried the executable name, so
-    // both are accepted. Enforced automatically once the helper carries real
-    // distribution signing — the Team ID branch above takes over then.
+    // Helper is ad-hoc/unsigned (development builds): no team identity exists to
+    // compare, so fall back to requiring the caller's signing identifier to be
+    // our app's. Xcode derives the identifier from the bundle identifier, but
+    // old ad-hoc-era builds carried the executable name, so both are accepted.
+    // The Team ID branch above takes over automatically once the helper carries
+    // real distribution signing.
+    //
+    // NOT A SECURITY BOUNDARY. A signing identifier is a string anyone can
+    // choose: `codesign -s - -i Waypoint /tmp/anything` produces a process that
+    // passes this check. What it still does is keep an ordinary, unrelated
+    // process from connecting by accident, which is why it is kept rather than
+    // removed. Everything reachable from here therefore has to be safe against
+    // a hostile local caller on its own — that is the reason
+    // `launchCoreWithBinaryPath:` validates its argument instead of trusting it.
     static NSString * const kWPOurSigningId = @"org.waypnt.waypoint";
     static NSString * const kWPLegacySigningId = @"Waypoint";
     NSString *remoteSigningId = nil;
@@ -194,8 +202,9 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
                             remoteSigningId ?: @"<none>", kWPOurSigningId]];
         return NO;
     }
-    fprintf(stderr, "[waypoint-helper] WARNING: ad-hoc dev mode — validating callers by "
-            "signing identifier only; sign with a real team certificate for full enforcement\n");
+    fprintf(stderr, "[waypoint-helper] WARNING: ad-hoc dev mode — callers are identified by "
+            "signing identifier only, which is spoofable. This is NOT a security boundary; "
+            "sign with a real team certificate to get one.\n");
     return YES;
 }
 
@@ -273,6 +282,93 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
 
 // MARK: - Root core spawn (TUN mode)
 
+// MARK: - Core binary validation
+
+/// The directory of the app bundle this helper ships inside. The helper sits at
+/// `<App>.app/Contents/Library/LaunchServices/<helper>`, so mainBundle resolves
+/// to the enclosing app; if it somehow does not (a bare executable), walk up
+/// from the helper's own path.
+static NSString *WPContainingAppPath(void) {
+    NSString *bundlePath = [NSBundle mainBundle].bundlePath;
+    if ([bundlePath.pathExtension isEqualToString:@"app"]) {
+        return bundlePath;
+    }
+    NSString *dir = [NSBundle mainBundle].executablePath;
+    for (int i = 0; i < 6 && dir.length > 1; i++) {
+        dir = [dir stringByDeletingLastPathComponent];
+        if ([dir.pathExtension isEqualToString:@"app"]) {
+            return dir;
+        }
+    }
+    return dir;
+}
+
+/// `launchCoreWithBinaryPath:` runs its argument as root, so the path cannot be
+/// taken on trust. Two things make that necessary even though XPC callers are
+/// checked: the caller check is an ad-hoc signing-*identifier* match, which any
+/// local process can satisfy (see the note there), and a path is data rather
+/// than identity — a compromised or merely buggy client could otherwise hand
+/// over `/tmp/anything` and get it executed with root privileges.
+///
+/// Only the proxy binary inside this app bundle is accepted, and only when it
+/// is not writable by anyone other than the bundle's own owner. That is the
+/// meaningful boundary here: substituting the binary requires write access to
+/// the app bundle, which the owning user already has (so nothing is gained) but
+/// other local accounts and group members do not.
+- (BOOL)validateCoreBinaryPath:(NSString *)path error:(NSString **)error {
+    if (path.length == 0) {
+        if (error) { *error = @"refusing to launch an empty core path"; }
+        return NO;
+    }
+
+    NSString *resolved = [path stringByResolvingSymlinksInPath];
+    NSString *appPath = [WPContainingAppPath() stringByResolvingSymlinksInPath];
+    NSString *expected = [[appPath stringByAppendingPathComponent:@"Contents/Resources"]
+        stringByAppendingPathComponent:resolved.lastPathComponent];
+    if (![resolved isEqualToString:expected]) {
+        if (error) {
+            *error = [NSString stringWithFormat:
+                @"refusing to run %@ as root: the proxy binary must be %@", path, expected];
+        }
+        return NO;
+    }
+
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDictionary *attrs = [fm attributesOfItemAtPath:resolved error:nil];
+    if (!attrs) {
+        if (error) { *error = [NSString stringWithFormat:@"proxy binary is missing: %@", resolved]; }
+        return NO;
+    }
+    if (![fm isExecutableFileAtPath:resolved]) {
+        if (error) { *error = [NSString stringWithFormat:@"proxy binary is not executable: %@", resolved]; }
+        return NO;
+    }
+
+    NSUInteger mode = [attrs[NSFilePosixPermissions] unsignedIntegerValue];
+    if ((mode & 0x12) != 0) { // 0o020 group write, 0o002 other write
+        if (error) {
+            *error = [NSString stringWithFormat:
+                @"refusing to run %@ as root: it is writable by group or others (mode %o)",
+                resolved, (unsigned)mode];
+        }
+        return NO;
+    }
+
+    NSUInteger owner = [attrs[NSFileOwnerAccountID] unsignedIntegerValue];
+    NSDictionary *bundleAttrs = [fm attributesOfItemAtPath:appPath error:nil];
+    NSUInteger bundleOwner = [bundleAttrs[NSFileOwnerAccountID] unsignedIntegerValue];
+    if (owner != bundleOwner) {
+        if (error) {
+            *error = [NSString stringWithFormat:
+                @"refusing to run %@ as root: it is owned by uid %lu but the app bundle by uid %lu",
+                resolved, (unsigned long)owner, (unsigned long)bundleOwner];
+        }
+        return NO;
+    }
+
+    return YES;
+}
+
 - (void)launchCoreWithBinaryPath:(NSString *)binaryPath
                       configPath:(NSString *)configPath
                          homeDir:(NSString *)homeDir
@@ -282,6 +378,12 @@ static NSString *WPTeamIdentifierOfCode(SecCodeRef code) {
                            reply:(stringReplyBlock)reply {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self stopCoreTask];
+
+        NSString *pathError = nil;
+        if (![self validateCoreBinaryPath:binaryPath error:&pathError]) {
+            reply(pathError);
+            return;
+        }
 
         NSMutableArray<NSString *> *args = [NSMutableArray arrayWithArray:@[
             @"-f", configPath,
@@ -351,6 +453,14 @@ static NSString * const kWPEndMark = @"# <<< Waypoint kill switch <<<";
     dispatch_async(dispatch_get_main_queue(), ^{
         self.pfWasRunningBeforeUs = [self pfIsEnabled];
 
+        // /etc/pf.anchors is present on a stock macOS, but the atomic write
+        // below fails with a bare "no such file" if it is not, which reads like
+        // a kill-switch bug rather than a missing directory.
+        [[NSFileManager defaultManager] createDirectoryAtPath:[kWPAnchorFile stringByDeletingLastPathComponent]
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:nil];
+
         NSError *writeError = nil;
         [rulesText writeToFile:kWPAnchorFile atomically:YES encoding:NSUTF8StringEncoding error:&writeError];
         if (writeError) {
@@ -358,27 +468,87 @@ static NSString * const kWPEndMark = @"# <<< Waypoint kill switch <<<";
             return;
         }
 
-        // Runtime-only load. Never reference the anchor from /etc/pf.conf: a
-        // persistent "load anchor" would re-apply the lockout rules at every
-        // boot, bricking the network whenever the app (and its teardown) is
-        // absent. clearFirewallState still removes blocks left by older builds.
-        int loadStatus = 0;
-        NSString *output = [self runPfctlWithArgs:@[@"-a", kWPAnchorName, @"-f", kWPAnchorFile] status:&loadStatus];
-        if (loadStatus != 0) {
-            reply([NSString stringWithFormat:@"pfctl failed: %@", output]);
-            return;
-        }
-
         int enableStatus = 0;
-        output = [self runPfctlWithArgs:@[@"-e"] status:&enableStatus];
+        NSString *output = [self runPfctlWithArgs:@[@"-e"] status:&enableStatus];
         // "pf already enabled" exits non-zero but is not an error for us.
         if (enableStatus != 0 && ![self pfIsEnabled]) {
             reply([NSString stringWithFormat:@"pfctl failed: %@", output]);
             return;
         }
+
+        // The anchor has to be *referenced* by the main ruleset or pf never
+        // evaluates it: `pfctl -a name -f file` only loads rules into the named
+        // anchor, it does not put the anchor in the evaluation path. Without the
+        // reference in pf.conf the previously loaded rules sat there unused and
+        // the switch silently protected nothing — it failed open.
+        //
+        // A bare `anchor "name"` is the safe form: unlike `load anchor`, it
+        // reads no file at boot, so after a restart it references an empty
+        // anchor and drops nothing. The rules themselves are loaded at runtime
+        // below and do not survive a reboot. clearFirewallState removes this
+        // block again on teardown.
+        NSString *referenceError = [self installPfConfAnchorReference];
+        if (referenceError) {
+            reply(referenceError);
+            return;
+        }
+
+        // After the reference, so that reloading pf.conf cannot drop the freshly
+        // loaded rules: `pfctl -f` re-reads the main ruleset and the anchors it
+        // mentions.
+        int loadStatus = 0;
+        output = [self runPfctlWithArgs:@[@"-a", kWPAnchorName, @"-f", kWPAnchorFile] status:&loadStatus];
+        if (loadStatus != 0) {
+            reply([NSString stringWithFormat:@"pfctl failed: %@", output]);
+            return;
+        }
+
         self.killSwitchActive = YES;
         reply(nil);
     });
+}
+
+/// Adds a marker-delimited `anchor "org.waypnt.waypoint"` line to /etc/pf.conf
+/// and reloads it. Returns nil on success (including "already present"),
+/// otherwise a message for the caller. Keeps a one-time backup of pf.conf.
+- (NSString *)installPfConfAnchorReference {
+    NSString *conf = [NSString stringWithContentsOfFile:kWPPfConfPath
+                                               encoding:NSUTF8StringEncoding
+                                                  error:nil];
+    if (!conf) {
+        return [NSString stringWithFormat:@"failed to read %@", kWPPfConfPath];
+    }
+    if ([conf rangeOfString:kWPBeginMark].location != NSNotFound) {
+        return nil;
+    }
+
+    NSMutableString *updated = [NSMutableString stringWithString:conf];
+    if (![updated hasSuffix:@"\n"]) {
+        [updated appendString:@"\n"];
+    }
+    [updated appendFormat:@"%@\nanchor \"%@\"\n%@\n", kWPBeginMark, kWPAnchorName, kWPEndMark];
+
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *backup = [kWPPfConfPath stringByAppendingPathExtension:@"waypoint-backup"];
+    if (![fm fileExistsAtPath:backup]) {
+        [conf writeToFile:backup atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    }
+
+    NSError *writeError = nil;
+    if (![updated writeToFile:kWPPfConfPath atomically:YES encoding:NSUTF8StringEncoding error:&writeError]) {
+        return writeError.localizedDescription ?: @"failed to update pf.conf";
+    }
+
+    int reloadStatus = 0;
+    NSString *output = [self runPfctlWithArgs:@[@"-f", kWPPfConfPath] status:&reloadStatus];
+    if (reloadStatus != 0) {
+        // Put the original back rather than leave a reference pf cannot parse.
+        [conf writeToFile:kWPPfConfPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        int restoreStatus = 0;
+        [self runPfctlWithArgs:@[@"-f", kWPPfConfPath] status:&restoreStatus];
+        return [NSString stringWithFormat:@"pf.conf rejected the kill-switch anchor: %@", output];
+    }
+    return nil;
 }
 
 - (void)clearFirewallKillSwitch:(stringReplyBlock)reply {
