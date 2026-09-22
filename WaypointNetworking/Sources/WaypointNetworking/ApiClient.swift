@@ -154,7 +154,7 @@ public actor ApiClient {
         policy: AsyncStream<T>.Continuation.BufferingPolicy = .unbounded,
         parse: @escaping @Sendable (String) -> T?
     ) -> AsyncStream<T> {
-        AsyncStream(policy) { continuation in
+        AsyncStream(T.self, bufferingPolicy: policy) { continuation in
             let task = Task {
                 await self.runStream(path: path, continuation: continuation, parse: parse)
             }
