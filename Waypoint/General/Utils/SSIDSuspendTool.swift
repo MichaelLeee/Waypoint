@@ -66,14 +66,13 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
         update()
     }
 
-    /// `.authorized` is the legacy alias for `.authorizedAlways`, and macOS
-    /// usually reports `.authorizedWhenInUse` instead — which the plain
-    /// `!= .authorized` checks treated as a denial, so a user who picked "While
-    /// Using" had SSID auto-suspend silently never engage.
-    @MainActor
-    private var hasLocationPermission: Bool {
-        let status = locationManager.authorizationStatus
-        return status == .authorized || status == .authorizedWhenInUse
+    /// `.authorized` is the legacy name for `.authorizedAlways`, and on macOS it
+    /// is the only granted status: `.authorizedWhenInUse` is declared
+    /// unavailable here, and the framework answers a `requestAlwaysAuthorization`
+    /// with authorized or denied. Kept as one named predicate so the three call
+    /// sites cannot drift apart.
+    private static func isAuthorized(_ status: CLAuthorizationStatus) -> Bool {
+        status == .authorized
     }
 
     @MainActor
@@ -88,7 +87,7 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
                 locationManager.desiredAccuracy = kCLLocationAccuracyReduced
                 locationManager.delegate = self
                 locationManager.requestAlwaysAuthorization()
-            } else if !hasLocationPermission {
+            } else if !Self.isAuthorized(locationManager.authorizationStatus) {
                 if showNoticeOnNotPermission {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                         guard let self else { return }
@@ -120,7 +119,7 @@ class SSIDSuspendTool: NSObject, @unchecked Sendable {
     private func getCurrentSSID() -> String? {
         if #available(macOS 14, *) {
             let status = locationManager.authorizationStatus
-            if status != .authorized && status != .authorizedWhenInUse {
+            if !Self.isAuthorized(status) {
                 // CoreWLAN returns nil without location permission; the old
                 // fallback (airport) was removed by Apple in macOS 14.4.
                 Logger.log("location permission not granted, cannot read SSID", level: .debug)
@@ -143,7 +142,7 @@ extension SSIDSuspendTool: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         Logger.log("Location status: \(status.rawValue)")
         MainActor.assumeIsolated {
-            if status != .authorized, status != .authorizedWhenInUse, showNoticeOnNotPermission {
+            if !Self.isAuthorized(status), showNoticeOnNotPermission {
                 openLocationSettings()
             }
             showNoticeOnNotPermission = false
