@@ -75,7 +75,7 @@ public actor ApiClient {
     // MARK: - Streams
 
     public func trafficStream() -> AsyncStream<TrafficSnapshot> {
-        stream("/traffic") { text in
+        stream("/traffic", policy: .bufferingNewest(1)) { text in
             guard let data = text.data(using: .utf8),
                   let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let up = obj["up"] as? Int,
@@ -85,7 +85,10 @@ public actor ApiClient {
     }
 
     public func logStream(level: String) -> AsyncStream<LogEntry> {
-        stream("/logs?level=\(level)") { text in
+        // Bounded, unlike the others: a log line is worth keeping (it is the
+        // user's diagnostic record) but not worth unbounded memory, so the
+        // newest lines win once the consumer falls this far behind.
+        stream("/logs?level=\(level)", policy: .bufferingNewest(4_096)) { text in
             guard let data = text.data(using: .utf8),
                   let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
             let log = obj["payload"] as? String ?? ""
@@ -95,7 +98,7 @@ public actor ApiClient {
     }
 
     public func memoryStream() -> AsyncStream<MemorySnapshot> {
-        stream("/memory") { text in
+        stream("/memory", policy: .bufferingNewest(1)) { text in
             guard let data = text.data(using: .utf8),
                   let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let inuse = obj["inuse"] as? Int else { return nil }
@@ -103,6 +106,11 @@ public actor ApiClient {
         }
     }
 
+    /// Left on the default unbounded policy on purpose: each snapshot is a delta
+    /// against the previous one for every connection, so dropping a frame makes
+    /// the next frame's rate the difference over a longer interval while it is
+    /// still displayed as a per-second figure. The frame rate here is the core's
+    /// own (about 1/s), not client-driven.
     public func connectionsStream() -> AsyncStream<ConnectionsSnapshot> {
         stream("/connections") { text in
             guard let data = text.data(using: .utf8),
@@ -135,11 +143,18 @@ public actor ApiClient {
         return decoder
     }()
 
+    /// `policy` decides what happens when the consumer cannot keep up with the
+    /// socket. `AsyncStream` defaults to `.unbounded`, which for these endpoints
+    /// means the queue grows for as long as the app stays saturated — this
+    /// process is meant to run for days. Snapshots of a single running value
+    /// take `.bufferingNewest(1)`; only streams that need every frame keep the
+    /// unbounded default.
     private func stream<T: Sendable>(
         _ path: String,
+        policy: AsyncStream<T>.Continuation.BufferingPolicy = .unbounded,
         parse: @escaping @Sendable (String) -> T?
     ) -> AsyncStream<T> {
-        AsyncStream { continuation in
+        AsyncStream(policy) { continuation in
             let task = Task {
                 await self.runStream(path: path, continuation: continuation, parse: parse)
             }
