@@ -16,7 +16,6 @@ final class CoreProcessManager {
         case binaryNotFound
         case launchFailed(String)
         case notReady(String)
-        case apiPortInUse(String)
 
         var errorDescription: String? {
             switch self {
@@ -26,8 +25,6 @@ final class CoreProcessManager {
                 return "Failed to launch mihomo: \(message)"
             case let .notReady(message):
                 return "mihomo did not become ready: \(message)"
-            case let .apiPortInUse(address):
-                return "Something is already listening on \(address), so Waypoint could not start its own proxy. A core left over from an earlier run is the usual cause: quit any other proxy and run `sudo pkill -f mihomo` in Terminal, then try again."
             }
         }
     }
@@ -83,16 +80,16 @@ final class CoreProcessManager {
         }
         terminatingProcesses.removeAll()
 
-        // Before spawning: refuse to start when the API port already belongs to
-        // another process. mihomo treats "address already in use" on its
-        // external controller as non-fatal and keeps running, so without this
-        // the readiness probe below is answered by whatever is already
-        // listening: the app reports the core as running while its own core
-        // bound nothing, and every later reading — ports, proxies, config —
-        // silently describes the other process. That surfaces as "the core is
-        // running but the system proxy cannot be set", which is exactly what a
-        // leftover core from a previous run produces.
-        try await requireAPIPortFree(externalController: externalController, secret: secret)
+        // Warn, never block. mihomo treats "address already in use" on its
+        // external controller as non-fatal and keeps running, so if something
+        // else already holds that port the readiness probe below is answered by
+        // it: the app reports the core as running while its own core bound
+        // nothing, and every later reading — ports, proxies, config — silently
+        // describes the other process. A leftover core from an earlier run is
+        // the usual cause and the log says so, but refusing to start here would
+        // turn a proxy that still works on its own ports into one that does not
+        // run at all, which is worse than the confusion it prevents.
+        await warnIfAPIPortIsTaken(externalController: externalController, secret: secret)
 
         if Settings.tunEnabled {
             try await startViaHelper(configPath: configPath,
@@ -122,14 +119,13 @@ final class CoreProcessManager {
         startLivenessMonitor(externalController: externalController, secret: secret)
     }
 
-    /// Waits for the controller address to stop answering, then throws.
-    ///
-    /// The wait matters: a core this app just asked to stop can still answer for
-    /// a few seconds — in TUN mode the stop goes through the helper, which
-    /// SIGTERMs the core and waits up to 3s before SIGKILLing it, and telling
-    /// the user "something else is listening" for our own dying core would be
-    /// wrong. Five seconds covers that window with margin.
-    private func requireAPIPortFree(externalController: String, secret: String) async throws {
+    /// Reports — without changing behaviour — that the controller address is
+    /// already in use. Waits first, because a core this app just asked to stop
+    /// can still answer for a few seconds: in TUN mode the stop goes through the
+    /// helper, which SIGTERMs the core and waits up to 3s before SIGKILLing it,
+    /// and warning about our own dying core would be wrong. Five seconds covers
+    /// that window with margin.
+    private func warnIfAPIPortIsTaken(externalController: String, secret: String) async {
         for attempt in 0 ..< 25 {
             if !(await apiPortIsAnswering(externalController: externalController, secret: secret)) {
                 return
@@ -138,7 +134,8 @@ final class CoreProcessManager {
                 try? await Task.sleep(nanoseconds: 200_000_000)
             }
         }
-        throw CoreProcessError.apiPortInUse(externalController)
+        Logger.log("something is already listening on \(externalController): this core will not be able to use the controller port, and a leftover core from an earlier run is the usual cause — `sudo pkill -f mihomo` in Terminal clears it",
+                   level: .error)
     }
 
     /// True when anything at all answers HTTP on the controller address. A wrong
