@@ -83,7 +83,11 @@ class ProxyMenuItem: NSMenuItem, @unchecked Sendable {
         menu?.cancelTracking()
     }
 
-    @MainActor private func updateSelected(_ selected: Bool) {
+    /// Marks this row as the group's selected member (or not). Internal because
+    /// the selection action applies it to the whole submenu: a row rendered by
+    /// a view ignores `state`, so the only way to move the checkmark is through
+    /// here.
+    @MainActor func updateSelected(_ selected: Bool) {
         if let v = view as? ProxyItemView {
             v.update(selected: selected)
         } else {

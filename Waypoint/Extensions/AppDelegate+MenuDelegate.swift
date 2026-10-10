@@ -17,6 +17,34 @@ extension AppDelegate: NSMenuDelegate {
                                         userInfo: ["show": hasMenuSelected()])
     }
 
+    func menuWillOpen(_ menu: NSMenu) {
+        guard menu === statusMenu else { return }
+        startProxyRefreshTimer()
+    }
+
+    /// Re-reads the proxy state once a second while the menu is open. Without
+    /// it the rows only ever changed when the menu opened, so a node picked by a
+    /// url-test group, the dashboard, another client or a Shortcut stayed
+    /// invisible until the menu was dismissed and reopened.
+    private func startProxyRefreshTimer() {
+        guard proxyRefreshTimer == nil else { return }
+        // Added to the common modes on purpose: a menu runs the run loop in
+        // .eventTracking while it is tracking, which a default-mode timer never
+        // fires in — the refresh would only land after the menu closed.
+        let timer = Timer(timeInterval: 1, repeats: true) { _ in
+            MainActor.assumeIsolated {
+                MenuItemFactory.refreshExistingMenuItems()
+            }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        proxyRefreshTimer = timer
+    }
+
+    private func stopProxyRefreshTimer() {
+        proxyRefreshTimer?.invalidate()
+        proxyRefreshTimer = nil
+    }
+
     func menu(_ menu: NSMenu, willHighlight item: NSMenuItem?) {
         menu.items.forEach {
             ($0.view as? ProxyGroupMenuHighlightDelegate)?.highlight(item: item)
@@ -24,6 +52,9 @@ extension AppDelegate: NSMenuDelegate {
     }
 
     func menuDidClose(_ menu: NSMenu) {
+        if menu === statusMenu {
+            stopProxyRefreshTimer()
+        }
         menu.items.forEach {
             ($0.view as? ProxyGroupMenuHighlightDelegate)?.highlight(item: nil)
         }

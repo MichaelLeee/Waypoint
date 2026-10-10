@@ -51,6 +51,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var trafficStreamTask: Task<Void, Never>?
     var logStreamTask: Task<Void, Never>?
     var configSyncTask: Task<Void, Never>?
+    /// Runs only while the status menu is open; see AppDelegate+MenuDelegate.
+    var proxyRefreshTimer: Timer?
     var statusItemView: StatusItemViewProtocol!
     var isSpeedTesting = false
 

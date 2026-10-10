@@ -11,12 +11,31 @@ import WaypointCore
 final class MenuItemFactory {
     private static var cachedProxyData: WaypointProxyResp?
 
+    /// What the menu last drew for each proxy, keyed by name. The menu is
+    /// refreshed on a timer while it is open, and publishing an unchanged model
+    /// makes every row rebuild its text — and every group row rebuild its
+    /// selected-node label — once a second for no reason.
+    private static var publishedFingerprints: [String: String] = [:]
+
+    /// Skipped refresh already running; see `refreshExistingMenuItems`.
+    private static var refreshInFlight = false
+
     nonisolated static let useViewToRenderProxy: Bool = AppDelegate.isAboveMacOS152
 
     // MARK: - Public
 
+    /// Re-reads the core's proxy state and pushes what changed to the rows that
+    /// are on screen. Called when the menu opens and on a timer while it is
+    /// open, so a selection made anywhere else — an auto-selecting group, the
+    /// dashboard, another client, a Shortcut — shows up without reopening it.
     static func refreshExistingMenuItems() {
+        // A tick whose predecessor is still in flight is dropped: a slow or
+        // stuck core must not accumulate overlapping requests while the menu
+        // sits open.
+        guard !refreshInFlight else { return }
+        refreshInFlight = true
         Task {
+            defer { refreshInFlight = false }
             let info = await ApiClient.shared.getMergedProxyData()
             if info?.proxiesMap.keys != cachedProxyData?.proxiesMap.keys {
                 // force update menu
@@ -24,7 +43,10 @@ final class MenuItemFactory {
                 return
             }
 
-            for proxy in info?.proxies ?? [] {
+            let (changed, fingerprints) = changedProxies(info?.proxies ?? [],
+                                                         since: publishedFingerprints)
+            publishedFingerprints = fingerprints
+            for proxy in changed {
                 ProxyUpdateHub.shared.proxyDidUpdate(proxy)
             }
         }
@@ -33,9 +55,41 @@ final class MenuItemFactory {
     static func recreateProxyMenuItems() {
         Task {
             let proxyInfo = await ApiClient.shared.getMergedProxyData()
-            cachedProxyData = proxyInfo
             refreshMenuItems(mergedData: proxyInfo)
         }
+    }
+
+    /// The proxies whose drawn state differs from `previous`, together with the
+    /// fingerprint map to compare against next time. Kept separate from the
+    /// I/O so the change detection can be tested without a menu or a core.
+    static func changedProxies(_ proxies: [WaypointProxy],
+                               since previous: [String: String]) -> (changed: [WaypointProxy], fingerprints: [String: String]) {
+        let fingerprints = fingerprintMap(of: proxies)
+        let changed = proxies.filter { previous[$0.name] != fingerprints[$0.name] }
+        return (changed, fingerprints)
+    }
+
+    /// Fingerprints for every proxy, for use as the new baseline.
+    static func fingerprintMap(of proxies: [WaypointProxy]) -> [String: String] {
+        var map = [String: String](minimumCapacity: proxies.count)
+        for proxy in proxies {
+            map[proxy.name] = fingerprint(of: proxy)
+        }
+        return map
+    }
+
+    /// Everything the rows and their history submenus draw for one proxy: the
+    /// group's selected member, the alive flag, and the newest delay sample
+    /// (including how many samples there are, which is what the history submenu
+    /// lists).
+    private static func fingerprint(of proxy: WaypointProxy) -> String {
+        let latest = proxy.history.last
+        return [
+            proxy.now ?? "-",
+            proxy.alive.map { $0 ? "alive" : "dead" } ?? "-",
+            latest.map { "\($0.delay)/\($0.meanDelay.map(String.init) ?? "-")" } ?? "-",
+            String(proxy.history.count),
+        ].joined(separator: "|")
     }
 
     static func refreshMenuItems(mergedData proxyInfo: WaypointProxyResp?) {
@@ -61,6 +115,12 @@ final class MenuItemFactory {
         }
         let items = Array(menuItems.reversed())
         updateProxyList(withMenus: items)
+        // These rows were just built from this data, so it is the baseline for
+        // "what changed": without recording it here, every later refresh sees a
+        // proxy-name set that never matches the cached one and rebuilds the whole
+        // menu again — every time the menu opens.
+        cachedProxyData = proxyInfo
+        publishedFingerprints = fingerprintMap(of: proxyInfo.proxies)
     }
 
     static func generateSwitchConfigMenuItems(complete: @escaping (([NSMenuItem]) -> Void)) {
@@ -252,10 +312,14 @@ extension MenuItemFactory {
         Task {
             let success = await ApiClient.shared.updateProxyGroup(group: proxyGroup, selectProxy: proxyName)
             guard success else { return }
-            for items in sender.menu?.items ?? [NSMenuItem]() {
-                items.state = .off
+            // Through the row's own update path, not by assigning `state`: on
+            // this deployment target the rows render through a view, and a
+            // view-backed menu item draws no state of its own, so setting it
+            // left the checkmark on the previously selected node until the next
+            // refresh came back.
+            for item in sender.menu?.items ?? [NSMenuItem]() {
+                (item as? ProxyMenuItem)?.updateSelected(item === sender)
             }
-            sender.state = .on
             // remember select proxy
             let newModel = SavedProxyModel(group: proxyGroup, selected: proxyName, config: ConfigManager.selectConfigName)
             ConfigManager.selectedProxyRecords.removeAll { model -> Bool in
