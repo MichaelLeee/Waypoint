@@ -133,7 +133,14 @@ class UserNotificationCenterDelegate: NSObject, UNUserNotificationCenterDelegate
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         if let identifier = response.notification.request.content.userInfo["identifier"] as? String {
-            handleNotificationActive(with: identifier)
+            // Hop rather than assume: this callback comes from an API that
+            // documents no delivery thread, and `handleNotificationActive` is
+            // main-bound, so assuming here is a trap (not a no-op) in a debug
+            // build if the callback ever lands elsewhere. The completion handler
+            // does not wait on this work, so deferring it costs nothing.
+            DispatchQueue.main.async { [weak self] in
+                self?.handleNotificationActive(with: identifier)
+            }
         }
         center.removeAllDeliveredNotifications()
         completionHandler()
@@ -143,8 +150,9 @@ class UserNotificationCenterDelegate: NSObject, UNUserNotificationCenterDelegate
         completionHandler([.list, .banner])
     }
 
+    /// Main-thread only: both callers hop here (the delegate above, and the
+    /// main-actor alert path).
     func handleNotificationActive(with identifier: String) {
-        // Delegate callbacks and modal alerts arrive on the main thread.
         MainActor.assumeIsolated {
             switch identifier {
             case "postConfigFileChangeDetectionNotice":

@@ -65,6 +65,12 @@ final class CoreProcessManager {
                externalController: String,
                secret: String,
                externalUI: String? = nil) async throws {
+        // Before stop(): stop() clears the pid record this reads, and only a
+        // core left behind by a *process that died* still has a record. A core
+        // of ours that is still live is recognised and left alone here, then
+        // stopped properly just below.
+        await reapAbandonedCoreIfAny()
+
         stop()
         // Wait for any previously stopped local core to actually exit before
         // relaunching, otherwise the new mihomo races a still-dying one for
@@ -117,6 +123,115 @@ final class CoreProcessManager {
             throw error
         }
         startLivenessMonitor(externalController: externalController, secret: secret)
+    }
+
+    // MARK: - Cleaning up a core left behind
+
+    /// Stops a core this app spawned and then died without stopping — a crash
+    /// runs no cleanup, and the core is a separate process, so it survives with
+    /// every port it listens on still bound. The next launch would then find its
+    /// own listeners taken and read the orphan's state instead of its own.
+    ///
+    /// Only a core that this app's own pid record points at, that is a Waypoint
+    /// core, and whose parent is launchd (i.e. genuinely orphaned rather than
+    /// serving a running app instance) is signalled; the decision itself lives
+    /// in `StaleCoreReaping` so it can be unit-tested. TUN mode is not covered:
+    /// there the helper owns the child and the app never learns its pid.
+    private func reapAbandonedCoreIfAny() async {
+        guard let expectedCorePath = Self.binaryPath(),
+              let pid = AbandonedCoreRecord.read() else { return }
+
+        guard let info = Self.processInfo(of: pid) else {
+            // The pid is gone; the record is simply stale.
+            AbandonedCoreRecord.clear()
+            return
+        }
+
+        switch StaleCoreReaping.verdict(pid: pid,
+                                        parentPid: info.parentPid,
+                                        command: info.command,
+                                        expectedCorePath: expectedCorePath) {
+        case .gone:
+            AbandonedCoreRecord.clear()
+        case .notOurs:
+            Logger.log("leaving pid \(pid) alone: \(info.command) is not an abandoned core of this app",
+                       level: .debug)
+        case .reap:
+            Logger.log("stopping the proxy core left behind by an earlier run (pid \(pid))", level: .warning)
+            guard kill(pid, SIGTERM) == 0 else {
+                // Not ours to signal — in TUN mode the core runs as root, so
+                // only the helper or an administrator can stop it. Say so
+                // instead of waiting on a process that is not going anywhere.
+                Logger.log("could not stop the leftover core (pid \(pid)): not permitted — run `sudo pkill -f mihomo` to clear it",
+                           level: .error)
+                return
+            }
+            if await !waitForExit(pid: pid, seconds: 3) {
+                Logger.log("leftover core (pid \(pid)) ignored SIGTERM; killing it", level: .warning)
+                kill(pid, SIGKILL)
+                _ = await waitForExit(pid: pid, seconds: 2)
+            }
+            AbandonedCoreRecord.clear()
+        }
+    }
+
+    /// Parent pid and command line as `ps` reports them, or nil when no such
+    /// process exists. `ps` rather than a pid-based API on purpose: it reports a
+    /// root-owned core too, which the app cannot inspect any other way.
+    private static func processInfo(of pid: Int32) -> (parentPid: Int, command: String)? {
+        let ps = Process()
+        ps.executableURL = URL(fileURLWithPath: "/bin/ps")
+        ps.arguments = ["-p", String(pid), "-o", "ppid=", "-o", "command="]
+        let pipe = Pipe()
+        ps.standardOutput = pipe
+        ps.standardError = FileHandle.nullDevice
+        do {
+            try ps.run()
+        } catch {
+            return nil
+        }
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        ps.waitUntilExit()
+        guard ps.terminationStatus == 0 else { return nil }
+        return StaleCoreReaping.parseProcessInfo(String(decoding: data, as: UTF8.self))
+    }
+
+    /// Polls until the pid is gone. `kill(pid, 0)` succeeds while the process
+    /// exists; only ESRCH means it has really exited (EPERM means it exists but
+    /// belongs to someone else).
+    private func waitForExit(pid: Int32, seconds: Double) async -> Bool {
+        for _ in 0 ..< max(1, Int(seconds / 0.1)) {
+            if hasExited(pid: pid) { return true }
+            try? await Task.sleep(nanoseconds: 100_000_000)
+        }
+        return hasExited(pid: pid)
+    }
+
+    private func hasExited(pid: Int32) -> Bool {
+        errno = 0
+        if kill(pid, 0) == 0 { return false }
+        return errno == ESRCH
+    }
+
+    /// Records the pid of the core this app spawned, so the next launch can tell
+    /// an abandoned core of ours from somebody else's process.
+    private enum AbandonedCoreRecord {
+        private static var url: URL { URL(fileURLWithPath: Paths.corePidFile) }
+
+        static func write(pid: Int32) {
+            try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(),
+                                                     withIntermediateDirectories: true)
+            try? StaleCoreReaping.pidFileContents(pid: pid).write(to: url, atomically: true, encoding: .utf8)
+        }
+
+        static func read() -> Int32? {
+            guard let contents = try? String(contentsOf: url, encoding: .utf8) else { return nil }
+            return StaleCoreReaping.pid(fromPidFile: contents)
+        }
+
+        static func clear() {
+            try? FileManager.default.removeItem(at: url)
+        }
     }
 
     /// Reports — without changing behaviour — that the controller address is
@@ -201,6 +316,10 @@ final class CoreProcessManager {
 
         process = proc
         spawnedViaHelper = false
+        // Recorded so a later launch can recognise this core if this process
+        // dies without stopping it. Written after a successful spawn, so the
+        // window in which a crash could go unrecorded is negligible.
+        AbandonedCoreRecord.write(pid: proc.processIdentifier)
     }
 
     /// Spawns mihomo as root via the privileged helper, so it can create the
@@ -261,6 +380,8 @@ final class CoreProcessManager {
         }
         process = nil
         isRunning = false
+        // An intentional stop leaves nothing to clean up later.
+        AbandonedCoreRecord.clear()
     }
 
     // MARK: - Readiness

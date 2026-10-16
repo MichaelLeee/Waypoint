@@ -9,6 +9,10 @@ let kConfigFolderPath = "\(NSHomeDirectory())/.config/waypoint/"
 let kDefaultConfigFilePath = "\(kConfigFolderPath)config.yaml"
 
 enum Paths {
+    /// Where the pid of the core the app spawned is recorded, so a later launch
+    /// can tell an abandoned core of ours from somebody else's process.
+    static let corePidFile = "\(kConfigFolderPath).core.pid"
+
     /// Config names arrive from user input (the add-remote-config form), the
     /// `waypoint://` URL scheme, and the Shortcuts/App Intents surface, and each
     /// one becomes a file name under the config folder. A name carrying a path
