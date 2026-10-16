@@ -187,12 +187,23 @@ extension AppDelegate {
 
         NotificationCenter.default
             .publisher(for: .systemNetworkStatusIPUpdate)
+            // The first operator, before every closure in the chain. This
+            // notification is posted from NetworkChangeNotifier's
+            // SCDynamicStore callback, which runs on its own CFRunLoop thread
+            // (see startIPChangeWatch). The closures below are written in a
+            // @MainActor context, so the compiler puts a main-actor check at
+            // their entry; invoking one on that thread trips the check and kills
+            // the process in a debug build (EXC_BREAKPOINT, SIGTRAP, reported
+            // from _dispatch_assert_queue_fail). The crash reports for this were
+            // on wake from sleep, when the IPv4 state changes and that callback
+            // fires. Every other chain in this file already leads with
+            // `receive(on:)` for the same reason.
+            .receive(on: DispatchQueue.main)
             .map { _ in NetworkChangeNotifier.getPrimaryIPAddress(allowIPV6: false) }
             .prepend(NetworkChangeNotifier.getPrimaryIPAddress(allowIPV6: false))
             .removeDuplicates()
             .dropFirst()
             .filter { $0 != nil }
-            .receive(on: DispatchQueue.main)
             .debounce(for: .seconds(5), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
                 MainActor.assumeIsolated {
